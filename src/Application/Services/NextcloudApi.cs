@@ -41,7 +41,7 @@ public sealed class NextcloudApi(
 
 		try
 		{
-			response = await _webDavClient.Propfind($"remote.php/dav/files/admin{path}", parameters);
+			response = await _webDavClient.Propfind($"remote.php/dav/files/{_nextcloudOptions.Value.Username}{path}", parameters);
 		}
 		catch (Exception ex)
 			when (ex is TimeoutRejectedException or HttpRequestException or SocketException)
@@ -67,7 +67,7 @@ public sealed class NextcloudApi(
 		{
 			CancellationToken = cancellationToken
 		};
-		WebDavResponse? response = await _webDavClient.Mkcol(
+		WebDavResponse response = await _webDavClient.Mkcol(
 			$"remote.php/dav/files/{_nextcloudOptions.Value.Username}{path}",
 			parameters);
 
