@@ -1,15 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{B237EA85-8658-46C9-A74E-ABC72A89F739}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "src\WebApp\WebApp.csproj", "{B237EA85-8658-46C9-A74E-ABC72A89F739}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{F38EAB37-3600-433B-B9F1-5BFC7A11BB43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{F38EAB37-3600-433B-B9F1-5BFC7A11BB43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{95235B8F-1644-4BA4-BE44-3348F93EE261}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{95235B8F-1644-4BA4-BE44-3348F93EE261}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{1870187F-4793-4DE2-8792-F299A0C33610}"
 	ProjectSection(SolutionItems) = preProject
 		compose.dev.yaml = compose.dev.yaml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,5 +31,10 @@ Global
 		{95235B8F-1644-4BA4-BE44-3348F93EE261}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95235B8F-1644-4BA4-BE44-3348F93EE261}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95235B8F-1644-4BA4-BE44-3348F93EE261}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{95235B8F-1644-4BA4-BE44-3348F93EE261} = {5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}
+		{F38EAB37-3600-433B-B9F1-5BFC7A11BB43} = {5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}
+		{B237EA85-8658-46C9-A74E-ABC72A89F739} = {5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}
 	EndGlobalSection
 EndGlobal
