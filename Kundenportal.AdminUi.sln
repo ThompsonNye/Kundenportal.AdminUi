@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 		compose.dev.yaml = compose.dev.yaml
 		Dockerfile = Dockerfile
 		README.md = README.md
+		.env = .env
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}"
@@ -36,6 +37,24 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedUnitTestLogic", "tests\SharedUnitTestLogic\SharedUnitTestLogic.csproj", "{464AEE94-AF53-4190-B016-2682AF48828E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.Tests.Integration", "tests\WebApp.Tests.Integration\WebApp.Tests.Integration.csproj", "{E51605E8-EDD6-4959-B5BA-8258B6DB05E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{FD987D5C-B6EF-4AAB-8EE4-3243D318E2FB}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\calculate-coverage.sh = scripts\calculate-coverage.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db", "db", "{D845F581-5B0E-422C-B043-E5BEF098910E}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\db\migrations.sql = scripts\db\migrations.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nextcloud", "nextcloud", "{2F3EACC6-5368-425E-ADAE-F6C524E58FAA}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\nextcloud\disable-apps.sh = scripts\nextcloud\disable-apps.sh
+		scripts\nextcloud\create-structures-folder.sh = scripts\nextcloud\create-structures-folder.sh
+		scripts\nextcloud\Nextcloud.Dockerfile = scripts\nextcloud\Nextcloud.Dockerfile
+		scripts\nextcloud\Nextcloud.companion.Dockerfile = scripts\nextcloud\Nextcloud.companion.Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +107,9 @@ Global
 		{99166D94-1F5F-4C3C-9C76-3E3DE28C1C73} = {4C12CD2A-9295-4D6E-866C-184B1355636B}
 		{FA286A4C-665E-421A-A779-A0C262D5C279} = {4C12CD2A-9295-4D6E-866C-184B1355636B}
 		{464AEE94-AF53-4190-B016-2682AF48828E} = {4C12CD2A-9295-4D6E-866C-184B1355636B}
+		{FD987D5C-B6EF-4AAB-8EE4-3243D318E2FB} = {1870187F-4793-4DE2-8792-F299A0C33610}
+		{D845F581-5B0E-422C-B043-E5BEF098910E} = {FD987D5C-B6EF-4AAB-8EE4-3243D318E2FB}
+		{2F3EACC6-5368-425E-ADAE-F6C524E58FAA} = {FD987D5C-B6EF-4AAB-8EE4-3243D318E2FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {226C9A62-6755-4BE5-B1F0-63629B730E16}

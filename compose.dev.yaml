@@ -29,7 +29,7 @@ services:
   nextcloud:
     build:
       context: ./scripts/nextcloud/
-      dockerfile: ./Dockerfile.Nextcloud
+      dockerfile: ./Nextcloud.Dockerfile
     volumes:
       - nextcloud-data:/var/www/html
     environment:
@@ -46,6 +46,7 @@ services:
       MAIL_FROM_ADDRESS: ${MAIL_FROM_USER_PART}
       MAIL_DOMAIN: ${MAIL_FROM_DOMAIN}
       REDIS_HOST: nextcloud.redis
+      NEXTCLOUD_TRUSTED_DOMAINS: localhost nextcloud 127.0.0.1 ::1
     restart: unless-stopped
     ports:
       - 50000:80
@@ -100,6 +101,21 @@ services:
     ports:
       - 50002:1025
       - 50001:1080
+
+  nextcloud.companion:
+    build:
+      context: ./scripts/nextcloud/
+      dockerfile: ./Nextcloud.companion.Dockerfile
+    environment:
+      NEXTCLOUD_ADMIN_USER: ${NC_ADMIN_USER}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NC_ADMIN_PASSWORD}
+      NEXTCLOUD_STRUCTURES_FOLDER: ${NEXTCLOUD_STRUCTURES_FOLDER}
+      NEXTCLOUD_SCHEME: http
+      NEXTCLOUD_HOST: nextcloud
+      NEXTCLOUD_PORT: 80
+    depends_on:
+      nextcloud:
+        condition: service_healthy
 
   jaeger:
     image: docker.io/jaegertracing/all-in-one:1
