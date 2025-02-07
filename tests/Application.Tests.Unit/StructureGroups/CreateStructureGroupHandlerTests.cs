@@ -126,4 +126,30 @@ public sealed class CreateStructureGroupHandlerTests
         _logger.ReceivedCalls().Should().BeEmpty();
         await _nextcloudApi.DidNotReceive().CreateFolderAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
+
+    private (CreateStructureGroupHandler, IApplicationDbContext) GetSutWithMockedDbContext()
+    {
+        IApplicationDbContext dbContext = Substitute.For<IApplicationDbContext>();
+        CreateStructureGroupHandler sut = new(_options, _nextcloudApi, dbContext, _logger);
+        return (sut, dbContext);
+    }
+
+    [Fact]
+    public async Task Consume_ShouldRethrowException_WhenExceptionIsThrownWhenCheckingIfStructureGroupExists()
+    {
+        // Arrange
+        (CreateStructureGroupHandler sut, IApplicationDbContext dbContext) = GetSutWithMockedDbContext();
+        dbContext.StructureGroups.Throws<Exception>();
+        
+        ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
+
+        // Act
+        Func<Task> action = () => sut.Consume(context);
+
+        // Assert
+        await action.Should().ThrowExactlyAsync<Exception>();
+        _logger.ReceivedLog<Exception>(
+            LogLevel.Error,
+            "Failed to check whether the structure group already exists");
+    }
 }

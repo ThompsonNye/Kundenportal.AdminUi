@@ -20,8 +20,10 @@ public class NotifyStructureGroupOverviewOfNewStructureGroupHandler(
         try
         {
             StructureGroup structureGroup = context.Message.Adapt<StructureGroup>();
-            await _hubContext.Clients.All.SendAsync(StructureGroupHub.NewStructureGroupMethod, structureGroup,
-                cancellationToken: context.CancellationToken);
+            await _hubContext.Clients.All.SendAsync(
+                StructureGroupHub.NewStructureGroupMethod,
+                structureGroup,
+                context.CancellationToken);
         }
         catch (Exception ex)
         {
