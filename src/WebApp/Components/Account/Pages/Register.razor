@@ -56,9 +56,9 @@
 @code {
 	private IEnumerable<IdentityError>? identityErrors;
 
-	[SupplyParameterFromForm] private InputModel Input { get; } = new();
+	[SupplyParameterFromForm] private InputModel Input { get; set; } = new();
 
-	[SupplyParameterFromQuery] private string? ReturnUrl { get; }
+	[SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
 
 	private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 

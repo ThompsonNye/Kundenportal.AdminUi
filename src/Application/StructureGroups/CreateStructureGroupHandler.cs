@@ -53,10 +53,7 @@ public sealed class CreateStructureGroupHandler(
 
 			_logger.LogInformation("Created folder in nextcloud at path {Path}", path);
 
-			return new CreateStructureGroupFolderResult
-			{
-				Path = path
-			};
+			return new CreateStructureGroupFolderResult { Path = path };
 		}
 		catch (ApplicationException ex)
 			when (ex is NextcloudRequestException or NextcloudFolderExistsException)

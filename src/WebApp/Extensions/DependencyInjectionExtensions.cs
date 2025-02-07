@@ -93,7 +93,8 @@ public static class DependencyInjectionExtensions
 			.AddDefaultTokenProviders()
 			.AddApiEndpoints();
 
-		services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+		services.AddSingleton<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, ConsoleLogEmailSender>();
+		services.AddSingleton<IEmailSender<ApplicationUser>, IdentityConsoleLogEmailSender>();
 
 		services.AddApiVersioning(o =>
 			{

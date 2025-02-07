@@ -35,13 +35,16 @@
 @code {
 	private string? message;
 
-	[SupplyParameterFromForm] private InputModel Input { get; } = new();
+	[SupplyParameterFromForm] private InputModel Input { get; set; } = new();
+
+	[Inject] public ILogger<ResendEmailConfirmation>? Logger { get; set; }
 
 	private async Task OnValidSubmitAsync()
 	{
 		ApplicationUser? user = await UserManager.FindByEmailAsync(Input.Email!);
 		if (user is null)
 		{
+			Logger?.LogDebug("User with email {Email} not found.", Input.Email);
 			message = "Verification email sent. Please check your email.";
 			return;
 		}
@@ -53,6 +56,8 @@
 			NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
 			new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
 		await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
+
+		Logger?.LogDebug("User with email {Email} found and email confirmation sent.", Input.Email);
 
 		message = "Verification email sent. Please check your email.";
 	}

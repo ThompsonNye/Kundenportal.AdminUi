@@ -33,9 +33,9 @@ else
 
 	[CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
-	[SupplyParameterFromQuery] private string? Email { get; }
+	[SupplyParameterFromQuery] private string? Email { get; set; }
 
-	[SupplyParameterFromQuery] private string? ReturnUrl { get; }
+	[SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{

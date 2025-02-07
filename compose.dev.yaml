@@ -40,7 +40,7 @@ services:
       NEXTCLOUD_ADMIN_USER: ${NC_ADMIN_USER}
       NEXTCLOUD_ADMIN_PASSWORD: ${NC_ADMIN_PASSWORD}
       SMTP_HOST: mail
-      SMTP_PORT: 25
+      SMTP_PORT: 1025
       SMTP_NAME: ${MAIL_USER}
       SMTP_PASSWORD: ${MAIL_PASSWORD}
       MAIL_FROM_ADDRESS: ${MAIL_FROM_USER_PART}
@@ -87,11 +87,10 @@ services:
     restart: unless-stopped
 
   mail:
-    image: docker.io/maildev/maildev:2.1.0
+    image: docker.io/maildev/maildev:2.2.1
     restart: unless-stopped
     environment:
       MAILDEV_MAIL_DIRECTORY: /var/opt/maildev
-      MAILDEV_SMTP_PORT: 25
       MAILDEV_INCOMING_USER: ${MAIL_USER}
       MAILDEV_INCOMING_PASS: ${MAIL_PASSWORD}
     volumes:
@@ -99,7 +98,7 @@ services:
     # Default user is node (uid 1000). But volumes are owned by root, so the user in the container has to be root
     user: "root:root"
     ports:
-      - 50002:25
+      - 50002:1025
       - 50001:1080
 
   jaeger:
