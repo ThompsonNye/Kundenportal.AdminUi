@@ -14,6 +14,11 @@ public class RabbitMqOptions
     /// The host of the RabbitMq instance.
     /// </summary>
     public string Host { get; set; } = "localhost";
+    
+    /// <summary>
+    /// The port of the RabbitMq instance.
+    /// </summary>
+    public int Port { get; set; } = 5672;
 
     /// <summary>
     /// The virtual host to use in the RabbitMq instance.

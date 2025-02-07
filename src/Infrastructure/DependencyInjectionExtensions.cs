@@ -115,7 +115,7 @@ public static class DependencyInjectionExtensions
             ?? new RabbitMqOptions();
 
         cfg.Host(
-            rabbitMqOptions.Host,
+            new Uri($"rabbitmq://{rabbitMqOptions.Host}:{rabbitMqOptions.Port}"),
             rabbitMqOptions.VirtualHost,
             h =>
             {

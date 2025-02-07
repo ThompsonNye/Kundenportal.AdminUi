@@ -10,7 +10,7 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     ports:
-      - 5432:5432
+      - 50003:5432
     environment:
       POSTGRES_USER: kundenportal_adminui
       POSTGRES_PASSWORD: Development1+
@@ -21,8 +21,8 @@ services:
     image: masstransit/rabbitmq
     restart: unless-stopped
     ports:
-      - 15672:15672 
-      - 5672:5672
+      - 50004:15672
+      - 50005:5672
     volumes:
       - kundenportal_adminui-dev-broker-data:/var/lib/rabbitmq
 
@@ -61,7 +61,7 @@ services:
       MARIADB_RANDOM_ROOT_PASSWORD: "true"
     restart: unless-stopped
     ports:
-      - 3306:3306
+      - 50006:3306
     healthcheck:
       test: "mysqladmin ping -u $$MARIADB_USER --password=$$MARIADB_PASSWORD | grep 'mysqld is alive' || exit 1"
       start_period: 5s
@@ -82,5 +82,5 @@ services:
     # Default user is node (uid 1000). But volumes are owned by root, so the user in the container has to be root
     user: "root:root"
     ports:
-      - 1025:25
+      - 50002:25
       - 50001:1080
