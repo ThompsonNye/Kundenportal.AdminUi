@@ -1,7 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Net.Http.Headers;
-using System.Text;
-using Kundenportal.AdminUi.Application.Models.Exceptions;
+﻿using Kundenportal.AdminUi.Application.Models.Exceptions;
 using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
 using Kundenportal.AdminUi.Application.StructureGroups;
@@ -10,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Options;
 using Polly;
+using System.Collections.Immutable;
+using System.Net.Http.Headers;
+using System.Text;
 using WebDav;
 
 namespace Kundenportal.AdminUi.Application;

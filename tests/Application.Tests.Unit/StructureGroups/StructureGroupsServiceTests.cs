@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Ardalis.Result;
 using AutoFixture;
 using FluentAssertions;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using SharedUnitTestLogic;
+using System.Diagnostics;
 
 namespace Application.Tests.Unit.StructureGroups;
 

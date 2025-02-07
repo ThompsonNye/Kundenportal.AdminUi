@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Asp.Versioning.ApiExplorer;
+﻿using Asp.Versioning.ApiExplorer;
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Infrastructure;
@@ -7,6 +6,7 @@ using Kundenportal.AdminUi.WebApp.Components;
 using Kundenportal.AdminUi.WebApp.Components.Middleware;
 using Kundenportal.AdminUi.WebApp.Endpoints;
 using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 namespace Kundenportal.AdminUi.WebApp.Extensions;
 

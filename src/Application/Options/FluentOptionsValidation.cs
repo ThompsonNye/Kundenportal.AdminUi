@@ -18,7 +18,7 @@ public class FluentOptionsValidation<TOptions>(
 	public ValidateOptionsResult Validate(string? name, TOptions options)
 	{
 		if (Name != name)
-			// Ignored if not validating this instance.
+		// Ignored if not validating this instance.
 		{
 			return ValidateOptionsResult.Skip;
 		}

@@ -26,7 +26,7 @@ public partial class DisplayMessage
 
 	[Parameter] public string? Message { get; set; }
 
-	[Parameter] [EditorRequired] public DisplayMessageType Type { get; set; }
+	[Parameter][EditorRequired] public DisplayMessageType Type { get; set; }
 
 	[Parameter] public RenderFragment? ChildContent { get; set; }
 

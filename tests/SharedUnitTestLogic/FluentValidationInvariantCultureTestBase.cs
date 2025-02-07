@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using FluentValidation;
+﻿using FluentValidation;
+using System.Globalization;
 
 namespace SharedUnitTestLogic;
 

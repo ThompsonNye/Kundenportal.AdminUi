@@ -46,7 +46,7 @@ public static class DependencyInjectionExtensions
 		IConfiguration configuration)
 	{
 		string connectionString = configuration.GetConnectionString("Database") ??
-		                          throw new InvalidOperationException("Database connection string not found.");
+								  throw new InvalidOperationException("Database connection string not found.");
 		services.AddDbContext<ApplicationDbContext>((services, options) =>
 		{
 			options.UseNpgsql(connectionString, o =>

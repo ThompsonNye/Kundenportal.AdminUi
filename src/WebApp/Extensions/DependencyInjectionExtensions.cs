@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using FluentValidation;
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Models;
@@ -12,6 +11,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using OpenTelemetry.Trace;
+using System.Diagnostics;
 
 namespace Kundenportal.AdminUi.WebApp.Extensions;
 

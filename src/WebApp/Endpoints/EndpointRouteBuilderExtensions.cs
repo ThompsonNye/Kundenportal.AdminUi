@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Net;
-using Ardalis.Result;
+﻿using Ardalis.Result;
 using Asp.Versioning.Builder;
 using Asp.Versioning.Conventions;
 using FluentValidation;
@@ -16,6 +14,8 @@ using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Polly.Timeout;
+using System.Globalization;
+using System.Net;
 
 namespace Kundenportal.AdminUi.WebApp.Endpoints;
 

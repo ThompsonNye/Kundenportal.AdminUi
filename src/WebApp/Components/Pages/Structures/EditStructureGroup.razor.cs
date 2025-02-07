@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using Ardalis.Result;
+﻿using Ardalis.Result;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Application.StructureGroups;
 using Kundenportal.AdminUi.WebApp.Components.Pages.Shared;
@@ -8,6 +6,8 @@ using Kundenportal.AdminUi.WebApp.Resources;
 using MassTransit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 namespace Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
 

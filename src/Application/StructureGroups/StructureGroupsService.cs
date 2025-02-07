@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Ardalis.Result;
+﻿using Ardalis.Result;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Application.Options;
@@ -9,6 +8,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 
 namespace Kundenportal.AdminUi.Application.StructureGroups;
 

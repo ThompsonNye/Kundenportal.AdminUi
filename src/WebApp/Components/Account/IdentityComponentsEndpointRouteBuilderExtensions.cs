@@ -1,6 +1,3 @@
-using System.Reflection;
-using System.Security.Claims;
-using System.Text.Json;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.WebApp.Components.Account.Pages;
 using Kundenportal.AdminUi.WebApp.Components.Account.Pages.Manage;
@@ -10,6 +7,9 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using System.Reflection;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Routing;
 
