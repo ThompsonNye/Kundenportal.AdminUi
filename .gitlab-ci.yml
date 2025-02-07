@@ -1,33 +1,33 @@
 default:
-  image: docker:24.0.5
-  artifacts:
-    expire_in: 1h
+    image: docker:24.0.5
+    artifacts:
+        expire_in: 1h
 
 variables:
-  DOTNET_SDK_IMAGE: mcr.microsoft.com/dotnet/sdk:8.0-alpine
-  GIT_STRATEGY: clone
-  GIT_DEPTH: "0"
-  TEST_RESULTS_DIRECTORY: TestResults
-  COVERAGE_REPORT_DIR: CoverageReport
-  COVERAGE_TYPE: line
+    DOTNET_SDK_IMAGE: mcr.microsoft.com/dotnet/sdk:8.0-alpine
+    GIT_STRATEGY: clone
+    GIT_DEPTH: "0"
+    TEST_RESULTS_DIRECTORY: TestResults
+    COVERAGE_REPORT_DIR: CoverageReport
+    COVERAGE_TYPE: line
 
 stages:
-  - .pre
-  - build
-  - test
-  - coverage
+    - .pre
+    - build
+    - test
+    - coverage
 
 workflow:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
-      when: never
-    - if: $CI_COMMIT_BRANCH
+    rules:
+        -   if: $CI_PIPELINE_SOURCE == "merge_request_event"
+        -   if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+            when: never
+        -   if: $CI_COMMIT_BRANCH
 
 include:
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Code-Quality.gitlab-ci.yml
-  - template: Jobs/Secret-Detection.latest.gitlab-ci.yml
+    -   template: Security/SAST.gitlab-ci.yml
+    -   template: Code-Quality.gitlab-ci.yml
+    -   template: Jobs/Secret-Detection.latest.gitlab-ci.yml
 
 
 # ================================
@@ -35,117 +35,136 @@ include:
 # ================================
 
 code_quality:
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    rules:
+        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 secret_detection:
-  needs: [ ]
-  dependencies: [ ]
-  rules:
-    - !reference [ .prepare.run-always, rules ]
-  artifacts:
-    paths:
-      - gl-secret-detection-report.json
+    needs: [ ]
+    dependencies: [ ]
+    rules:
+        - !reference [ .prepare.run-always, rules ]
+    artifacts:
+        paths:
+            - gl-secret-detection-report.json
 
 security-code-scan-sast:
-  needs: [ ]
-  dependencies: [ ]
-  rules:
-    - when: never
+    needs: [ ]
+    dependencies: [ ]
+    rules:
+        -   when: never
 
 semgrep-sast:
-  needs: [ ]
-  dependencies: [ ]
-  rules:
-    - !reference [ .prepare.run-always, rules ]
+    needs: [ ]
+    dependencies: [ ]
+    rules:
+        - !reference [ .prepare.run-always, rules ]
 
 # =================================
 # =========== Prepares ============
 # =================================
 
 .prepare.run-always:
-  rules:
-    - if: $CI_COMMIT_BRANCH
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    rules:
+        -   if: $CI_COMMIT_BRANCH
+        -   if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
-  # =================================
-  # ========== Custom Jobs ==========
-  # =================================
+    # =================================
+    # ========== Custom Jobs ==========
+    # =================================
 
 set-env-vars:
-  stage: .pre
-  image: $DOTNET_SDK_IMAGE
-  script:
-    - apk add --update jq
-    - dotnet tool restore
-    - export VERSION_INFO=$(dotnet nbgv get-version --format json)
-    - echo "ASSEMBLY_INFORMATIONAL_VERSION=$(echo $VERSION_INFO | jq -r '.AssemblyInformationalVersion')" >> variables.env
-    - echo "VERSION=$(echo $VERSION_INFO | jq -r '.SemVer2')" >> variables.env
-    - echo "VERSION_SIMPLE=$(echo $VERSION_INFO | jq -r '.CloudBuildVersionVars.GitBuildVersionSimple')" >> variables.env
-  artifacts:
-    reports:
-      dotenv: variables.env
+    stage: .pre
+    image: $DOTNET_SDK_IMAGE
+    script:
+        - apk add --update jq
+        - dotnet tool restore
+        - export VERSION_INFO=$(dotnet nbgv get-version --format json)
+        - echo "ASSEMBLY_INFORMATIONAL_VERSION=$(echo $VERSION_INFO | jq -r '.AssemblyInformationalVersion')" >> variables.env
+        - echo "VERSION=$(echo $VERSION_INFO | jq -r '.SemVer2')" >> variables.env
+        - echo "VERSION_SIMPLE=$(echo $VERSION_INFO | jq -r '.CloudBuildVersionVars.GitBuildVersionSimple')" >> variables.env
+    artifacts:
+        reports:
+            dotenv: variables.env
 
 compile app:
-  stage: build
-  image: $DOTNET_SDK_IMAGE
-  script:
-    - dotnet build ./src/WebApp/WebApp.csproj
+    stage: build
+    image: $DOTNET_SDK_IMAGE
+    script:
+        - dotnet build ./src/WebApp/WebApp.csproj
 
 compile solution:
-  stage: build
-  image: $DOTNET_SDK_IMAGE
-  script:
-    - dotnet build ./Kundenportal.AdminUi.sln
+    stage: build
+    image: $DOTNET_SDK_IMAGE
+    script:
+        - dotnet build ./Kundenportal.AdminUi.sln
 
-unit and integration tests:
-  stage: test
-  variables:
-    TEST_FILTER: --filter "FullyQualifiedName~Tests.Unit|FullyQualifiedName~Tests.Integration"
-  script:
-    - apk add --update krb5-libs libgcc libintl libssl1.1 libstdc++ zlib bash icu-libs
-    - wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
-    - chmod +x ./dotnet-install.sh
-    - ./dotnet-install.sh --channel 8.0 && export DOTNET_NOLOGO=true
-    - export PATH=/root/.dotnet:/root/.dotnet/tools
+unit tests:
+    stage: test
+    image: $DOTNET_SDK_IMAGE
+    variables:
+        TEST_FILTER: --filter "FullyQualifiedName~Tests.Unit"
+    script:
+        - dotnet tool restore
+        - dotnet restore
+        - dotnet test --no-restore $(echo $TEST_FILTER) --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory $TEST_RESULTS_DIRECTORY --logger:"junit;LogFileName={assembly}.test-results.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+    rules:
+        - !reference [ .prepare.run-always, rules ]
+    artifacts:
+        paths:
+            - $TEST_RESULTS_DIRECTORY
+        name: TestResults
+        expire_in: 1min
+        reports:
+            junit: ./$TEST_RESULTS_DIRECTORY/*.test-results.xml
 
-    - dotnet tool restore
-    - dotnet restore
-    - dotnet test --no-restore $(echo $TEST_FILTER) --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory $TEST_RESULTS_DIRECTORY --logger:"junit;LogFileName={assembly}.test-results.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
-  rules:
-    - !reference [ .prepare.run-always, rules ]
-  artifacts:
-    paths:
-      - $TEST_RESULTS_DIRECTORY
-    name: TestResults
-    expire_in: 1min
-    reports:
-      junit: ./$TEST_RESULTS_DIRECTORY/*.test-results.xml
+integration tests:
+    stage: test
+    variables:
+        TEST_FILTER: --filter "FullyQualifiedName~Tests.Integration"
+    script:
+        - apk add --update krb5-libs libgcc libintl libssl1.1 libstdc++ zlib bash icu-libs
+        - wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+        - chmod +x ./dotnet-install.sh
+        - ./dotnet-install.sh --channel 8.0 && export DOTNET_NOLOGO=true
+        - export PATH=/root/.dotnet:/root/.dotnet/tools
+
+        - dotnet tool restore
+        - dotnet restore
+        - dotnet test --no-restore $(echo $TEST_FILTER) --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory $TEST_RESULTS_DIRECTORY --logger:"junit;LogFileName={assembly}.test-results.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+    rules:
+        - !reference [ .prepare.run-always, rules ]
+    artifacts:
+        paths:
+            - $TEST_RESULTS_DIRECTORY
+        name: TestResults
+        expire_in: 1min
+        reports:
+            junit: ./$TEST_RESULTS_DIRECTORY/*.test-results.xml
 
 code coverage:
-  stage: coverage
-  image: $DOTNET_SDK_IMAGE
-  script:
-    - pwd
-    - ls -lha
-    - find . -iname coverage.cobertura.xml
+    stage: coverage
+    image: $DOTNET_SDK_IMAGE
+    script:
+        - pwd
+        - ls -lha
+        - find . -iname coverage.cobertura.xml
 
-    - dotnet tool restore
-    - dotnet reportgenerator -reports:"./$TEST_RESULTS_DIRECTORY/*/coverage.cobertura.xml" -targetdir:"$COVERAGE_REPORT_DIR" -reporttypes:Html
+        - dotnet tool restore
+        - dotnet reportgenerator -reports:"./$TEST_RESULTS_DIRECTORY/*/coverage.cobertura.xml" -targetdir:"$COVERAGE_REPORT_DIR" -reporttypes:Html
 
-    - ls -lha $COVERAGE_REPORT_DIR
+        - ls -lha $COVERAGE_REPORT_DIR
 
-    - export SCRIPT_PATH=./scripts/calculate-coverage.sh
-    - chmod +x $SCRIPT_PATH
-    - $SCRIPT_PATH $COVERAGE_REPORT_DIR/index.html $COVERAGE_TYPE
-  coverage: '/Coverage: (\d{1,3}\.?\d{0,2})%/'
-  dependencies:
-    - unit and integration tests
-  rules:
-    - !reference [ .prepare.run-always, rules ]
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: ./$TEST_RESULTS_DIRECTORY/*/coverage.cobertura.xml
-
+        - export SCRIPT_PATH=./scripts/calculate-coverage.sh
+        - chmod +x $SCRIPT_PATH
+        - $SCRIPT_PATH $COVERAGE_REPORT_DIR/index.html $COVERAGE_TYPE
+    coverage: '/Coverage: (\d{1,3}\.?\d{0,2})%/'
+    dependencies:
+        - unit tests
+        - integration tests
+    rules:
+        - !reference [ .prepare.run-always, rules ]
+    artifacts:
+        reports:
+            coverage_report:
+                coverage_format: cobertura
+                path: ./$TEST_RESULTS_DIRECTORY/*/coverage.cobertura.xml
