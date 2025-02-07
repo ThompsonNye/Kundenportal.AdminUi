@@ -10,15 +10,21 @@ nextcloudHost=${NEXTCLOUD_HOST}
 nextcloudPort=${NEXTCLOUD_PORT:-80}
 createStructureUrl="${nextcloudScheme}://${nextcloudHost}:${nextcloudPort}/remote.php/dav/files/${adminUser}/${folderName}"
 
-curl --silent --show-error --head --basic --user "${adminUser}:${adminPassword}" --request MKCOL "${createStructureUrl}" > result
+responseFile="result"
+curl --silent --show-error --show-headers --basic --user "${adminUser}:${adminPassword}" --request MKCOL "${createStructureUrl}" > $responseFile
 
-if grep -q "HTTP/1.1 201 Created" result; then
+exitCode=0
+
+if grep -q "HTTP/1.1 201 Created" $responseFile; then
     echo "Folder '${folderName}' created successfully"
-elif grep -q "HTTP/1.1 405 Method Not Allowed" result; then
+elif grep -q "HTTP/1.1 405 Method Not Allowed" $responseFile; then
     echo "Folder '${folderName}' already exists"
 else
-    echo "Error creating folder ${folderName}"
-    cat result
+    # 1>&2; redirects stdout to stderr
+    echo "Error creating folder ${folderName}" 1>&2;
+    cat $responseFile 1>&2;
+    exitCode=1
 fi
 
-rm result
+rm $responseFile
+exit $exitCode
