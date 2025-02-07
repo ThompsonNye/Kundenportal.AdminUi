@@ -27,7 +27,9 @@ services:
       - broker-data:/var/lib/rabbitmq
 
   nextcloud:
-    image: docker.io/nextcloud:production
+    build:
+      context: ./scripts/nextcloud/
+      dockerfile: ./Dockerfile.Nextcloud
     volumes:
       - nextcloud-data:/var/www/html
     environment:

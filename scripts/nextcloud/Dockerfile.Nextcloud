@@ -1,0 +1,6 @@
+FROM docker.io/nextcloud:production
+
+# Prevent default files for ALL users (including the initial admin)
+RUN rm -rf /usr/src/nextcloud/core/skeleton
+
+COPY ./disable-apps.sh /docker-entrypoint-hooks.d/post-installation
