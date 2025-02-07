@@ -2,7 +2,7 @@
 
 namespace Kundenportal.AdminUi.WebApp;
 
-public static class DependencyInjection
+public static class DependencyInjectionExtensions
 {
     public static void MapRedirectOnDefaultPath(this IEndpointRouteBuilder app)
     {
