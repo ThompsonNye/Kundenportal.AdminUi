@@ -19,7 +19,7 @@ keine unterstützte Sprache definiert ist. Unterstützte Sprachen (bzw. Cultures
 - `en-US`
 - `en`
 
-Für mehr Informationene zum `Accept-Language` Header
+Für mehr Informationen zum `Accept-Language` Header
 siehe [hier](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language).
 
 ## Übersetzungen für Texte in der Anwendung

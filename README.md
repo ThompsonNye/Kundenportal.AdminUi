@@ -19,7 +19,7 @@ Hierarchieebenen in den Konfigurationsschlüsseln werden in der nachfolgenden Ta
 Unterschiedliche Varianten, der Anwendung die Konfiguration zu übergeben, erfordern unterschiedliche Formate der
 Konfiguration.
 
-Beispiel:  Die Konfiguration mit dem Schlüssel `Foo:Bar` und dem Wert `Value` kann wie folgt dargestellt werden:
+Beispiel: Die Konfiguration mit dem Schlüssel `Foo:Bar` und dem Wert `Value` kann wie folgt dargestellt werden:
 
 In einer appsettings.*.json Datei:
 
@@ -38,7 +38,7 @@ Foo:Bar=Value
 ```
 
 Ein Doppelpunkt ist nicht auf allen Systemen möglich, daher ist es auch möglich, einen Doppelpunkt durch **zwei**
-Unterstrichte zu ersetzen:
+Unterstriche zu ersetzen:
 
 ```env
 Foo__Bar=Value
@@ -76,7 +76,7 @@ Kundenportal_AdminUi_Foo__Bar=AnotherValue
 Die Anwendung überschreibt die erste Konfiguration mit dem Wert der Umgebungsvariable mit Präfix. Die Anwendung sieht
 lediglich die Konfiguration `Foo:Bar=AnotherValue`.
 
-Der Präfix kann, muss aber nicht genutzt werden. Er bietet die Möglichkeit, die Umgebungsvariablen, die für die
+Das Präfix kann, muss aber nicht genutzt werden. Er bietet die Möglichkeit, die Umgebungsvariablen, die für die
 Anwendung bestimmt sind, besser zu kennzeichnen.
 
 #### Konfigurationsoptionen
@@ -95,7 +95,7 @@ Anwendung bestimmt sind, besser zu kennzeichnen.
 
 ## Projektaufbau
 
-Der Aufbau des Codes orientiert sich lose an der Clean Architecture. Allerdings wird auf das Domain Projekt verzichtet,
+Der Aufbau des Codes orientiert sich lose an der Clean Architecture. Allerdings wird auf das Domain-Projekt verzichtet,
 da kein Domain Driven Design (DDD) eingesetzt wird und das Domain Projekt daher sonst nur die Models beinhalten würde.
 Die Models wurden daher einfach im Application Projekt angelegt.
 
