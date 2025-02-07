@@ -119,6 +119,8 @@ unit and integration tests:
             - $TEST_RESULTS_DIRECTORY
         name: TestResults
         expire_in: 1min
+        reports: 
+            junit: ./$TEST_RESULTS_DIRECTORY/*.test-results.xml
 
 code coverage:
     stage: coverage
@@ -146,5 +148,4 @@ code coverage:
             coverage_report:
                 coverage_format: cobertura
                 path: ./$TEST_RESULTS_DIRECTORY/*/coverage.cobertura.xml
-            junit: ./$TEST_RESULTS_DIRECTORY/*.test-results.xml
 
