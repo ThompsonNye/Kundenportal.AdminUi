@@ -142,7 +142,7 @@ public partial class StructureGroups : IAsyncDisposable
 			return;
 		}
 
-		_model.StructureGroups.Add(structureGroup);
+		_model.StructureGroups.Insert(0, structureGroup);
 		Logger!.LogDebug("Added new structure group to page model");
 	}
 
