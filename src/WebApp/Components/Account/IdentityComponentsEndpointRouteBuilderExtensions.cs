@@ -9,6 +9,7 @@ using Microsoft.Extensions.Primitives;
 using Kundenportal.AdminUi.WebApp.Components.Account.Pages;
 using Kundenportal.AdminUi.WebApp.Components.Account.Pages.Manage;
 using Kundenportal.AdminUi.Application;
+using Kundenportal.AdminUi.Application.Models;
 
 namespace Microsoft.AspNetCore.Routing;
 

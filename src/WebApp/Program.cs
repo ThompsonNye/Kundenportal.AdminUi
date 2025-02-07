@@ -1,4 +1,5 @@
 using Kundenportal.AdminUi.Application;
+using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Infrastructure;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using Kundenportal.AdminUi.WebApp.Components;

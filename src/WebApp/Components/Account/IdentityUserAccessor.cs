@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Kundenportal.AdminUi.Application;
+using Kundenportal.AdminUi.Application.Models;
 
 namespace Kundenportal.AdminUi.WebApp.Components.Account;
 

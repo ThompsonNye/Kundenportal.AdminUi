@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Kundenportal.AdminUi.Application;
+using Kundenportal.AdminUi.Application.Models;
 
 namespace Kundenportal.AdminUi.WebApp.Components.Account;
 
