@@ -1,0 +1,14 @@
+﻿<div style="width: @(Width)px">
+    <img src="images/ellipsis.svg" 
+         alt="@ImgAltTextInternal"
+         class="w-inherit"
+         aria-hidden="true"/>
+</div>
+
+@code {
+    [Parameter] public int Width { get; set; } = 40;
+    
+    [Parameter] public string? ImgAltText { get; set; }
+
+    private string ImgAltTextInternal => !string.IsNullOrEmpty(ImgAltText) ? ImgAltText : "ellipsis";
+}
