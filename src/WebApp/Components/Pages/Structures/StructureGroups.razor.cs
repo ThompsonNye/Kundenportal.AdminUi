@@ -1,5 +1,6 @@
 ﻿using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Models;
+using Kundenportal.AdminUi.Application.StructureGroups;
 using Microsoft.AspNetCore.Components;
 
 namespace Kundenportal.AdminUi.WebApp.Components.Pages.Structures;

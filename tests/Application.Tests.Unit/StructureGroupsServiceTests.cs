@@ -3,6 +3,7 @@ using FluentAssertions;
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
+using Kundenportal.AdminUi.Application.StructureGroups;
 using NSubstitute;
 
 namespace Application.Tests.Unit;

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Kundenportal.AdminUi.Application.StructureGroups;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kundenportal.AdminUi.Application;
 

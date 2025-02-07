@@ -1,7 +1,7 @@
 ﻿using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
 
-namespace Kundenportal.AdminUi.Application;
+namespace Kundenportal.AdminUi.Application.StructureGroups;
 
 public interface IStructureGroupsService
 {
