@@ -13,7 +13,10 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "OTEL_SERVICE_NAME": "Kundenportal.AdminUi",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:50008",
+        "OTEL_EXPORTER_OTLP_PROTOCOL": "grpc"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7126;http://localhost:5242"

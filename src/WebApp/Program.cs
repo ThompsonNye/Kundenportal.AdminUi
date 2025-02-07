@@ -10,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables("Kundenportal_AdminUi_");
 
+builder.AddOpenTelemetry();
+
 builder.Services.AddResponseCompression(opts =>
 {
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(

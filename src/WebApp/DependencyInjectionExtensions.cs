@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Diagnostics;
+using FluentValidation;
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Hubs;
 using Kundenportal.AdminUi.Application.Models;
@@ -6,8 +7,10 @@ using Kundenportal.AdminUi.Infrastructure;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using Kundenportal.AdminUi.WebApp.Components.Account;
 using Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
+using MassTransit.Logging;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using OpenTelemetry.Trace;
 
 namespace Kundenportal.AdminUi.WebApp;
 
@@ -29,7 +32,7 @@ public static class DependencyInjectionExtensions
     public static void MapHubs(this WebApplication app)
     {
         RouteGroupBuilder hubsGroup = app.MapGroup("/hubs");
-            
+
         hubsGroup.MapHub<StructureGroupHub>(StructureGroupHub.Route);
     }
 
@@ -46,8 +49,27 @@ public static class DependencyInjectionExtensions
         ], ServiceLifetime.Singleton);
 
         services.AddSignalR();
-        
+
         services.AddDefaultWebAppServices();
+    }
+
+    public static void AddOpenTelemetry(this WebApplicationBuilder builder)
+    {
+        Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+
+        ActivitySource activitySource = new(Constants.AppOtelName);
+        builder.Services.AddSingleton(activitySource);
+
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(t =>
+            {
+                t.AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddOtlpExporter()
+                    .AddSource(DiagnosticHeaders.DefaultListenerName)
+                    .AddSource(activitySource.Name);
+            })
+            .WithMetrics();
     }
 
     private static void AddDefaultWebAppServices(this IServiceCollection services)
@@ -61,10 +83,10 @@ public static class DependencyInjectionExtensions
         services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
         services.AddAuthentication(options =>
-        {
-            options.DefaultScheme = IdentityConstants.ApplicationScheme;
-            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-        })
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
             .AddIdentityCookies();
 
         services.AddDatabaseDeveloperPageExceptionFilter();
@@ -75,6 +97,5 @@ public static class DependencyInjectionExtensions
             .AddDefaultTokenProviders();
 
         services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-
     }
 }

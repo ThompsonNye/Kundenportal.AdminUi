@@ -1,4 +1,5 @@
-﻿using Kundenportal.AdminUi.Application.Abstractions;
+﻿using System.Diagnostics;
+using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
@@ -25,7 +26,8 @@ public sealed class StructureGroupsService(
     INextcloudApi nextcloud,
     IOptions<NextcloudOptions> nextcloudOptions,
     IPublishEndpoint publishEndpoint,
-    ILogger<StructureGroupsService> logger)
+    ILogger<StructureGroupsService> logger,
+    ActivitySource activitySource)
     : IStructureGroupsService
 {
     private readonly IApplicationDbContext _dbContext = dbContext;
@@ -33,6 +35,7 @@ public sealed class StructureGroupsService(
     private readonly IOptions<NextcloudOptions> _nextcloudOptions = nextcloudOptions;
     private readonly IPublishEndpoint _publishEndpoint = publishEndpoint;
     private readonly ILogger<StructureGroupsService> _logger = logger;
+    private readonly ActivitySource _activitySource = activitySource;
 
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
@@ -66,6 +69,8 @@ public sealed class StructureGroupsService(
 
     public async Task AddPendingAsync(PendingStructureGroup pendingStructureGroup, CancellationToken cancellationToken = default)
     {
+        using Activity? activity = _activitySource.StartActivity("AddPendingStructureGroup");
+
         _logger.LogDebug("Creating pending structure group with id {Id} and name {Name}", pendingStructureGroup.Id, pendingStructureGroup.Name);
 
         _dbContext.PendingStructureGroups.Add(pendingStructureGroup);

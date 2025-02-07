@@ -5,6 +5,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
 
@@ -29,6 +30,9 @@ public partial class EditStructureGroup
 
     [Inject]
     public IStructureGroupsService? StructureGroupsService { get; init; }
+    
+    [Inject]
+    public ActivitySource? ActivitySource { get; init; }
 
     private readonly Model _model = new();
     private readonly EditContext _editContext;
@@ -86,6 +90,8 @@ public partial class EditStructureGroup
 
     private async Task<bool> CreatePendingStructureGroupAsync()
     {
+        using Activity? activity = ActivitySource?.StartActivity("CreateStructureGroup");
+        
         try
         {
             PendingStructureGroup pendingStructureGroup = new()
@@ -108,6 +114,9 @@ public partial class EditStructureGroup
 
     private async Task<bool> RunCustomValidationAsync()
     {
+        using Activity? activity = ActivitySource?.StartActivity("CheckFolderExists");
+        activity?.AddTag("structureGroup.name", _model.Name);
+        
         bool folderExists = await StructureGroupsService!.DoesStructureGroupExistAsync(_model.Name);
 
         if (folderExists)

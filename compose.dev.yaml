@@ -101,3 +101,13 @@ services:
     ports:
       - 50002:25
       - 50001:1080
+
+  jaeger:
+    image: docker.io/jaegertracing/all-in-one:1
+    restart: unless-stopped
+    environment:
+      COLLECTOR_OTLP_ENABLED: true
+    ports:
+      - 50007:16686
+      - 50008:4317
+      - 50009:4318

@@ -72,11 +72,14 @@ Der Präfix kann, muss aber nicht genutzt werden. Er bietet die Möglichkeit, di
 
 #### Konfigurationsoptionen
 
-| Schlüssel                    | Default Wert                                                            | Erforderlich | Beschreibung                                                                |
-|------------------------------|-------------------------------------------------------------------------|--------------|-----------------------------------------------------------------------------|
-| `ConnectionStrings:Database` | Ein PostgreSql Connection String zu einem lokalen Dev Docker Container. | Sinnvoll     | Der Connection String zur PostgreSql Datenbank.                             |
-| `RabbitMq:Host`              | localhost                                                               | Nein         | Der Host, unter dem die RabbitMq Instanz erreichbar ist.                    |
-| `RabbitMq:Port`              | 5672                                                                    | Nein         | Der Port~~~~, unter dem die RabbitMq Instanz erreichbar ist.                    |
-| `RabbitMq:VirtualHost`       | / (Ein Slash, kein leerer Wert!)                                        | Nein         | Der virtuelle Host in der RabbitMq Instanz (bei Fragen siehe RabbitMq Docs) |
-| `RabbitMq:Username`          | guest                                                                   | Nein         | Der Benutzername                                                            |
-| `RabbitMq:Password`          | guest                                                                   | Nein         | Das Passwort                                                                |
+| Schlüssel                     | Default Wert                                                            | Erforderlich | Beschreibung                                                                         |
+|-------------------------------|-------------------------------------------------------------------------|--------------|--------------------------------------------------------------------------------------|
+| `ConnectionStrings:Database`  | Ein PostgreSql Connection String zu einem lokalen Dev Docker Container. | Sinnvoll     | Der Connection String zur PostgreSql Datenbank.                                      |
+| `RabbitMq:Host`               | localhost                                                               | Nein         | Der Host, unter dem die RabbitMq Instanz erreichbar ist.                             |
+| `RabbitMq:Port`               | 5672                                                                    | Nein         | Der Port~~~~, unter dem die RabbitMq Instanz erreichbar ist.                         |
+| `RabbitMq:VirtualHost`        | / (Ein Slash, kein leerer Wert!)                                        | Nein         | Der virtuelle Host in der RabbitMq Instanz (bei Fragen siehe RabbitMq Docs)          |
+| `RabbitMq:Username`           | guest                                                                   | Nein         | Der Benutzername                                                                     |
+| `RabbitMq:Password`           | guest                                                                   | Nein         | Das Passwort                                                                         |
+| `OTEL_SERVICE_NAME`           |                                                                         | Sinnvoll     | Service Name for the Application in OpenTelemetry traces. Nur als Umgebungsvariable. | 
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | http://localhost:4318                                                   | Nein         | Der Endpoint für den OpenTelemetry Exporter                                          |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | http/protobuf                                                           | Nein         | Das OLTP Protokoll. Erlaubte Werte: grpc, http/protobuf                              |
