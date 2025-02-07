@@ -60,6 +60,141 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        internal static string ButtonTextCreate {
+            get {
+                return ResourceManager.GetString("ButtonTextCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred. Please try again..
+        /// </summary>
+        internal static string GenericErrorMessage {
+            get {
+                return ResourceManager.GetString("GenericErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string LabelEditStructureGroupName {
+            get {
+                return ResourceManager.GetString("LabelEditStructureGroupName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No structure groups found..
+        /// </summary>
+        internal static string NoStructureGroups {
+            get {
+                return ResourceManager.GetString("NoStructureGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A structure is a folder for which users can receive permissons and for which predefined folder and file structures can be created..
+        /// </summary>
+        internal static string StructureExplanation {
+            get {
+                return ResourceManager.GetString("StructureExplanation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A structure group is a grouping of structures for which structure group which belong together can be created together. An example is multiple structures for the same project..
+        /// </summary>
+        internal static string StructureGroupExplanation {
+            get {
+                return ResourceManager.GetString("StructureGroupExplanation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create structure.
+        /// </summary>
+        internal static string TitleCreateStructure {
+            get {
+                return ResourceManager.GetString("TitleCreateStructure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create structure group.
+        /// </summary>
+        internal static string TitleCreateStructureGroup {
+            get {
+                return ResourceManager.GetString("TitleCreateStructureGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit structure group.
+        /// </summary>
+        internal static string TitleEditStructureGroup {
+            get {
+                return ResourceManager.GetString("TitleEditStructureGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending structure groups.
+        /// </summary>
+        internal static string TitlePendingStructureGroups {
+            get {
+                return ResourceManager.GetString("TitlePendingStructureGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Structure groups.
+        /// </summary>
+        internal static string TitleStructureGroups {
+            get {
+                return ResourceManager.GetString("TitleStructureGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options for structure groups {0}.
+        /// </summary>
+        internal static string TitleTextStructureGroupOptions {
+            get {
+                return ResourceManager.GetString("TitleTextStructureGroupOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The path part contains invalid characters, invalid characters are: &lt; &gt; ? &quot; : | / \ * . ’ # %.
+        /// </summary>
+        internal static string ValidationErrorEditStructureGroupNameContainsInvalidCharacters {
+            get {
+                return ResourceManager.GetString("ValidationErrorEditStructureGroupNameContainsInvalidCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field {0} must be provided..
+        /// </summary>
+        internal static string ValidationErrorFieldRequired {
+            get {
+                return ResourceManager.GetString("ValidationErrorFieldRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The field {0} can be a maximum of {0} characters long..
+        /// </summary>
+        internal static string ValidationErrorFieldTooLong {
+            get {
+                return ResourceManager.GetString("ValidationErrorFieldTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A structure group with that name already exists..
         /// </summary>
         internal static string ValidationErrorStructureGroupExists {

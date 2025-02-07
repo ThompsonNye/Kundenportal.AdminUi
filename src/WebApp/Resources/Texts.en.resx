@@ -27,4 +27,49 @@
 	<data name="ValidationErrorStructureGroupExists" xml:space="preserve">
         <value>A structure group with that name already exists.</value>
     </data>
+	<data name="TitleCreateStructureGroup" xml:space="preserve">
+		<value>Create structure group</value>
+	</data>
+	<data name="ButtonTextCreate" xml:space="preserve">
+		<value>Create</value>
+	</data>
+	<data name="GenericErrorMessage" xml:space="preserve">
+		<value>An error occurred. Please try again.</value>
+	</data>
+	<data name="NoStructureGroups" xml:space="preserve">
+		<value>No structure groups found.</value>
+	</data>
+	<data name="StructureExplanation" xml:space="preserve">
+		<value>A structure is a folder for which users can receive permissons and for which predefined folder and file structures can be created.</value>
+	</data>
+	<data name="StructureGroupExplanation" xml:space="preserve">
+		<value>A structure group is a grouping of structures for which structure group which belong together can be created together. An example is multiple structures for the same project.</value>
+	</data>
+	<data name="TitleCreateStructure" xml:space="preserve">
+		<value>Create structure</value>
+	</data>
+	<data name="TitleEditStructureGroup" xml:space="preserve">
+		<value>Edit structure group</value>
+	</data>
+	<data name="TitlePendingStructureGroups" xml:space="preserve">
+		<value>Pending structure groups</value>
+	</data>
+	<data name="TitleStructureGroups" xml:space="preserve">
+		<value>Structure groups</value>
+	</data>
+	<data name="TitleTextStructureGroupOptions" xml:space="preserve">
+		<value>Options for structure groups {0}</value>
+	</data>
+	<data name="ValidationErrorEditStructureGroupNameContainsInvalidCharacters" xml:space="preserve">
+		<value>The path part contains invalid characters, invalid characters are: &lt; &gt; ? " : | / \ * . ’ # %</value>
+	</data>
+	<data name="ValidationErrorFieldRequired" xml:space="preserve">
+		<value>The field {0} must be provided.</value>
+	</data>
+	<data name="ValidationErrorFieldTooLong" xml:space="preserve">
+		<value>The field {0} can be a maximum of {0} characters long.</value>
+	</data>
+	<data name="LabelEditStructureGroupName" xml:space="preserve">
+		<value>Name</value>
+	</data>
 </root>
