@@ -1,7 +1,9 @@
 ﻿using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
+using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Kundenportal.AdminUi.Application.StructureGroups;
 
@@ -14,11 +16,15 @@ public interface IStructureGroupsService
     Task<bool> DoesStructureGroupExistAsync(string name, CancellationToken cancellationToken = default);
 }
 
-public sealed class StructureGroupsService(IApplicationDbContext dbContext, INextcloudApi nextcloud)
+public sealed class StructureGroupsService(
+    IApplicationDbContext dbContext,
+    INextcloudApi nextcloud,
+    IOptions<NextcloudOptions> nextcloudOptions)
     : IStructureGroupsService
 {
     private readonly IApplicationDbContext _dbContext = dbContext;
     private readonly INextcloudApi _nextcloud = nextcloud;
+    private readonly IOptions<NextcloudOptions> _nextcloudOptions = nextcloudOptions;
 
     public async Task<IEnumerable<StructureGroup>> GetAllAsync(CancellationToken cancellationToken = default)
     {
@@ -51,8 +57,9 @@ public sealed class StructureGroupsService(IApplicationDbContext dbContext, INex
     {
         try
         {
-            // TODO Use structure group base folder to create path
-            _ = await _nextcloud.GetFolderDetailsAsync(name, cancellationToken);
+            string path = $"{_nextcloudOptions.Value.StructureBasePath}/{name}";
+            
+            _ = await _nextcloud.GetFolderDetailsAsync(path, cancellationToken);
             return true;
         }
         catch (Exception e)

@@ -29,7 +29,7 @@ public sealed class NextcloudApi : INextcloudApi
             }
         };
 
-        PropfindResponse response = await client.Propfind($"remote.php/dav/files/admin/{path}", parameters);
+        PropfindResponse response = await client.Propfind($"remote.php/dav/files/admin{path}", parameters);
 
         if (!response.IsSuccessful)
         {
@@ -40,7 +40,7 @@ public sealed class NextcloudApi : INextcloudApi
         var nextcloudFolder = response
             .Resources
             // TODO Improve
-            .Where(x => x.Uri.TrimEnd().TrimEnd('/').EndsWith($"/{path.TrimEnd().TrimEnd('/')}"))
+            // .Where(x => x.Uri.TrimEnd().TrimEnd('/').EndsWith($"{path.TrimEnd().TrimEnd('/')}"))
             .Select(resource => new NextcloudFolder(
                 resource.Uri,
                 // TODO Improve
