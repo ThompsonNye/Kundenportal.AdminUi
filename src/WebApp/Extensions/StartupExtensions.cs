@@ -43,7 +43,9 @@ public static class StartupExtensions
 			o.SupportedCultures =
 			[
 				new CultureInfo("de-DE"),
-				new CultureInfo("en-US")
+				new CultureInfo("de"),
+				new CultureInfo("en-US"),
+				new CultureInfo("en")
 			];
 
 			o.SupportedUICultures = o.SupportedCultures;
