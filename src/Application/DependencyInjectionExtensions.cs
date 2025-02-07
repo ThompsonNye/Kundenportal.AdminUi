@@ -42,10 +42,9 @@ public static class DependencyInjectionExtensions
 			})
 			.AddResilienceHandler("Retry", (builder, context) =>
 			{
-				ImmutableArray<Type> retryableExceptions = new[]
-				{
+				ImmutableArray<Type> retryableExceptions = [
 					typeof(NextcloudRequestException)
-				}.ToImmutableArray();
+				];
 
 				IOptions<NextcloudOptions> nextcloudOptions =
 					context.ServiceProvider.GetRequiredService<IOptions<NextcloudOptions>>();
