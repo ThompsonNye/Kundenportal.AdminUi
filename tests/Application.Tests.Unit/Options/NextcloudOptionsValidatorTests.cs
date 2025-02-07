@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System.Runtime.InteropServices;
+using AutoFixture;
 using FluentAssertions;
 using FluentValidation.Results;
 using Kundenportal.AdminUi.Application.Options;
@@ -15,11 +16,22 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
         StructureBasePath = "/",
         Host = "http://localhost",
         Username = "user",
-        Password = "password"
+        Password = "password",
+        RetryDelay = 1
     };
-    
-    private readonly Fixture _fixture = new();
 
+    [Fact]
+    public void Validate_ShouldPass_WhenAllValuesAreValid()
+    {
+        // Arrange
+
+        // Act
+        ValidationResult result = _sut.Validate(Options);
+
+        // Assert
+        result.IsValid.Should().BeTrue();
+    }
+    
     #region StructureBasePath
 
     [Theory]
@@ -174,6 +186,29 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
             x.PropertyName == nameof(NextcloudOptions.Password) &&
             x.ErrorCode == "NotEmptyValidator" &&
             x.ErrorMessage == "'Password' must not be empty.");
+    }
+
+    #endregion
+
+    #region RetryDelay
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(0-1)]
+    public void Validate_ShouldFail_WhenRetryDelayIsLessThanOrEqualTo0(double value)
+    {
+        // Arrange
+        Options.RetryDelay = value;
+
+        // Act
+        ValidationResult result = _sut.Validate(Options);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(x =>
+            x.PropertyName == nameof(NextcloudOptions.RetryDelay) &&
+            x.ErrorCode == "GreaterThanValidator" &&
+            x.ErrorMessage == "'Retry Delay' must be greater than '0'.");
     }
 
     #endregion

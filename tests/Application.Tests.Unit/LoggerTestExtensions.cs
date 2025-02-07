@@ -1,14 +1,17 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.Core;
+using Serilog.Core;
 
 namespace Application.Tests.Unit;
 
 public static partial class LoggerTestExtensions
 {
-    public static void ReceivedLog(this ILogger logger, LogLevel logLevel, string message,
+    [MessageTemplateFormatMethod(nameof(message))]
+    public static void ReceivedLog(this ILogger logger, LogLevel logLevel, [ConstantExpected] string message,
         params object?[] parameters)
     {
         MatchCollection matches = LoggingParametersRegex().Matches(message);
@@ -33,7 +36,8 @@ public static partial class LoggerTestExtensions
             Arg.Any<Func<object, Exception?, string>>());
     }
     
-    public static void ReceivedLog<TException>(this ILogger logger, LogLevel logLevel, string message,
+    [MessageTemplateFormatMethod(nameof(message))]
+    public static void ReceivedLog<TException>(this ILogger logger, LogLevel logLevel, [ConstantExpected] string message,
         params object?[] parameters)
         where TException : Exception
     {

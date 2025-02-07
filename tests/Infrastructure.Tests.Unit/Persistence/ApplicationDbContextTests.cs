@@ -2,9 +2,9 @@ using FluentAssertions;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Tests.Unit
+namespace Infrastructure.Tests.Unit.Persistence
 {
-    public class UnitTest1
+    public class ApplicationDbContextTests
     {
         [Fact]
         public void HasPendingModelChanges()

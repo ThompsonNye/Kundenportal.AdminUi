@@ -2,12 +2,14 @@
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Filters;
+using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Infrastructure.Options;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Kundenportal.AdminUi.Infrastructure;
 
@@ -27,7 +29,7 @@ public static class DependencyInjectionExtensions
     {
         services.AddApplicationDbContext(configuration);
 
-        services.AddMessaging(configuration);
+        services.AddMessaging();
 
         return services;
     }
@@ -62,10 +64,14 @@ public static class DependencyInjectionExtensions
     /// Configures MassTransit for async messaging with RabbitMq as transport.
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="configuration"></param>
     /// <returns></returns>
-    private static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddMessaging(this IServiceCollection services)
     {
+        services.AddOptions<RabbitMqOptions>()
+            .BindConfiguration(RabbitMqOptions.SectionName)
+            .ValidateFluently()
+            .ValidateOnStart();
+        
         services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
@@ -82,7 +88,7 @@ public static class DependencyInjectionExtensions
 
             x.UsingRabbitMq((context, cfg) =>
             {
-                ConfigureHost(cfg, configuration);
+                ConfigureHost(context, cfg);
 
                 cfg.UseConsumeFilter(typeof(ValidationFilter<>), context);
 
@@ -113,22 +119,19 @@ public static class DependencyInjectionExtensions
     /// <summary>
     /// Configures the RabbitMq instance connection details. Retrieves the options to use from configuration or falls back to the default values.
     /// </summary>
+    /// <param name="context"></param>
     /// <param name="cfg"></param>
-    /// <param name="configuration"></param>
-    private static void ConfigureHost(IRabbitMqBusFactoryConfigurator cfg, IConfiguration configuration)
+    private static void ConfigureHost(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
     {
-        RabbitMqOptions rabbitMqOptions = configuration
-            .GetSection(RabbitMqOptions.SectionName)
-            .Get<RabbitMqOptions>()
-            ?? new RabbitMqOptions();
-
+        IOptions<RabbitMqOptions> rabbitMqOptions = context.GetRequiredService<IOptions<RabbitMqOptions>>();
+        
         cfg.Host(
-            new Uri($"rabbitmq://{rabbitMqOptions.Host}:{rabbitMqOptions.Port}"),
-            rabbitMqOptions.VirtualHost,
+            rabbitMqOptions.Value.GetUri(),
+            rabbitMqOptions.Value.VirtualHost,
             h =>
             {
-                h.Username(rabbitMqOptions.Username);
-                h.Password(rabbitMqOptions.Password);
+                h.Username(rabbitMqOptions.Value.Username);
+                h.Password(rabbitMqOptions.Value.Password);
             });
     }
 }

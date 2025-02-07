@@ -16,9 +16,14 @@ public sealed class NextcloudOptions
     
     public double RetryDelay { get; set; }
 
-    public string GetStructurePath(string structureGroupName)
+    /// <summary>
+    /// Combines the given <paramref name="structureGroupName"/> with the <see cref="StructureBasePath"/> with a slash in between.
+    /// </summary>
+    /// <param name="structureGroupName"></param>
+    /// <returns></returns>
+    public string CombineWithStructureBasePath(string structureGroupName)
     {
-        return $"{StructureBasePath.TrimEnd('/')}/{structureGroupName}";
+        return $"{StructureBasePath}/{structureGroupName}";
     }
 }
 

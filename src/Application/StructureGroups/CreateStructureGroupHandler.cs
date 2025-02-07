@@ -46,7 +46,7 @@ public sealed class CreateStructureGroupHandler(
     {
         try
         {
-            string path = _nextcloudOptions.Value.GetStructurePath(context.Message.Name);
+            string path = _nextcloudOptions.Value.CombineWithStructureBasePath(context.Message.Name);
 
             await _nextcloudApi.CreateFolderAsync(path, context.CancellationToken);
 
@@ -60,7 +60,7 @@ public sealed class CreateStructureGroupHandler(
         catch (ApplicationException ex)
             when (ex is NextcloudRequestException or NextcloudFolderExistsException)
         {
-            _logger.LogError("Failed to create a folder for the structure group with name {Name} in Nextcloud due to a Nextcloud related issue: {Messasge}", context.Message.Name, ex.Message);
+            _logger.LogError("Failed to create a folder for the structure group with name {Name} in Nextcloud due to a Nextcloud related issue: {Message}", context.Message.Name, ex.Message);
             
             // Rethrowing the exception here so the message is retried later
             throw;
@@ -103,12 +103,14 @@ public sealed class CreateStructureGroupHandler(
             _logger.LogError(ex, "Failed to save the structure group in the db");
 
             await DeleteFolderAsync(context);
+
+            throw;
         }
     }
 
     private async Task DeleteFolderAsync(ConsumeContext<PendingStructureGroupCreated> context)
     {
-        string path = _nextcloudOptions.Value.GetStructurePath(context.Message.Name);
+        string path = _nextcloudOptions.Value.CombineWithStructureBasePath(context.Message.Name);
         try
         {
             await _nextcloudApi.DeleteFolderAsync(path, context.CancellationToken);

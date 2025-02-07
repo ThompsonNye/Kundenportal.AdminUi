@@ -11,22 +11,22 @@ using SharedUnitTestLogic;
 
 namespace Application.Tests.Unit.StructureGroups;
 
-public sealed class NotifyStructureGroupOverviewOfNewStructureGroupHandlerTests
+public sealed class NotifyStructureGroupOverviewOfNewPendingStructureGroupHandlerTests
 {
-    private readonly NotifyStructureGroupOverviewOfNewStructureGroupHandler _sut;
+    private readonly NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler _sut;
     private readonly IHubContext<StructureGroupHub> _hubContext = Substitute.For<IHubContext<StructureGroupHub>>();
-    private readonly ILogger<NotifyStructureGroupOverviewOfNewStructureGroupHandler> _logger =
-        Substitute.For<ILogger<NotifyStructureGroupOverviewOfNewStructureGroupHandler>>();
+    private readonly ILogger<NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler> _logger =
+        Substitute.For<ILogger<NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler>>();
 
     private readonly Fixture _fixture = new();
 
-    private readonly StructureGroupCreated _event;
+    private readonly PendingStructureGroupCreated _event;
     
-    public NotifyStructureGroupOverviewOfNewStructureGroupHandlerTests()
+    public NotifyStructureGroupOverviewOfNewPendingStructureGroupHandlerTests()
     {
-        _event = _fixture.Create<StructureGroupCreated>();
+        _event = _fixture.Create<PendingStructureGroupCreated>();
         
-        _sut = new NotifyStructureGroupOverviewOfNewStructureGroupHandler(_hubContext, _logger);
+        _sut = new NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler(_hubContext, _logger);
     }
 
     [Fact]
@@ -39,15 +39,15 @@ public sealed class NotifyStructureGroupOverviewOfNewStructureGroupHandlerTests
         hubClients.All.Returns(clientProxy);
         _hubContext.Clients.Returns(hubClients);
         
-        ConsumeContext<StructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
+        ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
         // Act
         await _sut.Consume(context);
 
         // Asserts
         await clientProxy.SendCoreAsync(
-            StructureGroupHub.NewStructureGroupMethod, 
-            Arg.Is<object[]>(x => ((StructureGroup)x[0]).Id == context.Message.Id),
+            StructureGroupHub.NewPendingStructureGroupMethod, 
+            Arg.Is<object[]>(x => ((StructureGroup)x[0]).Id == context.Message.Id && ((StructureGroup)x[0]).Name == context.Message.Name),
             context.CancellationToken);
     }
 
@@ -57,7 +57,7 @@ public sealed class NotifyStructureGroupOverviewOfNewStructureGroupHandlerTests
         // Arrange
         _hubContext.Clients.Throws<Exception>();
         
-        ConsumeContext<StructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
+        ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
         // Act
         await _sut.Consume(context);

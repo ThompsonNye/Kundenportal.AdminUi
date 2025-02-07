@@ -106,7 +106,7 @@ public sealed class StructureGroupsService(
     private async Task<bool> DoesStructureGroupFolderExistInNextcloudAsync(string name,
         CancellationToken cancellationToken)
     {
-        string path = _nextcloudOptions.Value.GetStructurePath(name);
+        string path = _nextcloudOptions.Value.CombineWithStructureBasePath(name);
         return await _nextcloud.DoesFolderExistAsync(path, cancellationToken);
     }
 
