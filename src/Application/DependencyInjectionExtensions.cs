@@ -3,6 +3,7 @@ using System.Text;
 using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
 using Kundenportal.AdminUi.Application.StructureGroups;
+using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using WebDav;
@@ -15,6 +16,8 @@ public static class DependencyInjectionExtensions
     {
         services.AddScoped<IStructureGroupsService, StructureGroupsService>();
         services.AddScoped<INextcloudApi, NextcloudApi>();
+
+        services.AddMapster();
 
         services.AddOptions<NextcloudOptions>()
             .BindConfiguration(NextcloudOptions.SectionName)

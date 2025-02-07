@@ -1,11 +1,9 @@
-﻿using System.Net;
-using System.Web;
-using Kundenportal.AdminUi.Application.Abstractions;
+﻿using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
+using Mapster;
 using MassTransit;
-using MassTransit.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -55,23 +53,17 @@ public sealed class CreateStructureGroupHandler(
     {
         try
         {
-            _dbContext.StructureGroups.Add(new StructureGroup
-            {
-                Id = context.Message.Id,
-                Name = context.Message.Name
-            });
+            StructureGroup structureGroup = context.Message.Adapt<StructureGroup>();
+            _dbContext.StructureGroups.Add(structureGroup);
 
             PendingStructureGroup? pendingStructureGroup = await _dbContext.PendingStructureGroups.FindAsync([ context.Message.Id ], context.CancellationToken);
             if (pendingStructureGroup is not null)
             {
                 _dbContext.PendingStructureGroups.Remove(pendingStructureGroup);
             }
-            
-            await context.Publish(new StructureGroupCreated
-            {
-                Id = context.Message.Id,
-                Name = context.Message.Name
-            });
+
+            StructureGroupCreated structureGroupCreated = context.Message.Adapt<StructureGroupCreated>();
+            await context.Publish(structureGroupCreated);
             
             await _dbContext.SaveChangesAsync(context.CancellationToken);
             

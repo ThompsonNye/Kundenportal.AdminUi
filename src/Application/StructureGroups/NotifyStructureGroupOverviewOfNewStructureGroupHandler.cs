@@ -1,5 +1,6 @@
 ﻿using Kundenportal.AdminUi.Application.Hubs;
 using Kundenportal.AdminUi.Application.Models;
+using Mapster;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -18,11 +19,7 @@ public class NotifyStructureGroupOverviewOfNewStructureGroupHandler(
     {
         try
         {
-            StructureGroup structureGroup = new StructureGroup
-            {
-                Id = context.Message.Id,
-                Name = context.Message.Name
-            };
+            StructureGroup structureGroup = context.Message.Adapt<StructureGroup>();
             await _hubContext.Clients.All.SendAsync(StructureGroupHub.NewStructureGroupMethod, structureGroup,
                 cancellationToken: context.CancellationToken);
         }

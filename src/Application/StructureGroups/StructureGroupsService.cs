@@ -3,6 +3,7 @@ using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
+using Mapster;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -77,11 +78,9 @@ public sealed class StructureGroupsService(
 
         _dbContext.PendingStructureGroups.Add(pendingStructureGroup);
 
-        await _publishEndpoint.Publish(new PendingStructureGroupCreated
-        {
-            Id = pendingStructureGroup.Id,
-            Name = pendingStructureGroup.Name
-        }, cancellationToken);
+        PendingStructureGroupCreated pendingStructureGroupCreated =
+            pendingStructureGroup.Adapt<PendingStructureGroupCreated>();
+        await _publishEndpoint.Publish(pendingStructureGroupCreated, cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
