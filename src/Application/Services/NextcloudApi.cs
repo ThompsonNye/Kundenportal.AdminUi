@@ -4,12 +4,12 @@ namespace Kundenportal.AdminUi.Application.Services;
 
 public interface INextcloudApi
 {
-    Task<NextcloudFolder> GetFolderDetailsAsync(string path, CancellationToken cancellationToken);
+    Task<NextcloudFolder> GetFolderDetailsAsync(string path, CancellationToken cancellationToken = default);
 }
 
 public sealed class NextcloudApi : INextcloudApi
 {
-    public async Task<NextcloudFolder> GetFolderDetailsAsync(string path, CancellationToken cancellationToken)
+    public async Task<NextcloudFolder> GetFolderDetailsAsync(string path, CancellationToken cancellationToken = default)
     {
         using var client = new WebDavClient(new WebDavClientParams()
         {
