@@ -1,5 +1,4 @@
-﻿@using MassTransit
-@foreach (string errorMessage in _errorMessages)
+﻿@foreach (string errorMessage in _errorMessages)
 {
     <div class="validation-message">@errorMessage</div>
 }
@@ -24,10 +23,10 @@
             throw new InvalidOperationException($"No cascading {nameof(EditContext)} found. Ensure to use this component within an {nameof(EditForm)}");
         }
 
-        _fieldIdentifier = EditContext!.Field(For!);
+        _fieldIdentifier = EditContext.Field(For);
 
         GetValidationMessagesFromEditContext();
-        EditContext!.OnValidationStateChanged += (_, _) => GetValidationMessagesFromEditContext();
+        EditContext.OnValidationStateChanged += (_, _) => GetValidationMessagesFromEditContext();
     }
 
     private void GetValidationMessagesFromEditContext()

@@ -136,7 +136,7 @@
     <value>Strukturgruppe bearbeiten</value>
   </data>
   <data name="ValidationErrorFieldRequired" xml:space="preserve">
-    <value>{0} muss ausgefüllt werden.</value>
+    <value>Das Feld {0} muss ausgefüllt werden.</value>
   </data>
   <data name="LabelEditStructureGroupName" xml:space="preserve">
     <value>Name</value>
@@ -144,19 +144,13 @@
   <data name="PlaceholderEditStructureGroupName" xml:space="preserve">
     <value>Bitte geben Sie den Namen ein</value>
   </data>
-  <data name="ButtonTitleStructureGroupExplanationInfoButton" xml:space="preserve">
-    <value>Erklärung von Strukturgruppen</value>
+  <data name="ValidationErrorEditStructureGroupNameContainsInvalidCharacters" xml:space="preserve">
+    <value>Der Pfadteil enthält ungültige Zeichen, ungültige Zeichen sind: &lt; &gt; ? " : | / \ * . ’ # %</value>
   </data>
-  <data name="ButtonTitleEditStructureGroupAddPathPart" xml:space="preserve">
-    <value>Pfadteil hinzufügen</value>
+  <data name="ButtonTextCreate" xml:space="preserve">
+    <value>Erstellen</value>
   </data>
-  <data name="LabelEditStructureGroupPathPart" xml:space="preserve">
-    <value>Pfadteil</value>
-  </data>
-  <data name="ValidationErrorPathPartContainsInvalidCharacters" xml:space="preserve">
-    <value>Der Pfadteil enthält folgende ungültige Zeichen: {0}. Ungültige Zeichen sind: &lt; &gt; ? " : | / \ * . ’ # %</value>
-  </data>
-  <data name="ValidationErrorPathPartTooLong" xml:space="preserve">
-    <value>Der Pfadteil darf nicht länger als {0} Zeichen sein.</value>
+  <data name="ValidationErrorStructureGroupFolderExists" xml:space="preserve">
+    <value>Eine Strukturgruppe mit diesem Namen existiert bereits.</value>
   </data>
 </root>

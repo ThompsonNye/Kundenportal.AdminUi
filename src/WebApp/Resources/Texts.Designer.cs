@@ -61,20 +61,11 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pfadteil hinzufügen.
+        ///   Looks up a localized string similar to Erstellen.
         /// </summary>
-        public static string ButtonTitleEditStructureGroupAddPathPart {
+        public static string ButtonTextCreate {
             get {
-                return ResourceManager.GetString("ButtonTitleEditStructureGroupAddPathPart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Erklärung von Strukturgruppen.
-        /// </summary>
-        public static string ButtonTitleStructureGroupExplanationInfoButton {
-            get {
-                return ResourceManager.GetString("ButtonTitleStructureGroupExplanationInfoButton", resourceCulture);
+                return ResourceManager.GetString("ButtonTextCreate", resourceCulture);
             }
         }
         
@@ -84,15 +75,6 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         public static string LabelEditStructureGroupName {
             get {
                 return ResourceManager.GetString("LabelEditStructureGroupName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pfadteil.
-        /// </summary>
-        public static string LabelEditStructureGroupPathPart {
-            get {
-                return ResourceManager.GetString("LabelEditStructureGroupPathPart", resourceCulture);
             }
         }
         
@@ -160,7 +142,16 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} muss ausgefüllt werden..
+        ///   Looks up a localized string similar to Der Pfadteil enthält ungültige Zeichen, ungültige Zeichen sind: &lt; &gt; ? &quot; : | / \ * . ’ # %.
+        /// </summary>
+        public static string ValidationErrorEditStructureGroupNameContainsInvalidCharacters {
+            get {
+                return ResourceManager.GetString("ValidationErrorEditStructureGroupNameContainsInvalidCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Das Feld {0} muss ausgefüllt werden..
         /// </summary>
         public static string ValidationErrorFieldRequired {
             get {
@@ -169,20 +160,11 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Der Pfadteil enthält folgende ungültige Zeichen: {0}. Ungültige Zeichen sind: &lt; &gt; ? &quot; : | / \ * . ’ # %.
+        ///   Looks up a localized string similar to Eine Strukturgruppe mit diesem Namen existiert bereits..
         /// </summary>
-        public static string ValidationErrorPathPartContainsInvalidCharacters {
+        public static string ValidationErrorStructureGroupFolderExists {
             get {
-                return ResourceManager.GetString("ValidationErrorPathPartContainsInvalidCharacters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Der Pfadteil darf nicht länger als {0} Zeichen sein..
-        /// </summary>
-        public static string ValidationErrorPathPartTooLong {
-            get {
-                return ResourceManager.GetString("ValidationErrorPathPartTooLong", resourceCulture);
+                return ResourceManager.GetString("ValidationErrorStructureGroupFolderExists", resourceCulture);
             }
         }
     }
