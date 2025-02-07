@@ -18,8 +18,8 @@ public static class DependencyInjectionExtensions
     private static IServiceCollection AddApplicationDbContext(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection") ??
-                               throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        var connectionString = configuration.GetConnectionString("Database") ??
+                               throw new InvalidOperationException("Database connection string not found.");
         services.AddDbContext<ApplicationDbContext>((services, options) =>
         {
             options.UseNpgsql(connectionString, o =>
