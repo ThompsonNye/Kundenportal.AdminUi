@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
@@ -36,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{B0667A27-6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedUnitTestLogic", "tests\SharedUnitTestLogic\SharedUnitTestLogic.csproj", "{464AEE94-AF53-4190-B016-2682AF48828E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.Tests.Integration", "tests\WebApp.Tests.Integration\WebApp.Tests.Integration.csproj", "{E51605E8-EDD6-4959-B5BA-8258B6DB05E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +47,10 @@ Global
 		{B237EA85-8658-46C9-A74E-ABC72A89F739}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B237EA85-8658-46C9-A74E-ABC72A89F739}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B237EA85-8658-46C9-A74E-ABC72A89F739}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E51605E8-EDD6-4959-B5BA-8258B6DB05E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E51605E8-EDD6-4959-B5BA-8258B6DB05E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E51605E8-EDD6-4959-B5BA-8258B6DB05E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E51605E8-EDD6-4959-B5BA-8258B6DB05E6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F38EAB37-3600-433B-B9F1-5BFC7A11BB43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F38EAB37-3600-433B-B9F1-5BFC7A11BB43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F38EAB37-3600-433B-B9F1-5BFC7A11BB43}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,6 +81,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B237EA85-8658-46C9-A74E-ABC72A89F739} = {5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}
+		{E51605E8-EDD6-4959-B5BA-8258B6DB05E6} = {4C12CD2A-9295-4D6E-866C-184B1355636B}
 		{F38EAB37-3600-433B-B9F1-5BFC7A11BB43} = {5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}
 		{95235B8F-1644-4BA4-BE44-3348F93EE261} = {5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}
 		{AF0E7EFF-EFB0-4442-9B76-B938EFFC3AC7} = {4C12CD2A-9295-4D6E-866C-184B1355636B}
