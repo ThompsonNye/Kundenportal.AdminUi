@@ -177,6 +177,15 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Optionen für Strukturgruppe {0}.
+        /// </summary>
+        public static string TitleTextStructureGroupOptions {
+            get {
+                return ResourceManager.GetString("TitleTextStructureGroupOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Der Pfadteil enthält ungültige Zeichen, ungültige Zeichen sind: &lt; &gt; ? &quot; : | / \ * . ’ # %.
         /// </summary>
         public static string ValidationErrorEditStructureGroupNameContainsInvalidCharacters {

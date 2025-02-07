@@ -1,14 +1,11 @@
-﻿<div style="width: @(Width)px">
-    <img src="images/ellipsis.svg" 
-         alt="@ImgAltTextInternal"
-         class="w-inherit"
-         aria-hidden="true"/>
+﻿<div style="width: @(Width)px" class="d-inline-flex justify-content-center">
+    <span class="bi bi-three-dots" title="@TitleTextInternal"></span>
 </div>
 
 @code {
     [Parameter] public int Width { get; set; } = 40;
     
-    [Parameter] public string? ImgAltText { get; set; }
+    [Parameter] public string? TitleText { get; set; }
 
-    private string ImgAltTextInternal => !string.IsNullOrEmpty(ImgAltText) ? ImgAltText : "ellipsis";
+    private string TitleTextInternal => !string.IsNullOrEmpty(TitleText) ? TitleText : "ellipsis";
 }

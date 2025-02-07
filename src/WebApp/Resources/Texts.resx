@@ -168,4 +168,7 @@
   <data name="GenericErrorMessage" xml:space="preserve">
     <value>Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</value>
   </data>
+  <data name="TitleTextStructureGroupOptions" xml:space="preserve">
+    <value>Optionen für Strukturgruppe {0}</value>
+  </data>
 </root>
