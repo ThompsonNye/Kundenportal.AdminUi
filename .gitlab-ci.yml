@@ -112,7 +112,6 @@ unit and integration tests:
         - chmod +x ./dotnet-install.sh
         - ./dotnet-install.sh --channel 8.0 && export DOTNET_NOLOGO=true
         - export PATH=/root/.dotnet:/root/.dotnet/tools
-        - rm .dotnet-install.sh
 
         - *test-scripts
     coverage: '/Coverage: (\d{1,3}\.?\d{0,2})%/'
