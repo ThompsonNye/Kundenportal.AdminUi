@@ -5,6 +5,7 @@ using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Infrastructure;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using Kundenportal.AdminUi.WebApp.Components.Account;
+using Kundenportal.AdminUi.WebApp.Endpoints;
 using Kundenportal.AdminUi.WebApp.Endpoints.OpenApi;
 using MassTransit.Logging;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -105,5 +106,7 @@ public static class DependencyInjectionExtensions
 				o.GroupNameFormat = "'v'V";
 				o.SubstituteApiVersionInUrl = true;
 			});
+
+		services.AddScoped<CreateStructureGroupEndpoint>();
 	}
 }

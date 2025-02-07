@@ -65,43 +65,12 @@ public static class EndpointRouteBuilderExtensions
 	private static void MapCreateStructureGroupApi(this IEndpointRouteBuilder endpointRouteBuilder)
 	{
 		endpointRouteBuilder
-			.MapPost("structure-groups", async (
+			.MapPost("structure-groups", (
 				[FromBody] CreateStructureGroupRequest request,
-				[FromServices] IEnumerable<IValidator<CreateStructureGroupRequest>> validators,
-				[FromServices] IStructureGroupsService structureGroupsService,
-				[FromServices] ILoggerFactory loggerFactory,
+				[FromServices] CreateStructureGroupEndpoint endpoint,
 				CancellationToken cancellationToken) =>
 			{
-				ILogger logger = loggerFactory.CreateLogger("StructureGroupApis");
-
-				try
-				{
-					PendingStructureGroup pendingStructureGroup = request.Adapt<PendingStructureGroup>();
-					Result result =
-						await structureGroupsService.AddPendingAsync(pendingStructureGroup, cancellationToken);
-
-					if (result.Status == ResultStatus.Conflict)
-					{
-						Texts.Culture = new CultureInfo("en-US");
-						return Results.ValidationProblem(new Dictionary<string, string[]>
-						{
-							[nameof(CreateStructureGroupRequest.Name)] = [Texts.ValidationErrorStructureGroupExists]
-						});
-					}
-
-					return Results.Accepted();
-				}
-				catch (Exception ex)
-					when (ex is TimeoutRejectedException or NextcloudRequestException { StatusCode: null or >= 500 })
-				{
-					logger.LogWarning("Nextcloud unreachable: {Message}", ex.Message);
-					return Results.Problem(title: "Nextcloud unreachable", statusCode: 500);
-				}
-				catch (Exception ex)
-				{
-					logger.LogError(ex, "Failed to create structure group");
-					return Results.Problem(statusCode: 500);
-				}
+				return endpoint.CreateStructureGroupAsync(request, cancellationToken);
 			})
 			.AddEndpointFilter<ValidationFilter<CreateStructureGroupRequest>>()
 			.RequireAuthorization(p =>
