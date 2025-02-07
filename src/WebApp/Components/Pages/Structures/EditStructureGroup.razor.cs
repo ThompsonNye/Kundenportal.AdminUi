@@ -78,7 +78,7 @@ public partial class EditStructureGroup
     private async Task TriggerCreationOfStructureGroupFolderAsync()
     {
         Logger!.LogInformation("Name: {Name}", _model.Name);
-        await PublishEndpoint!.Publish(new CreateStructureGroup.Command
+        await PublishEndpoint!.Publish(new CreateStructureGroupCommand
         {
             Name = _model.Name
         });
