@@ -61,3 +61,14 @@ h1:focus {
 .w-inherit {
     width: inherit;
 }
+
+.link-as-button {
+    padding: .25rem;
+    border: 1px solid var(--bs-dark);
+    border-radius: .125rem;
+}
+
+a.link-as-button {
+    color: var(--bs-dark);
+    text-decoration: none;
+}

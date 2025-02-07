@@ -6,7 +6,7 @@ namespace Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
 
 public partial class StructureGroups
 {
-    public const string Route = "structuregroups";
+    public const string Route = "structure-groups";
     
     [Inject]
     public IStructureGroupsService? StructureGroupsService { get; set; }
