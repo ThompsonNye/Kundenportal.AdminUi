@@ -16,7 +16,6 @@ public static class DependencyInjectionExtensions
     
     public static void AddWebAppServices(this IServiceCollection services)
     {
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<StructureGroupExplanationService>();
 
         services.AddValidatorsFromAssemblies([

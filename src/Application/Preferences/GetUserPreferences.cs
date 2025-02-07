@@ -20,7 +20,7 @@ public class GetUserPreferencesValidator : AbstractValidator<GetUserPreferences>
     }
 }
 
-public class GetUserPreferencesConsumer(ICurrentUserService currentUserService, IApplicationDbContext dbContext)
+public class GetUserPreferencesConsumer(IApplicationDbContext dbContext)
     : IConsumer<GetUserPreferences>
 {
     public async Task Consume(ConsumeContext<GetUserPreferences> context)
