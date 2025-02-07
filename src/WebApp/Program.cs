@@ -4,6 +4,7 @@ using Kundenportal.AdminUi.Infrastructure;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using Kundenportal.AdminUi.WebApp.Components;
 using Kundenportal.AdminUi.WebApp.Components.Account;
+using Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 
@@ -62,5 +63,7 @@ app.MapRazorComponents<App>()
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
+app.MapGet("/", () => TypedResults.LocalRedirect($"/{StructureGroups.Route}"));
 
 app.Run();
