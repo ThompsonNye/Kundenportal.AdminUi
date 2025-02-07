@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -19,6 +20,25 @@ public class ConfigureSwaggerGenOptions(
     {
         foreach (ApiVersionDescription description in _versionDescriptionProvider.ApiVersionDescriptions)
         {
+            OpenApiSecurityScheme securityScheme = new()
+            {
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                Reference = new OpenApiReference
+                {
+                    Id = IdentityConstants.BearerScheme,
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+            options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+            
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                { securityScheme, Array.Empty<string>() }
+            });
+            
             OpenApiInfo openApiInfo = new()
             {
                 Title = ThisAssembly.RootNamespace

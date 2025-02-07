@@ -13,6 +13,7 @@ using Kundenportal.AdminUi.WebApp.Endpoints.Models.StructureGroups;
 using Kundenportal.AdminUi.WebApp.Endpoints.OpenApi;
 using Kundenportal.AdminUi.WebApp.Resources;
 using Mapster;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Polly.Timeout;
 
@@ -54,7 +55,7 @@ public static class EndpointRouteBuilderExtensions
         ApiVersionSet apiVersionSet = endpointRouteBuilder.NewApiVersionSet()
             .HasApiVersion(1.0)
             .Build();
-        
+
         RouteGroupBuilder versionedApis = endpointRouteBuilder.MapGroup("/api/v{apiVersion:apiVersion}")
             .WithApiVersionSet(apiVersionSet);
 
@@ -115,6 +116,9 @@ public static class EndpointRouteBuilderExtensions
                     return Results.Problem(statusCode: 500);
                 }
             })
+            .RequireAuthorization(p =>
+                p.RequireAuthenticatedUser()
+                    .AddAuthenticationSchemes(IdentityConstants.BearerScheme))
             .MapToApiVersion(1.0)
             .Produces((int)HttpStatusCode.Accepted)
             .ProducesValidationProblem()

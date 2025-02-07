@@ -1,25 +1,17 @@
 using Asp.Versioning.ApiExplorer;
 using Kundenportal.AdminUi.Application;
+using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Infrastructure;
 using Kundenportal.AdminUi.WebApp;
 using Kundenportal.AdminUi.WebApp.Components;
 using Kundenportal.AdminUi.WebApp.Components.Middleware;
 using Kundenportal.AdminUi.WebApp.Endpoints;
-using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Configuration.AddEnvironmentVariables("Kundenportal_AdminUi_");
-
-builder.AddOpenTelemetry();
-
-builder.Services.AddResponseCompression(opts =>
-{
-    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-        new[] { "application/octet-stream" });
-});
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -48,8 +40,18 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
+app.MapGet("/test", () => "Test2")
+    .RequireAuthorization("API");
+
 // Add additional endpoints required by the Identity /Account Razor components.
-app.MapAdditionalIdentityEndpoints();
+app
+    .MapGroup("/")
+    .WithTags("Account")
+    .MapAdditionalIdentityEndpoints();
+app
+    .MapGroup("/connect")
+    .WithTags("Connect")
+    .MapIdentityApi<ApplicationUser>();
 
 app.MapHubs();
 

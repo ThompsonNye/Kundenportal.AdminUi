@@ -10,6 +10,7 @@ using Kundenportal.AdminUi.WebApp.Endpoints.OpenApi;
 using MassTransit.Logging;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
 using OpenTelemetry.Trace;
 
 namespace Kundenportal.AdminUi.WebApp;
@@ -25,82 +26,84 @@ public static class DependencyInjectionExtensions
     /// <param name="services"></param>
     public static void AddWebAppServices(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblies([
-            typeof(IApplicationMarker).Assembly,
-            typeof(IInfrastructureMarker).Assembly,
-            typeof(IWebAppMarker).Assembly
-        ], ServiceLifetime.Singleton);
-
-        services.AddSignalR();
-
-        services.AddApiVersioning();
-
-        services.ConfigureOptions<ConfigureSwaggerGenOptions>();
-
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-
-        services.AddDefaultWebAppServices();
-    }
-
-    public static void AddOpenTelemetry(this WebApplicationBuilder builder)
+    services.AddResponseCompression(opts =>
     {
-        Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+        opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+            new[] { "application/octet-stream" });
+    });
 
-        ActivitySource activitySource = new(Constants.AppOtelName);
-        builder.Services.AddSingleton(activitySource);
+    services.AddValidatorsFromAssemblies([
+        typeof(IApplicationMarker).Assembly,
+        typeof(IInfrastructureMarker).Assembly,
+        typeof(IWebAppMarker).Assembly
+    ], ServiceLifetime.Singleton);
 
-        builder.Services.AddOpenTelemetry()
-            .WithTracing(t =>
-            {
-                t.AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation()
-                    .AddOtlpExporter()
-                    .AddSource(DiagnosticHeaders.DefaultListenerName)
-                    .AddSource(activitySource.Name);
-            })
-            .WithMetrics();
-    }
+    services.AddSignalR();
 
-    private static void AddDefaultWebAppServices(this IServiceCollection services)
-    {
-        services.AddRazorComponents()
-            .AddInteractiveServerComponents();
+    services.AddApiVersioning();
 
-        services.AddCascadingAuthenticationState();
-        services.AddScoped<IdentityUserAccessor>();
-        services.AddScoped<IdentityRedirectManager>();
-        services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+    services.ConfigureOptions<ConfigureSwaggerGenOptions>();
 
-        services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
-            .AddIdentityCookies();
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
 
-        services.AddDatabaseDeveloperPageExceptionFilter();
+    Activity.DefaultIdFormat = ActivityIdFormat.W3C;
 
-        services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddSignInManager()
-            .AddDefaultTokenProviders();
+    ActivitySource activitySource = new(Constants.AppOtelName);
+    services.AddSingleton(activitySource);
 
-        services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-    }
+    services.AddOpenTelemetry()
+        .WithTracing(t =>
+        {
+            t.AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddOtlpExporter()
+                .AddSource(DiagnosticHeaders.DefaultListenerName)
+                .AddSource(activitySource.Name);
+        })
+        .WithMetrics();
 
-    private static void AddApiVersioning(this IServiceCollection services)
-    {
-        services.AddApiVersioning(o =>
-            {
-                o.DefaultApiVersion = new ApiVersion(1);
-                o.ApiVersionReader = new UrlSegmentApiVersionReader();
-                o.ReportApiVersions = true;
-            })
-            .AddApiExplorer(o =>
-            {
-                o.GroupNameFormat = "'v'V";
-                o.SubstituteApiVersionInUrl = true;
-            });
-    }
+    services.AddRazorComponents()
+        .AddInteractiveServerComponents();
+
+    services.AddCascadingAuthenticationState();
+    services.AddScoped<IdentityUserAccessor>();
+    services.AddScoped<IdentityRedirectManager>();
+    services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+    services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+        })
+        .AddBearerToken(IdentityConstants.BearerScheme)
+        .AddIdentityCookies();
+
+    services.AddAuthorizationBuilder()
+        .AddPolicy("API", p => p
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes(IdentityConstants.BearerScheme));
+
+    services.AddDatabaseDeveloperPageExceptionFilter();
+
+    services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddSignInManager()
+        .AddDefaultTokenProviders()
+        .AddApiEndpoints();
+
+    services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+    services.AddApiVersioning(o =>
+        {
+            o.DefaultApiVersion = new ApiVersion(1);
+            o.ApiVersionReader = new UrlSegmentApiVersionReader();
+            o.ReportApiVersions = true;
+        })
+        .AddApiExplorer(o =>
+        {
+            o.GroupNameFormat = "'v'V";
+            o.SubstituteApiVersionInUrl = true;
+        });
+        }
 }
