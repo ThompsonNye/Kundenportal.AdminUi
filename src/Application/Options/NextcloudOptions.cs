@@ -20,17 +20,19 @@ public sealed class NextcloudOptionsValidator : AbstractValidator<NextcloudOptio
     public const string ErrorCodeMissingLeadingSlash = "MissingLeadingSlash";
     
     public const string ErrorCodeMissingTrailingSlash = "MissingTrailingSlash";
+
+    public const string ErrorCodeNotAUri = "NotAnUri";
     
     public NextcloudOptionsValidator()
     {
         RuleFor(x => x.StructureBasePath)
             .NotEmpty();
-            
+        
         RuleFor(x => x.StructureBasePath)
             .Must(StartWithASlash)
                 .WithErrorCode(ErrorCodeMissingLeadingSlash)
                 .WithMessage("'{PropertyName}' has to start with a slash");
-            
+        
         RuleFor(x => x.StructureBasePath)
             .Must(NotEndWithASlash)
                 .When(x => x.StructureBasePath.Length > 1)
@@ -39,7 +41,9 @@ public sealed class NextcloudOptionsValidator : AbstractValidator<NextcloudOptio
 
         RuleFor(x => x.Host)
             .NotEmpty()
-            .Must(BeAUri);
+            .Must(BeAUri)
+                .WithErrorCode(ErrorCodeNotAUri)
+                .WithMessage("'{PropertyName}' is not a valid uri");
 
         RuleFor(x => x.Username)
             .NotEmpty();
