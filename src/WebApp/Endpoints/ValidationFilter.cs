@@ -1,37 +1,22 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 
 namespace Kundenportal.AdminUi.WebApp.Endpoints;
 
 public class ValidationFilter<T> : IEndpointFilter
 {
-    public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
-    {
-        object? argToValidate = context.Arguments.FirstOrDefault(x => x is T);
+	public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+	{
+		var argToValidate = context.Arguments.FirstOrDefault(x => x is T);
 
-        if (argToValidate is null)
-        {
-            return await next.Invoke(context);
-        }
-        
-        IValidator<T>? validator = context.HttpContext.RequestServices.GetService<IValidator<T>>();
+		if (argToValidate is null) return await next.Invoke(context);
 
-        if (validator is null)
-        {
-            return await next.Invoke(context);
-        }
+		var validator = context.HttpContext.RequestServices.GetService<IValidator<T>>();
 
-        ValidationResult validationResult;
-        using (_ = new EnUsCulture())
-        {
-            validationResult = await validator.ValidateAsync((T)argToValidate);
-        }
-        
-        if (!validationResult.IsValid)
-        {
-            return Results.ValidationProblem(validationResult.ToDictionary());
-        }
+		if (validator is null) return await next.Invoke(context);
 
-        return await next.Invoke(context);
-    }
+		var validationResult = await validator.ValidateAsync((T)argToValidate);
+		if (!validationResult.IsValid) return Results.ValidationProblem(validationResult.ToDictionary());
+
+		return await next.Invoke(context);
+	}
 }
