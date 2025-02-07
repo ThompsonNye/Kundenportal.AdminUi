@@ -67,7 +67,9 @@ semgrep-sast:
 
 .prepare.calculate-coverage: &calculate-coverage
     - dotnet reportgenerator -reports:"./$TEST_RESULTS_DIRECTORY/*/coverage.cobertura.xml" -targetdir:"$COVERAGE_REPORT_DIR" -reporttypes:Html
-    - sh scripts/calculate-coverage.sh ./$COVERAGE_REPORT_DIR/index.html $COVERAGE_TYPE
+    - export SCRIPT_PATH=./scripts/calculate-coverage.sh
+    - chmod +x $SCRIPT_PATH
+    - $SCRIPT_PATH ./$COVERAGE_REPORT_DIR/index.html $COVERAGE_TYPE
 
 .prepare.test-scripts: &test-scripts
     - dotnet tool restore
