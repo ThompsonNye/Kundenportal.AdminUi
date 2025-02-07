@@ -60,15 +60,6 @@ namespace Kundenportal.AdminUi.WebApp {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Strukturgruppe erstellen.
-        /// </summary>
-        internal static string LinkTitleCreateStructureGroup {
-            get {
-                return ResourceManager.GetString("LinkTitleCreateStructureGroup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Eine Struktur ist ein Ordner, für den Benutzer berechtigt und eine vordefinierte Ordner- und Dateistruktur angelegt werden können..
         /// </summary>
         internal static string StructureExplanation {
@@ -92,6 +83,24 @@ namespace Kundenportal.AdminUi.WebApp {
         internal static string TitleCreateStructure {
             get {
                 return ResourceManager.GetString("TitleCreateStructure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strukturgruppe erstellen.
+        /// </summary>
+        internal static string TitleCreateStructureGroup {
+            get {
+                return ResourceManager.GetString("TitleCreateStructureGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strukturgruppe bearbeiten.
+        /// </summary>
+        internal static string TitleEditStructureGroup {
+            get {
+                return ResourceManager.GetString("TitleEditStructureGroup", resourceCulture);
             }
         }
         

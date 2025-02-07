@@ -26,9 +26,9 @@
 
 
 <div class="d-flex gap-3 align-items-center mb-4">
-    <a href="@Route" class="link-as-button d-inline-flex justify-content-center align-items-center" title="@Texts.LinkTitleCreateStructureGroup">
+    <a href="@EditStructureGroup.RouteCreate" class="link-as-button d-inline-flex justify-content-center align-items-center" title="@Texts.TitleCreateStructureGroup">
         <i class="bi-plus fs-5"></i>
-        <span class="mx-1">@Texts.LinkTitleCreateStructureGroup</span>
+        <span class="mx-1">@Texts.TitleCreateStructureGroup</span>
     </a>
 </div>
 
@@ -36,7 +36,6 @@
     @foreach(var group in _model.StructureGroups)
     {
         string optionsId = $"options-{group.Id!.Value}";
-        string createStructureOptionId = $"create-structure-option-{group.Id!.Value}";
         
         <div class="d-flex justify-content-between">
             <div id="group-@(group.Id!.Value)-details" class="d-flex w-100 justify-content-between">
@@ -54,7 +53,15 @@
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="@optionsId">
                     <li>
-                        <button type="button" id="@createStructureOptionId" class="dropdown-item" @onclick="OnOption1Selected">
+                        <button type="button" id="@($"edit-structure-group-option-{group.Id!.Value}")" class="dropdown-item" @onclick="() => OnEditStructureGroupClicked(group.Id.Value)">
+                            <div class="d-inline-flex align-items-center gap-1">
+                                <i class="bi bi-pencil" title="@Texts.TitleEditStructureGroup" aria-hidden="true"></i>
+                                @Texts.TitleEditStructureGroup
+                            </div>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" id="@($"create-structure-option-{group.Id!.Value}")" class="dropdown-item" @onclick="OnCreateStructureClicked">
                             <div class="d-inline-flex align-items-center gap-1">
                                 <i class="bi bi-plus fs-5" title="@Texts.TitleCreateStructure" aria-hidden="true"></i>
                                 @Texts.TitleCreateStructure
@@ -69,8 +76,15 @@
 
 @code {
     [Inject] public ILogger<StructureGroups>? Logger { get; set; }
+    
+    [Inject] public NavigationManager? NavigationManager { get; set; }
 
-    public void OnOption1Selected()
+    private void OnEditStructureGroupClicked(int structureGroupId)
+    {
+        NavigationManager!.NavigateTo($"{EditStructureGroup.RouteEditBase}/{structureGroupId}");
+    }
+
+    private void OnCreateStructureClicked()
     {
         Logger!.LogInformation("Create Structure Option ausgewählt");
     }

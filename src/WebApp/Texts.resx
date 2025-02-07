@@ -21,9 +21,6 @@
     <data name="TitleStructureGroups" xml:space="preserve">
         <value>Strukturgruppen</value>
     </data>
-    <data name="LinkTitleCreateStructureGroup" xml:space="preserve">
-        <value>Strukturgruppe erstellen</value>
-    </data>
     <data name="TitleCreateStructure" xml:space="preserve">
         <value>Struktur erstellen</value>
     </data>
@@ -32,5 +29,11 @@
     </data>
     <data name="StructureExplanation" xml:space="preserve">
         <value>Eine Struktur ist ein Ordner, für den Benutzer berechtigt und eine vordefinierte Ordner- und Dateistruktur angelegt werden können.</value>
+    </data>
+    <data name="TitleCreateStructureGroup" xml:space="preserve">
+        <value>Strukturgruppe erstellen</value>
+    </data>
+    <data name="TitleEditStructureGroup" xml:space="preserve">
+        <value>Strukturgruppe bearbeiten</value>
     </data>
 </root>
