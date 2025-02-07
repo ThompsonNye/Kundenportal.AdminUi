@@ -74,7 +74,7 @@ public static class DependencyInjectionExtensions
             
             x.AddEntityFrameworkOutbox<ApplicationDbContext>(o =>
             {
-                o.QueryDelay = TimeSpan.FromSeconds(1);
+                o.QueryDelay = TimeSpan.FromSeconds(5);
                 o.DuplicateDetectionWindow = TimeSpan.FromMinutes(30);
                 o.UsePostgres()
                     .UseBusOutbox();
