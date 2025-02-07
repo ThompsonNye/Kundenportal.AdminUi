@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
+using System.Net.Sockets;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
+using Kundenportal.AdminUi.Application.Models.Exceptions;
 using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
 using Mapster;
@@ -104,19 +106,8 @@ public sealed class StructureGroupsService(
     private async Task<bool> DoesStructureGroupFolderExistInNextcloudAsync(string name,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            string path = $"{_nextcloudOptions.Value.StructureBasePath}/{name}";
-            
-            _ = await _nextcloud.GetFolderDetailsAsync(path, cancellationToken);
-            return true;
-        }
-        catch (Exception e)
-        {
-            // TODO 
-            Console.WriteLine(e);
-            return false;
-        }
+        string path = _nextcloudOptions.Value.GetStructurePath(name);
+        return await _nextcloud.DoesFolderExistAsync(path, cancellationToken);
     }
 
     private async Task<bool> DoesAPendingStructureGroupWithThatNameAlreadyExistAsync(string name,

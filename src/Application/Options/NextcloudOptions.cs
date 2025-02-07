@@ -13,6 +13,13 @@ public sealed class NextcloudOptions
     public string Password { get; set; } = "";
 
     public string Host { get; set; } = "";
+    
+    public double RetryDelay { get; set; }
+
+    public string GetStructurePath(string structureGroupName)
+    {
+        return $"{StructureBasePath.TrimEnd('/')}/{structureGroupName}";
+    }
 }
 
 public sealed class NextcloudOptionsValidator : AbstractValidator<NextcloudOptions>
@@ -50,6 +57,9 @@ public sealed class NextcloudOptionsValidator : AbstractValidator<NextcloudOptio
 
         RuleFor(x => x.Password)
             .NotEmpty();
+
+        RuleFor(x => x.RetryDelay)
+            .GreaterThan(0);
     }
 
     private static bool StartWithASlash(string value)

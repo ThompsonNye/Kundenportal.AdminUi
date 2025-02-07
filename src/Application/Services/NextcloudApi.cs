@@ -1,26 +1,34 @@
-﻿using Kundenportal.AdminUi.Application.Options;
+﻿using System.Net.Sockets;
+using Kundenportal.AdminUi.Application.Models.Exceptions;
+using Kundenportal.AdminUi.Application.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Polly.Timeout;
 using WebDav;
 
 namespace Kundenportal.AdminUi.Application.Services;
 
 public interface INextcloudApi
 {
-    Task<NextcloudFolder> GetFolderDetailsAsync(string path, CancellationToken cancellationToken = default);
-
+    Task<bool> DoesFolderExistAsync(string path, CancellationToken cancellationToken = default);
+    
     Task CreateFolderAsync(string path, CancellationToken cancellationToken = default);
+    
+    Task DeleteFolderAsync(string path, CancellationToken cancellationToken = default);
 }
 
 public sealed class NextcloudApi(
     IWebDavClient webDavClient,
-    IOptions<NextcloudOptions> nextcloudOptions) : INextcloudApi
+    IOptions<NextcloudOptions> nextcloudOptions,
+    ILogger<NextcloudApi> logger) : INextcloudApi
 {
     private readonly IWebDavClient _webDavClient = webDavClient;
     private readonly IOptions<NextcloudOptions> _nextcloudOptions = nextcloudOptions;
+    private readonly ILogger<NextcloudApi> _logger = logger;
 
-    public async Task<NextcloudFolder> GetFolderDetailsAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<bool> DoesFolderExistAsync(string path, CancellationToken cancellationToken = default)
     {
-        var parameters = new PropfindParameters
+        PropfindParameters parameters = new()
         {
             CancellationToken = cancellationToken,
             Headers = new Dictionary<string, string>()
@@ -28,37 +36,29 @@ public sealed class NextcloudApi(
                 ["Depth"] = "0"
             }
         };
+        
+        PropfindResponse response;
 
-        PropfindResponse response = await _webDavClient.Propfind($"remote.php/dav/files/admin{path}", parameters);
-
-        if (!response.IsSuccessful)
+        try
         {
-            // TODO Handle gracefully
-            throw new Exception();
+            response = await _webDavClient.Propfind($"remote.php/dav/files/admin{path}", parameters);
+        }
+        catch (Exception ex)
+            when (ex is TimeoutRejectedException or HttpRequestException or SocketException)
+        {
+            _logger.LogError(ex, "Failed to reach Nextcloud");
+            throw new NextcloudRequestException(ex);
+        }
+        
+        if (!response.IsSuccessful && response.StatusCode != 404)
+        {
+            throw new NextcloudRequestException(response.StatusCode);
         }
 
-        var nextcloudFolder = response
-            .Resources
-            // TODO Improve
-            // .Where(x => x.Uri.TrimEnd().TrimEnd('/').EndsWith($"{path.TrimEnd().TrimEnd('/')}"))
-            .Select(resource => new NextcloudFolder(
-                resource.Uri,
-                // TODO Improve
-                resource.Uri.TrimStart().TrimStart('/').Replace("remote.php/dav/files/admin", ""),
-                resource.CreationDate,
-                resource.LastModifiedDate,
-                resource.IsCollection))
-            .FirstOrDefault();
-
-        if (nextcloudFolder is null)
-        {
-            // TODO Handle gracefully
-            throw new Exception();
-        }
-
-        return nextcloudFolder;
+        return response.Resources
+            .Any(x => x.IsCollection);
     }
-
+    
     public async Task CreateFolderAsync(string path, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
@@ -73,15 +73,30 @@ public sealed class NextcloudApi(
         {
             return;
         }
+
+        if (response.StatusCode == 405)
+        {
+            throw new NextcloudFolderExistsException(path);
+        }
         
-        // TODO Handle better
-        throw new Exception();
+        throw new NextcloudRequestException(response.StatusCode);
+    }
+    
+    public async Task DeleteFolderAsync(string path, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+
+        DeleteParameters parameters = new()
+        {
+            CancellationToken = cancellationToken
+        };
+        WebDavResponse response = await _webDavClient.Delete($"remote.php/dav/files/{_nextcloudOptions.Value.Username}{path}", parameters);
+
+        if (response.IsSuccessful || response.StatusCode == 404)
+        {
+            return;
+        }
+
+        throw new NextcloudRequestException(response.StatusCode);
     }
 }
-
-public record NextcloudFolder(
-    string Uri,
-    string RelativePath,
-    DateTimeOffset? CreationDate,
-    DateTimeOffset? LastModifiedDate,
-    bool IsFolder);

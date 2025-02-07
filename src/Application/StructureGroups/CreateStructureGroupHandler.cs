@@ -1,5 +1,6 @@
 ﻿using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
+using Kundenportal.AdminUi.Application.Models.Exceptions;
 using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
 using Mapster;
@@ -23,40 +24,29 @@ public sealed class CreateStructureGroupHandler(
 
     public async Task Consume(ConsumeContext<PendingStructureGroupCreated> context)
     {
-        if (await StructureGroupExistsAsync(context))
+        bool existsInDb = await StructureGroupExistsInDbAsync(context); 
+        if (existsInDb)
         {
+            _logger.LogDebug("Structure group {Name} exists in db, skipping", context.Message.Name);
             return;
         }
-        
-        CreateStructureGroupFolderResult result = await CreateFolderInNextcloudAsync(context);
 
+        CreateStructureGroupFolderResult result = await CreateFolderInNextcloudAsync(context);
         await UpdateDbAsync(context, result);
     }
 
-    private async Task<bool> StructureGroupExistsAsync(ConsumeContext<PendingStructureGroupCreated> context)
+    private async Task<bool> StructureGroupExistsInDbAsync(ConsumeContext<PendingStructureGroupCreated> context)
     {
-        try
-        {
-            StructureGroup? existingStructureGroup = await _dbContext.StructureGroups.FindAsync(
-                [context.Message.Id], context.CancellationToken);
-            return existingStructureGroup is not null;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to check whether the structure group already exists");
-            
-            // Rethrowing the exception here so MassTransit automatically retries later
-            throw;
-        }
+        StructureGroup? existingStructureGroup = await _dbContext.StructureGroups.FindAsync(
+            [context.Message.Id], context.CancellationToken);
+        return existingStructureGroup is not null;
     }
 
     private async Task<CreateStructureGroupFolderResult> CreateFolderInNextcloudAsync(ConsumeContext<PendingStructureGroupCreated> context)
     {
         try
         {
-            // No need to url encode the folder name since only valid values
-            // (e.g. without / in the name) can be submitted in the ui
-            string path = $"{_nextcloudOptions.Value.StructureBasePath}/{context.Message.Name}";
+            string path = _nextcloudOptions.Value.GetStructurePath(context.Message.Name);
 
             await _nextcloudApi.CreateFolderAsync(path, context.CancellationToken);
 
@@ -67,11 +57,19 @@ public sealed class CreateStructureGroupHandler(
                 Path = path
             };
         }
+        catch (ApplicationException ex)
+            when (ex is NextcloudRequestException or NextcloudFolderExistsException)
+        {
+            _logger.LogError("Failed to create a folder for the structure group with name {Name} in Nextcloud due to a Nextcloud related issue: {Messasge}", context.Message.Name, ex.Message);
+            
+            // Rethrowing the exception here so the message is retried later
+            throw;
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to create a folder for the structure group with name {Name} in Nextcloud", context.Message.Name);
             
-            // Rethrowing the exception here so MassTransit automatically retries later
+            // Rethrowing the exception here so the message is retried later
             throw;
         }
     }
@@ -103,8 +101,25 @@ public sealed class CreateStructureGroupHandler(
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to save the structure group in the db");
-            
-            // TODO Delete folder in Nextcloud?
+
+            await DeleteFolderAsync(context);
+        }
+    }
+
+    private async Task DeleteFolderAsync(ConsumeContext<PendingStructureGroupCreated> context)
+    {
+        string path = _nextcloudOptions.Value.GetStructurePath(context.Message.Name);
+        try
+        {
+            await _nextcloudApi.DeleteFolderAsync(path, context.CancellationToken);
+        }
+        catch (NextcloudRequestException ex)
+        {
+            _logger.LogWarning("Got Nextcloud request error while deleting folder at {Path}: {Message}", path, ex.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to delete folder at {Path}", path);
         }
     }
 }
