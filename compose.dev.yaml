@@ -1,0 +1,112 @@
+volumes:
+  db-data:
+  broker-data:
+  nextcloud-data:
+  nextcloud-db-data:
+  mail-data:
+
+services:
+  app.db:
+    image: docker.io/postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - 50003:5432
+    environment:
+      POSTGRES_USER: ${APP_DB_USER}
+      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  broker:
+    image: masstransit/rabbitmq
+    restart: unless-stopped
+    ports:
+      - 50004:15672
+      - 50005:5672
+    volumes:
+      - broker-data:/var/lib/rabbitmq
+
+  nextcloud:
+    build:
+      context: ./scripts/nextcloud/
+      dockerfile: ./Dockerfile.Nextcloud
+    volumes:
+      - nextcloud-data:/var/www/html
+    environment:
+      MYSQL_HOST: nextcloud.db
+      MYSQL_DATABASE: ${NC_DB_NAME}
+      MYSQL_USER: ${NC_DB_USER}
+      MYSQL_PASSWORD: ${NC_DB_PASSWORD}
+      NEXTCLOUD_ADMIN_USER: ${NC_ADMIN_USER}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NC_ADMIN_PASSWORD}
+      SMTP_HOST: mail
+      SMTP_PORT: 1025
+      SMTP_NAME: ${MAIL_USER}
+      SMTP_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_USER_PART}
+      MAIL_DOMAIN: ${MAIL_FROM_DOMAIN}
+      REDIS_HOST: nextcloud.redis
+    restart: unless-stopped
+    ports:
+      - 50000:80
+    depends_on:
+      nextcloud.db:
+        condition: service_healthy
+      nextcloud.redis:
+        condition: service_started
+      mail:
+        condition: service_healthy
+    healthcheck:
+      test: curl -sSf 'http://localhost/status.php' | grep '"installed":true' | grep '"maintenance":false' | grep '"needsDbUpgrade":false' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  nextcloud.db:
+    image: docker.io/mariadb:10.6
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    volumes:
+      - nextcloud-db-data:/var/lib/mysql
+    environment:
+      MARIADB_DATABASE: ${NC_DB_NAME}
+      MARIADB_USER: ${NC_DB_USER}
+      MARIADB_PASSWORD: ${NC_DB_PASSWORD}
+      MARIADB_RANDOM_ROOT_PASSWORD: "true"
+    restart: unless-stopped
+    ports:
+      - 50006:3306
+    healthcheck:
+      test: "mysqladmin ping -u $$MARIADB_USER --password=$$MARIADB_PASSWORD | grep 'mysqld is alive' || exit 1"
+      start_period: 10s
+      interval: 2s
+      timeout: 2s
+      retries: 5
+
+  nextcloud.redis:
+    image: docker.io/redis:7.2-alpine
+    restart: unless-stopped
+
+  mail:
+    image: docker.io/maildev/maildev:2.2.1
+    restart: unless-stopped
+    environment:
+      MAILDEV_MAIL_DIRECTORY: /var/opt/maildev
+      MAILDEV_INCOMING_USER: ${MAIL_USER}
+      MAILDEV_INCOMING_PASS: ${MAIL_PASSWORD}
+    volumes:
+      - mail-data:/var/opt/maildev
+    # Default user is node (uid 1000). But volumes are owned by root, so the user in the container has to be root
+    user: "root:root"
+    ports:
+      - 50002:1025
+      - 50001:1080
+
+  jaeger:
+    image: docker.io/jaegertracing/all-in-one:1
+    restart: unless-stopped
+    environment:
+      COLLECTOR_OTLP_ENABLED: true
+    ports:
+      - 50007:16686
+      - 50008:4317
+      - 50009:4318

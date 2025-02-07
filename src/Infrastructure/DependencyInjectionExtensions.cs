@@ -2,12 +2,14 @@
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Filters;
+using Kundenportal.AdminUi.Application.Options;
+using Kundenportal.AdminUi.Infrastructure.Options;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using MassTransit;
-using MassTransit.Logging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace Kundenportal.AdminUi.Infrastructure;
 
@@ -19,53 +21,61 @@ public static class DependencyInjectionExtensions
 	/// <summary>
 	///     Adds all the infrastructure related services to the Dependency Injection container.
 	/// </summary>
-	/// <param name="builder"></param>
+	/// <param name="services"></param>
+	/// <param name="configuration"></param>
 	/// <returns></returns>
-	public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
+	public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
+		IConfiguration configuration)
 	{
-		builder.AddApplicationDbContext();
-		builder.AddMessaging();
+		services.AddApplicationDbContext(configuration);
+
+		services.AddMessaging();
+
+		return services;
 	}
 
 	/// <summary>
 	///     Configures the DbContext using the connection string from the configuration. Configures the DbContext to use
 	///     PostgreSQL.
 	/// </summary>
-	/// <param name="builder"></param>
+	/// <param name="services"></param>
+	/// <param name="configuration"></param>
 	/// <returns></returns>
 	/// <exception cref="InvalidOperationException"></exception>
-	private static void AddApplicationDbContext(this IHostApplicationBuilder builder)
+	private static IServiceCollection AddApplicationDbContext(this IServiceCollection services,
+		IConfiguration configuration)
 	{
-		builder.AddNpgsqlDbContext<ApplicationDbContext>("kundenportal-adminui");
-		builder.Services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
+		string connectionString = configuration.GetConnectionString("Database") ??
+								  throw new InvalidOperationException("Database connection string not found.");
+		services.AddDbContext<ApplicationDbContext>((services, options) =>
+		{
+			options.UseNpgsql(connectionString, o =>
+			{
+				o.EnableRetryOnFailure();
+				o.MigrationsAssembly(typeof(IInfrastructureMarker).Assembly.GetName().FullName);
+			});
+		});
+
+		services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
+		return services;
 	}
 
 	/// <summary>
 	///     Configures MassTransit for async messaging with RabbitMq as transport.
 	/// </summary>
-	/// <param name="builder"></param>
+	/// <param name="services"></param>
 	/// <returns></returns>
-	private static void AddMessaging(this IHostApplicationBuilder builder)
+	private static IServiceCollection AddMessaging(this IServiceCollection services)
 	{
-		string? rabbitMqConnectionString = builder.Configuration.GetConnectionString("rabbitmq");
+		services.AddOptions<RabbitMqOptions>()
+			.BindConfiguration(RabbitMqOptions.SectionName)
+			.ValidateFluently()
+			.ValidateOnStart();
 
-		if (string.IsNullOrWhiteSpace(rabbitMqConnectionString))
-		{
-			throw new InvalidOperationException(
-				"RabbitMQ connection string is missing or empty in configuration.");
-		}
-
-		builder.Services.AddOpenTelemetry()
-			.WithMetrics(b => b.AddMeter(DiagnosticHeaders.DefaultListenerName))
-			.WithTracing(providerBuilder =>
-			{
-				providerBuilder.AddSource(DiagnosticHeaders.DefaultListenerName);
-			});
-
-		builder.Services.AddMassTransit(x =>
+		services.AddMassTransit(x =>
 		{
 			x.SetKebabCaseEndpointNameFormatter();
-			x.SetInMemorySagaRepositoryProvider();
 
 			x.AddConsumers(typeof(IApplicationMarker).Assembly);
 
@@ -79,8 +89,7 @@ public static class DependencyInjectionExtensions
 
 			x.UsingRabbitMq((context, cfg) =>
 			{
-				Uri uri = new(rabbitMqConnectionString);
-				cfg.Host(uri);
+				ConfigureHost(context, cfg);
 
 				cfg.UseConsumeFilter(typeof(ValidationFilter<>), context);
 
@@ -92,7 +101,6 @@ public static class DependencyInjectionExtensions
 						TimeSpan.FromMinutes(30));
 					r.Ignore<ValidationException>();
 				});
-
 				cfg.UseMessageRetry(r =>
 				{
 					r.Incremental(
@@ -105,5 +113,27 @@ public static class DependencyInjectionExtensions
 				cfg.ConfigureEndpoints(context);
 			});
 		});
+
+		return services;
+	}
+
+	/// <summary>
+	///     Configures the RabbitMq instance connection details. Retrieves the options to use from configuration or falls back
+	///     to the default values.
+	/// </summary>
+	/// <param name="context"></param>
+	/// <param name="cfg"></param>
+	private static void ConfigureHost(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
+	{
+		IOptions<RabbitMqOptions> rabbitMqOptions = context.GetRequiredService<IOptions<RabbitMqOptions>>();
+
+		cfg.Host(
+			rabbitMqOptions.Value.GetUri(),
+			rabbitMqOptions.Value.VirtualHost,
+			h =>
+			{
+				h.Username(rabbitMqOptions.Value.Username);
+				h.Password(rabbitMqOptions.Value.Password);
+			});
 	}
 }
