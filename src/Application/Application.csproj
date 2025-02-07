@@ -1,35 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<RootNamespace>Kundenportal.AdminUi.Application</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Ardalis.Result" Version="8.0.0" />
-		<PackageReference Include="FluentValidation" Version="11.9.0" />
+		<PackageReference Include="Ardalis.Result" Version="10.1.0" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
 		<PackageReference Include="Mapster" Version="7.4.0" />
 		<PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
-		<PackageReference Include="MassTransit.Analyzers" Version="8.2.1">
+		<PackageReference Include="MassTransit.Analyzers" Version="8.3.4">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.2.1" />
-		<PackageReference Include="MassTransit.RabbitMQ" Version="8.2.1" />
-		<PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
-		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.4" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.4.0" />
-		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.4" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+		<PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.3.4" />
+		<PackageReference Include="MassTransit.RabbitMQ" Version="8.3.4" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="WebDav.Client" Version="2.8.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Services\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Nerdbank.GitVersioning" Version="3.7.115" />
 	</ItemGroup>
 
 </Project>
