@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Kundenportal.AdminUi.Application;
+using Kundenportal.AdminUi.Application.Hubs;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Infrastructure;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
@@ -25,6 +26,13 @@ public static class DependencyInjectionExtensions
         app.MapGet("/", () => TypedResults.LocalRedirect($"/{StructureGroups.Route}"));
     }
 
+    public static void MapHubs(this WebApplication app)
+    {
+        RouteGroupBuilder hubsGroup = app.MapGroup("/hubs");
+            
+        hubsGroup.MapHub<PendingStructureGroupHub>(PendingStructureGroupHub.Route);
+    }
+
     /// <summary>
     /// Adds all the WebApp related services to the Dependency Injection container.
     /// </summary>
@@ -37,6 +45,8 @@ public static class DependencyInjectionExtensions
             typeof(IWebAppMarker).Assembly
         ], ServiceLifetime.Singleton);
 
+        services.AddSignalR();
+        
         services.AddDefaultWebAppServices();
     }
 

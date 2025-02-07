@@ -26,16 +26,34 @@ public sealed class StructureGroupsService(
     private readonly INextcloudApi _nextcloud = nextcloud;
     private readonly IOptions<NextcloudOptions> _nextcloudOptions = nextcloudOptions;
 
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
+
     public async Task<IEnumerable<StructureGroup>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        StructureGroup[] structureGroups = await _dbContext.StructureGroups.ToArrayAsync(cancellationToken);
-        return structureGroups;
+        try
+        {
+            await _semaphore.WaitAsync(2000, cancellationToken);
+            StructureGroup[] structureGroups = await _dbContext.StructureGroups.ToArrayAsync(cancellationToken);
+            return structureGroups;
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
     
     public async Task<IEnumerable<PendingStructureGroup>> GetPendingAsync(CancellationToken cancellationToken = default)
     {
-        PendingStructureGroup[] pendingStructureGroups = await _dbContext.PendingStructureGroups.ToArrayAsync(cancellationToken);
-        return pendingStructureGroups;
+        try
+        {
+            await _semaphore.WaitAsync(2000, cancellationToken);
+            PendingStructureGroup[] pendingStructureGroups = await _dbContext.PendingStructureGroups.ToArrayAsync(cancellationToken);
+            return pendingStructureGroups;
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
 
     public async Task<bool> DoesStructureGroupExistAsync(string name, CancellationToken cancellationToken = default)
