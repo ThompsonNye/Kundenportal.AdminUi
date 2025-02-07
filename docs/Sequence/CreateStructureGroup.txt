@@ -1,0 +1,84 @@
+# https://sequencediagram.org/
+
+title Create a structure group
+
+actor User/UI
+participant StructureGroupsService
+database DB
+participant SignalR
+participant MassTransit/RabbitMQ
+participant Pending Structure Group Handler
+participant Structure Group Created Handler
+participant Nextcloud
+
+group #lightblue Create pending structure group
+
+activate User/UI
+
+User/UI->User/UI:Go to create structure group page
+User/UI->StructureGroupsService:Submit Create Structure Group
+
+activate StructureGroupsService
+
+group #lightgreen Validate structure group name
+
+StructureGroupsService->DB:Check if pending or actual structure group exists
+
+activate DB
+
+StructureGroupsService->Nextcloud:Check if folder exists
+
+activate Nextcloud
+
+end
+
+StructureGroupsService->DB:Create pending structure group
+StructureGroupsService->MassTransit/RabbitMQ:Publish event "Pending structure group created" via DB Outbox
+
+activate MassTransit/RabbitMQ
+
+StructureGroupsService->User/UI:Success
+
+deactivate StructureGroupsService
+
+User/UI->User/UI:Redirect to overview page
+
+User/UI->DB:Load data: Get pending and actual structure groups
+User/UI->SignalR:Connect to structure group endpoints
+
+activate SignalR
+
+end
+
+group #yellow Create structure group
+
+MassTransit/RabbitMQ->(2)Pending Structure Group Handler:Consume event
+
+activate Pending Structure Group Handler
+
+Pending Structure Group Handler->Nextcloud:Create folder
+
+deactivate Nextcloud
+
+Pending Structure Group Handler->DB:Remove pending structure group
+Pending Structure Group Handler->DB:Persist structure group
+Pending Structure Group Handler->MassTransit/RabbitMQ:Publish event "Structure Group Created" via Outbox
+
+deactivate Pending Structure Group Handler
+
+end
+
+group #red Notify UI for real time updates
+
+MassTransit/RabbitMQ->(2)Structure Group Created Handler:Consume event
+
+activate Structure Group Created Handler
+
+Structure Group Created Handler->SignalR:Notify client of new structure group
+
+deactivate Structure Group Created Handler
+
+SignalR->User/UI:Notify of new structure group
+User/UI->User/UI:Update UI
+
+end

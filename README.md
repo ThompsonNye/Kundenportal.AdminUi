@@ -133,3 +133,7 @@ Die Models wurden daher einfach im Application Projekt angelegt.
 Außerdem werden Services im Application Projekt, die zum gleichen Feature gehören, in wenig im Sinne von Vertical Slices
 zusammen abgelegt, teilweise auch in der gleichen Datei. Hier wird aber bisher nicht strikt darauf geachtet, dabei
 eine Strategie konsequent umzusetzen.
+
+## Dokumentation
+
+Einzelne, wichtige Konzepte werden im `docs` Ordner genauer erläutert.
