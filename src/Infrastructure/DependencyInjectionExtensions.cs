@@ -2,13 +2,11 @@
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Filters;
-using Kundenportal.AdminUi.Infrastructure.Options;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using MassTransit;
 using MassTransit.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace Kundenportal.AdminUi.Infrastructure;
 
@@ -25,7 +23,6 @@ public static class DependencyInjectionExtensions
 	public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
 	{
 		builder.AddApplicationDbContext();
-
 		builder.AddMessaging();
 	}
 
@@ -63,11 +60,6 @@ public static class DependencyInjectionExtensions
 			{
 				providerBuilder.AddSource(DiagnosticHeaders.DefaultListenerName);
 			});
-
-		// builder.Services.AddOptions<RabbitMqOptions>()
-		// 	.BindConfiguration(RabbitMqOptions.SectionName)
-		// 	.ValidateFluently()
-		// 	.ValidateOnStart();
 
 		builder.Services.AddMassTransit(x =>
 		{
@@ -111,25 +103,5 @@ public static class DependencyInjectionExtensions
 				cfg.ConfigureEndpoints(context);
 			});
 		});
-	}
-
-	/// <summary>
-	///     Configures the RabbitMq instance connection details. Retrieves the options to use from configuration or falls back
-	///     to the default values.
-	/// </summary>
-	/// <param name="context"></param>
-	/// <param name="cfg"></param>
-	private static void ConfigureHost(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
-	{
-		IOptions<RabbitMqOptions> rabbitMqOptions = context.GetRequiredService<IOptions<RabbitMqOptions>>();
-
-		cfg.Host(
-			rabbitMqOptions.Value.GetUri(),
-			rabbitMqOptions.Value.VirtualHost,
-			h =>
-			{
-				h.Username(rabbitMqOptions.Value.Username);
-				h.Password(rabbitMqOptions.Value.Password);
-			});
 	}
 }
