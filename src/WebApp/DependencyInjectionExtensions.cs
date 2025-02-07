@@ -35,7 +35,7 @@ public static class DependencyInjectionExtensions
             typeof(IApplicationMarker).Assembly,
             typeof(IInfrastructureMarker).Assembly,
             typeof(IWebAppMarker).Assembly
-        ]);
+        ], ServiceLifetime.Singleton);
 
         services.AddDefaultWebAppServices();
     }

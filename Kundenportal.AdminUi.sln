@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{B0667A27-6
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedUnitTestLogic", "tests\SharedUnitTestLogic\SharedUnitTestLogic.csproj", "{464AEE94-AF53-4190-B016-2682AF48828E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{FA286A4C-665E-421A-A779-A0C262D5C279}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA286A4C-665E-421A-A779-A0C262D5C279}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA286A4C-665E-421A-A779-A0C262D5C279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{464AEE94-AF53-4190-B016-2682AF48828E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{464AEE94-AF53-4190-B016-2682AF48828E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{464AEE94-AF53-4190-B016-2682AF48828E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{464AEE94-AF53-4190-B016-2682AF48828E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{AF0E7EFF-EFB0-4442-9B76-B938EFFC3AC7} = {4C12CD2A-9295-4D6E-866C-184B1355636B}
 		{99166D94-1F5F-4C3C-9C76-3E3DE28C1C73} = {4C12CD2A-9295-4D6E-866C-184B1355636B}
 		{FA286A4C-665E-421A-A779-A0C262D5C279} = {4C12CD2A-9295-4D6E-866C-184B1355636B}
+		{464AEE94-AF53-4190-B016-2682AF48828E} = {4C12CD2A-9295-4D6E-866C-184B1355636B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {226C9A62-6755-4BE5-B1F0-63629B730E16}

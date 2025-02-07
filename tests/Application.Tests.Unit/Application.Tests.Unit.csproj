@@ -30,6 +30,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Application\Application.csproj" />
       <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
+      <ProjectReference Include="..\SharedUnitTestLogic\SharedUnitTestLogic.csproj" />
     </ItemGroup>
 
 </Project>
