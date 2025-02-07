@@ -2,12 +2,6 @@ volumes:
   kundenportal_adminui-dev-db-data:
 
 services:
-  kundenportal.adminui.webapp:
-    image: ${DOCKER_REGISTRY-}webapp
-    build:
-      context: ../..
-      dockerfile: ./Dockerfile
-
   kundenportal.adminui.db:
     image: postgres:16-alpine
     ports:
