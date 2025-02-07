@@ -6,11 +6,13 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["WebApp/WebApp.csproj", "WebApp/"]
-RUN dotnet restore "WebApp/WebApp.csproj"
+WORKDIR /code
+COPY ["src/WebApp/WebApp.csproj", "src/WebApp/"]
+COPY ["src/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
+COPY ["src/Application/Application.csproj", "src/Application/"]
+RUN dotnet restore "src/WebApp/WebApp.csproj"
 COPY . .
-WORKDIR "/src/WebApp"
+WORKDIR "/code/src/WebApp"
 RUN dotnet build "WebApp.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

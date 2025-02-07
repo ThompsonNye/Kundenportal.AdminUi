@@ -6,7 +6,7 @@ services:
     image: ${DOCKER_REGISTRY-}webapp
     build:
       context: ../..
-      dockerfile: src/WebApp/Dockerfile
+      dockerfile: ./Dockerfile
 
   kundenportal.adminui.db:
     image: postgres:16-alpine

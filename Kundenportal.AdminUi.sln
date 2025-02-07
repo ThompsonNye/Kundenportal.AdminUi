@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{1870187F-4793-4DE2-8792-F299A0C33610}"
 	ProjectSection(SolutionItems) = preProject
 		.gitlab-ci.yml = .gitlab-ci.yml
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}"
@@ -24,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.Tests.Unit", "tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.Tests.bUnit", "tests\WebApp.Tests.bUnit\WebApp.Tests.bUnit.csproj", "{D53C9FE1-BF75-423B-B757-FAC501F73769}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Tests.Unit", "tests\Infrastructure.Tests.Unit\Infrastructure.Tests.Unit.csproj", "{99166D94-1F5F-4C3C-9C76-3E3DE28C1C73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Tests.Unit", "tests\Infrastructure.Tests.Unit\Infrastructure.Tests.Unit.csproj", "{99166D94-1F5F-4C3C-9C76-3E3DE28C1C73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
