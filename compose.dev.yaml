@@ -1,9 +1,11 @@
 volumes:
   kundenportal_adminui-dev-db-data:
+  kundenportal_adminui-dev-broker-data:
 
 services:
   kundenportal.adminui.db:
     image: postgres:16-alpine
+    restart: unless-stopped
     ports:
       - 5432:5432
     environment:
@@ -11,3 +13,12 @@ services:
       POSTGRES_PASSWORD: Development1+
     volumes:
       - kundenportal_adminui-dev-db-data:/var/lib/postgresql/data
+        
+  kundenportal.adminui.broker:
+    image: masstransit/rabbitmq
+    restart: unless-stopped
+    ports:
+      - 15672:15672 
+      - 5672:5672
+    volumes:
+      - kundenportal_adminui-dev-broker-data:/var/lib/rabbitmq
