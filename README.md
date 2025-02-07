@@ -15,18 +15,21 @@ Die Abhängigkeiten starten:
 docker compose -f compose.dev.yaml up -d --wait --build --pull always
 ```
 
-Der Nextcloud Companion Container legt lediglich den Ordner für Strukturen in Nextcloud an, den die Anwendung benötigt,
-und stoppt dann.
+Der Nextcloud Companion Container führt lediglich bestimmte Vorbereitungen für Nextcloud aus:
+
+- Er legt den Ordner für Strukturen an, den die Anwendung benötigt.
+- Er aktualisiert die E-Mail-Adresse des Admin-Benutzers, damit die Anwendung E-Mails an diesen Benutzer senden kann.
+
+Anschließend stoppt der Container wieder, da seine Aufgabe erledigt ist.
 Die folgende Meldung ist daher zu erwarten und in Ordnung, solange hinten der Exit Code `0` steht:
 
 ```text
 container kundenportal_adminui_dev-nextcloud.companion-1 exited (0)
 ```
 
-Wenn der Exit Code `0` ist, wurde der Ordner erfolgreich angelegt und die Anwendung kann gestartet werden.
+Wenn der Exit Code `0` ist, wurden die Vorbereitungen erfolgreich durchgeführt und die Anwendung kann gestartet werden.
 Wenn der Exit Code etwas anderes ist, ist ein Fehler aufgetreten. Der Companion Container hat dann Nextclouds HTTP
-Response
-ausgegeben, sodass man den Fehler so hoffentlich finden und beheben kann.
+Response ausgegeben, sodass man den Fehler so hoffentlich finden und beheben kann.
 
 Dann die Anwendung starten.
 

@@ -54,6 +54,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nextcloud", "nextcloud", "{
 		scripts\nextcloud\create-structures-folder.sh = scripts\nextcloud\create-structures-folder.sh
 		scripts\nextcloud\Nextcloud.Dockerfile = scripts\nextcloud\Nextcloud.Dockerfile
 		scripts\nextcloud\Nextcloud.companion.Dockerfile = scripts\nextcloud\Nextcloud.companion.Dockerfile
+		scripts\nextcloud\update-admin-user-email.sh = scripts\nextcloud\update-admin-user-email.sh
+		scripts\nextcloud\companion-entrypoint.sh = scripts\nextcloud\companion-entrypoint.sh
 	EndProjectSection
 EndProject
 Global
