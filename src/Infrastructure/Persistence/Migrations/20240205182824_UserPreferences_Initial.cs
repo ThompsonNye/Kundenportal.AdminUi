@@ -15,13 +15,12 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
                 name: "UserPreferences",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ShowStructureGroupExplanation = table.Column<bool>(type: "boolean", nullable: false)
+                    HideStructureGroupExplanation = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserPreferences", x => x.Id);
+                    table.PrimaryKey("PK_UserPreferences", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_UserPreferences_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -29,12 +28,6 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserPreferences_UserId",
-                table: "UserPreferences",
-                column: "UserId",
-                unique: true);
         }
 
         /// <inheritdoc />

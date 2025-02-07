@@ -1,10 +1,13 @@
 ﻿using Kundenportal.AdminUi.Application.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kundenportal.AdminUi.Application.Abstractions;
 
 public interface IApplicationDbContext
 {
-    IQueryable<StructureGroup> StructureGroups { get; }
+    DbSet<StructureGroup> StructureGroups { get; }
     
-    IQueryable<UserPreferences> UserPreferences { get; }
+    DbSet<UserPreferences> UserPreferences { get; }
+
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

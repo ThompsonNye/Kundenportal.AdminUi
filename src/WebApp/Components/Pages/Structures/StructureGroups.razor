@@ -4,22 +4,38 @@
 @rendermode InteractiveServer
 @attribute [Authorize]
 
-<PageTitle>@Texts.TitleStructureGroups</PageTitle>
-<h3>@Texts.TitleStructureGroups</h3>
-
 @{
     string structureGroupExplanation = Texts.StructureGroupExplanation;
     string structureExplanation = Texts.StructureExplanation;
-    bool showExplanationAlert = !string.IsNullOrEmpty(structureGroupExplanation) || !string.IsNullOrEmpty(structureExplanation);
+    bool showExplanationFromPreferences = StructureGroupExplanationService!.ShowExplanation;
+    bool showExplanationAlert = showExplanationFromPreferences && !string.IsNullOrWhiteSpace(structureGroupExplanation);
 }
+
+<PageTitle>@Texts.TitleStructureGroups</PageTitle>
+<div class="d-inline-flex gap-2 align-items-center">
+    <h3 class="d-inline">@Texts.TitleStructureGroups</h3>
+    @if (!showExplanationAlert)
+    {
+        <button 
+            type="button"
+            class="all-unset cursor-pointer"
+            title="@Texts.ButtonTitleStructureGroupExplanationInfoButton"
+            @onclick="OnShowExplanationAsync">
+            <i class="bi bi-info-circle fs-6"></i>
+        </button>
+    }
+</div>
 
 @if (showExplanationAlert)
 {
     <div class="my-2">
-        <DisplayMessage Type="DisplayMessageType.Info">
+        <DisplayMessage Type="DisplayMessageType.Info" OnClose="OnStructureGroupExplanationClosed">
             <div class="d-inline-flex flex-column gap-2">
                 <div>@structureGroupExplanation</div>
-                <div>@structureExplanation</div>
+                @if (!string.IsNullOrWhiteSpace(structureExplanation))
+                {
+                    <div>@structureExplanation</div>
+                }
             </div>
         </DisplayMessage>
     </div>

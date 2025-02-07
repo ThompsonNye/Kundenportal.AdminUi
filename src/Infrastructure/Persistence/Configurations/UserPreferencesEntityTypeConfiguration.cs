@@ -10,13 +10,14 @@ public sealed class UserPreferencesEntityTypeConfiguration : IEntityTypeConfigur
     {
         builder.ToTable("UserPreferences");
 
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.UserId);
         
         builder.HasOne(x => x.User)
             .WithOne()
             .HasForeignKey<UserPreferences>(x => x.UserId);
 
-        builder.Property(x => x.ShowStructureGroupExplanation)
-            .IsRequired();
+        builder.Property(x => x.HideStructureGroupExplanation)
+            .IsRequired()
+            .HasDefaultValue(false);
     }
 }

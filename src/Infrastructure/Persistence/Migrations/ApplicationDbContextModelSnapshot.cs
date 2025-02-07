@@ -113,20 +113,15 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Kundenportal.AdminUi.Application.Models.UserPreferences", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("ShowStructureGroupExplanation")
-                        .HasColumnType("boolean");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("HideStructureGroupExplanation")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasKey("UserId");
 
                     b.ToTable("UserPreferences", (string)null);
                 });

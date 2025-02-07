@@ -60,7 +60,16 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name Test 2.
+        ///   Looks up a localized string similar to Erklärung von Strukturgruppen.
+        /// </summary>
+        public static string ButtonTitleStructureGroupExplanationInfoButton {
+            get {
+                return ResourceManager.GetString("ButtonTitleStructureGroupExplanationInfoButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string LabelEditStructureGroupName {
             get {

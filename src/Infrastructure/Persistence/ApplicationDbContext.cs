@@ -10,9 +10,9 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options), IApplicationDbContext
 {
-    public IQueryable<StructureGroup> StructureGroups => Set<StructureGroup>();
+    public DbSet<StructureGroup> StructureGroups { get; set; }
     
-    public IQueryable<UserPreferences> UserPreferences => Set<UserPreferences>();
+    public DbSet<UserPreferences> UserPreferences { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

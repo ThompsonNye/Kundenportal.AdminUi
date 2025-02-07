@@ -40,9 +40,12 @@
         <value>{0} muss ausgefüllt werden.</value>
     </data>
     <data name="LabelEditStructureGroupName" xml:space="preserve">
-        <value>Name Test 2</value>
+        <value>Name</value>
     </data>
     <data name="PlaceholderEditStructureGroupName" xml:space="preserve">
         <value>Bitte geben Sie den Namen ein</value>
+    </data>
+    <data name="ButtonTitleStructureGroupExplanationInfoButton" xml:space="preserve">
+        <value>Erklärung von Strukturgruppen</value>
     </data>
 </root>

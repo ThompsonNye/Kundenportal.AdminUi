@@ -33,6 +33,9 @@ public partial class DisplayMessage
     
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter]
+    public EventCallback OnClose { get; set; }
 
     /// <summary>
     /// Whether to show a X which closes the alert.
@@ -42,6 +45,11 @@ public partial class DisplayMessage
     private string AlertType => AlertTypesMapping.TryGetValue(Type, out string? alertType) ? alertType : "";
     
     private string AlertIcon => AlertIconsMapping.TryGetValue(Type, out string? alertIcon) ? alertIcon : "";
+
+    private Task OnCloseClickedAsync()
+    {
+        return !OnClose.HasDelegate ? Task.CompletedTask : OnClose.InvokeAsync();
+    }
 }
 
 public enum DisplayMessageType

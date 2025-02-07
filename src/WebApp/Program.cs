@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddWebAppServices();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

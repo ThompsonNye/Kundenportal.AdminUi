@@ -1,4 +1,7 @@
-﻿using Kundenportal.AdminUi.Application.StructureGroups;
+﻿using FluentValidation;
+using Kundenportal.AdminUi.Application.Filters;
+using Kundenportal.AdminUi.Application.Preferences;
+using Kundenportal.AdminUi.Application.StructureGroups;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,17 +25,28 @@ public static class DependencyInjectionExtensions
             x.SetKebabCaseEndpointNameFormatter();
             
             x.AddConsumers(typeof(IApplicationMarker).Assembly);
+            x.AddRequestClient<GetUserPreferences>();
             
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.UseDelayedRedelivery(r => r.Intervals(
-                    TimeSpan.FromMinutes(5),
-                    TimeSpan.FromMinutes(15),
-                    TimeSpan.FromMinutes(30)));
-                cfg.UseMessageRetry(r => r.Incremental(
-                    5,
-                    TimeSpan.Zero,
-                    TimeSpan.FromSeconds(5)));
+                cfg.UseConsumeFilter(typeof(ValidationFilter<>), context);
+
+                cfg.UseDelayedRedelivery(r =>
+                {
+                    r.Intervals(
+                        TimeSpan.FromMinutes(5),
+                        TimeSpan.FromMinutes(15),
+                        TimeSpan.FromMinutes(30));
+                    r.Ignore<ValidationException>();
+                });
+                cfg.UseMessageRetry(r =>
+                {
+                    r.Incremental(
+                        5,
+                        TimeSpan.Zero,
+                        TimeSpan.FromSeconds(5));
+                    r.Ignore<ValidationException>();
+                });
                 
                 cfg.ConfigureEndpoints(context);
             });
