@@ -63,7 +63,6 @@ public static class EndpointRouteBuilderExtensions
 
     private static void MapCreateStructureGroupApi(this IEndpointRouteBuilder endpointRouteBuilder)
     {
-        // TODO Implement logic
         endpointRouteBuilder
             .MapPost("structure-groups", async (
                 [FromServices] IEnumerable<IValidator<CreateStructureGroupRequest>> validators,
@@ -102,7 +101,7 @@ public static class EndpointRouteBuilderExtensions
                     PendingStructureGroup pendingStructureGroup = request.Adapt<PendingStructureGroup>();
                     await structureGroupsService.AddPendingAsync(pendingStructureGroup, cancellationToken);
 
-                    return Results.Ok();
+                    return Results.Accepted();
                 }
                 catch (Exception ex)
                     when (ex is TimeoutRejectedException or NextcloudRequestException { StatusCode: null or >= 500 })
@@ -117,7 +116,7 @@ public static class EndpointRouteBuilderExtensions
                 }
             })
             .MapToApiVersion(1.0)
-            .Produces(200)
+            .Produces((int)HttpStatusCode.Accepted)
             .ProducesValidationProblem()
             .WithTags(SwaggerDocConstants.StructureGroupTag);
     }
