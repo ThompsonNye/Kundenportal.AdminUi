@@ -45,12 +45,15 @@ services:
       SMTP_PASSWORD: ${MAIL_PASSWORD}
       MAIL_FROM_ADDRESS: ${MAIL_FROM_USER_PART}
       MAIL_DOMAIN: ${MAIL_FROM_DOMAIN}
+      REDIS_HOST: nextcloud.redis
     restart: unless-stopped
     ports:
       - 50000:80
     depends_on:
       nextcloud.db:
         condition: service_healthy
+      nextcloud.redis:
+        condition: service_started
       mail:
         condition: service_healthy
     healthcheck:
@@ -78,6 +81,10 @@ services:
       interval: 2s
       timeout: 2s
       retries: 5
+
+  nextcloud.redis:
+    image: docker.io/redis:7.2-alpine
+    restart: unless-stopped
 
   mail:
     image: docker.io/maildev/maildev:2.1.0
