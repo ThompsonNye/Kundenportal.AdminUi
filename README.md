@@ -43,9 +43,10 @@ Foo__Bar=Value
 #### Konfigurationsoptionen
 
 | Schlüssel | Default Wert | Erforderlich | Beschreibung |
-| - | - | - | - |
+|------------------------------|-------------------------------------------------------------------------|--------------|-----------------------------------------------------------------------------|
 | `ConnectionStrings:Database` | Ein PostgreSql Connection String zu einem lokalen Dev Docker Container. | Sinnvoll | Der Connection String zur PostgreSql Datenbank. |
 | `RabbitMq:Host` | localhost | Nein | Der Host, unter dem die RabbitMq Instanz erreichbar ist. |
+| `RabbitMq:Port`              | 5672                                                                    | Nein         | Der Port~~~~, unter dem die RabbitMq Instanz erreichbar ist.                    |
 | `RabbitMq:VirtualHost` | / (Ein Slash, kein leerer Wert!) | Nein | Der virtuelle Host in der RabbitMq Instanz (bei Fragen siehe RabbitMq Docs) |
 | `RabbitMq:Username` | guest | Nein | Der Benutzername |
 | `RabbitMq:Password` | guest | Nein | Das Passwort |
