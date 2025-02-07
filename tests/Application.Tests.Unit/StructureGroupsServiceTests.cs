@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AutoFixture;
 using FluentAssertions;
 using Kundenportal.AdminUi.Application.Abstractions;
@@ -31,7 +32,8 @@ public class StructureGroupsServiceTests
             _nextcloudApi,
             _nextcloudOptions,
             _publishEndpoint,
-            _logger);
+            _logger,
+            new ActivitySource(""));
     }
 
     #region GetAllAsync
