@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Kundenportal.AdminUi.WebApp {
+namespace Kundenportal.AdminUi.WebApp.Resources {
     using System;
     
     
@@ -38,7 +38,7 @@ namespace Kundenportal.AdminUi.WebApp {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kundenportal.AdminUi.WebApp.Texts", typeof(Texts).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kundenportal.AdminUi.WebApp.Resources.Texts", typeof(Texts).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -56,6 +56,24 @@ namespace Kundenportal.AdminUi.WebApp {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string LabelEditStructureGroupName {
+            get {
+                return ResourceManager.GetString("LabelEditStructureGroupName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte geben Sie den Namen ein.
+        /// </summary>
+        internal static string PlaceholderEditStructureGroupName {
+            get {
+                return ResourceManager.GetString("PlaceholderEditStructureGroupName", resourceCulture);
             }
         }
         
@@ -110,6 +128,15 @@ namespace Kundenportal.AdminUi.WebApp {
         internal static string TitleStructureGroups {
             get {
                 return ResourceManager.GetString("TitleStructureGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Name muss ausgefüllt werden..
+        /// </summary>
+        internal static string ValidationErrorStructureGroupNameRequired {
+            get {
+                return ResourceManager.GetString("ValidationErrorStructureGroupNameRequired", resourceCulture);
             }
         }
     }

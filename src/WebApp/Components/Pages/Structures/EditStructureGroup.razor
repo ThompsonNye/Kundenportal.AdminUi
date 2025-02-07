@@ -1,5 +1,8 @@
-﻿@attribute [Route($"/{RouteEdit}")]
+﻿@using Kundenportal.AdminUi.WebApp.Resources
+@attribute [Route($"/{RouteEdit}")]
 @attribute [Route($"/{RouteCreate}")]
+
+@rendermode InteractiveServer
 
 @{
     string title = Id.HasValue ? Texts.TitleEditStructureGroup : Texts.TitleCreateStructureGroup;
@@ -7,3 +10,16 @@
 
 <PageTitle>@title</PageTitle>
 <h3>@title</h3>
+
+<EditForm FormName="edit-structure-group" Model="_model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-floating mb-2">
+        <InputText
+            placeholder=""
+            class="form-control"
+            @bind-Value="_model.Name"></InputText>
+        <label for="name" class="form-label">@Texts.LabelEditStructureGroupName</label>
+        <ValidationMessage For="() => _model.Name"></ValidationMessage>
+    </div>
+    <button class="btn btn-primary" type="submit">Ok</button>
+</EditForm>
