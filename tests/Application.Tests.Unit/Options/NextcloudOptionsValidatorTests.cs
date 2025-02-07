@@ -10,7 +10,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 {
     private readonly NextcloudOptionsValidator _sut = new();
 
-    private readonly NextcloudOptions _options = new()
+    public readonly NextcloudOptions Options = new()
     {
         StructureBasePath = "/",
         Host = "http://localhost",
@@ -30,10 +30,10 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
     public void Validate_ShouldPass_WhenStructureBasePathStartsWithASlashAndDoesNotEndWithASlash(string value)
     {
         // Arrange
-        _options.StructureBasePath = value;
+        Options.StructureBasePath = value;
 
         // Act
-        ValidationResult result = _sut.Validate(_options);
+        ValidationResult result = _sut.Validate(Options);
 
         // Assert
         result.IsValid.Should().BeTrue();
@@ -43,10 +43,10 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
     public void Validate_ShouldFail_WhenStructureBasePathIsEmpty()
     {
         // Arrange
-        _options.StructureBasePath = "";
+        Options.StructureBasePath = "";
 
         // Act
-        ValidationResult result = _sut.Validate(_options);
+        ValidationResult result = _sut.Validate(Options);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -63,10 +63,10 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
     public void Validate_ShouldFail_WhenStructureBasePathDoesNotStartWithASlash(string value)
     {
         // Arrange
-        _options.StructureBasePath = value;
+        Options.StructureBasePath = value;
 
         // Act
-        ValidationResult result = _sut.Validate(_options);
+        ValidationResult result = _sut.Validate(Options);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -83,10 +83,10 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
     public void Validate_ShouldFail_WhenStructureBasePathEndsWithASlash(string value)
     {
         // Arrange
-        _options.StructureBasePath = value;
+        Options.StructureBasePath = value;
 
         // Act
-        ValidationResult result = _sut.Validate(_options);
+        ValidationResult result = _sut.Validate(Options);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -104,10 +104,10 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
     public void Validate_ShouldFail_WhenHostIsEmpty()
     {
         // Arrange
-        _options.Host = "";
+        Options.Host = "";
 
         // Act
-        var result = _sut.Validate(_options);
+        var result = _sut.Validate(Options);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -121,10 +121,10 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
     public void Validate_ShouldFail_WhenHostIsNotAUri()
     {
         // Arrange
-        _options.Host = "foobar";
+        Options.Host = "foobar";
 
         // Act
-        var result = _sut.Validate(_options);
+        var result = _sut.Validate(Options);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -142,10 +142,10 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
     public void Validate_ShouldFail_WhenUsernameIsEmpty()
     {
         // Arrange
-        _options.Username = "";
+        Options.Username = "";
 
         // Act
-        var result = _sut.Validate(_options);
+        var result = _sut.Validate(Options);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -163,10 +163,10 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
     public void Validate_ShouldFail_WhenPasswordIsEmpty()
     {
         // Arrange
-        _options.Password = "";
+        Options.Password = "";
 
         // Act
-        var result = _sut.Validate(_options);
+        var result = _sut.Validate(Options);
 
         // Assert
         result.IsValid.Should().BeFalse();

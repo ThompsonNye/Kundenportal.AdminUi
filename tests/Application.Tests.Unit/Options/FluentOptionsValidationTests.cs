@@ -16,7 +16,7 @@ public class FluentOptionsValidationTests : FluentValidationInvariantCultureTest
 
     private const string Name = "OptionsName";
 
-    private readonly NextcloudOptions _validOptions = new();
+    private readonly NextcloudOptions _validOptions = new NextcloudOptionsValidatorTests().Options;
 
     public FluentOptionsValidationTests()
     {
