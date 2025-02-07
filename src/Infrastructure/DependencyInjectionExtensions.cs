@@ -71,6 +71,14 @@ public static class DependencyInjectionExtensions
             x.SetKebabCaseEndpointNameFormatter();
 
             x.AddConsumers(typeof(IApplicationMarker).Assembly);
+            
+            x.AddEntityFrameworkOutbox<ApplicationDbContext>(o =>
+            {
+                o.QueryDelay = TimeSpan.FromSeconds(1);
+                o.DuplicateDetectionWindow = TimeSpan.FromMinutes(30);
+                o.UsePostgres()
+                    .UseBusOutbox();
+            });
 
             x.UsingRabbitMq((context, cfg) =>
             {
