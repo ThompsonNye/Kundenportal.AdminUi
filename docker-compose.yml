@@ -1,0 +1,19 @@
+volumes:
+  kundenportal_adminui-dev-db-data:
+
+services:
+  kundenportal.adminui.webapp:
+    image: ${DOCKER_REGISTRY-}webapp
+    build:
+      context: .
+      dockerfile: src/WebApp/Dockerfile
+
+  kundenportal.adminui.db:
+    image: postgres:16-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: kundenportal_adminui
+      POSTGRES_PASSWORD: Development1+
+    volumes:
+      - kundenportal_adminui-dev-db-data:/var/lib/postgresql/data
