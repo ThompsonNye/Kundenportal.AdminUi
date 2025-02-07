@@ -12,8 +12,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Kundenportal.AdminUi.Infrastructure;
 
+/// <summary>
+/// The extension methods for configuring the infrastructure related services in the Dependency Injection container.
+/// </summary>
 public static class DependencyInjectionExtensions
 {
+    /// <summary>
+    /// Adds all the infrastructure related services to the Dependency Injection container.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -24,6 +33,13 @@ public static class DependencyInjectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Configures the DbContext using the connection string from the configuration. Configures the DbContext to use PostgreSQL.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     private static IServiceCollection AddApplicationDbContext(this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -43,6 +59,12 @@ public static class DependencyInjectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Configures MassTransit for async messaging with RabbitMq as transport.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
     private static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMassTransit(x =>
