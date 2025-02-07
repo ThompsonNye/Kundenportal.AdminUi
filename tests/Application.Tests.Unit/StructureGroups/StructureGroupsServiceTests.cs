@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Ardalis.Result;
 using AutoFixture;
 using FluentAssertions;
 using Kundenportal.AdminUi.Application.Abstractions;
@@ -10,7 +11,6 @@ using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using SharedUnitTestLogic;
 
 namespace Application.Tests.Unit.StructureGroups;
@@ -108,11 +108,17 @@ public class StructureGroupsServiceTests
 	{
 		// Arrange
 		PendingStructureGroup? pendingStructureGroup = _fixture.Create<PendingStructureGroup>();
+		NextcloudOptions nextcloudOptions = new()
+		{
+			StructureBasePath = "/"
+		};
+		_nextcloudOptions.Value.Returns(nextcloudOptions);
 
 		// Act
-		await _sut.AddPendingAsync(pendingStructureGroup);
+		Result result = await _sut.AddPendingAsync(pendingStructureGroup);
 
 		// Assert
+		result.IsSuccess.Should().BeTrue();
 		_dbContext.PendingStructureGroups
 			.Should()
 			.ContainSingle(x => x.Id == pendingStructureGroup.Id);
@@ -123,9 +129,14 @@ public class StructureGroupsServiceTests
 	{
 		// Arrange
 		PendingStructureGroup? pendingStructureGroup = _fixture.Create<PendingStructureGroup>();
+		NextcloudOptions nextcloudOptions = new()
+		{
+			StructureBasePath = "/"
+		};
+		_nextcloudOptions.Value.Returns(nextcloudOptions);
 
 		// Act
-		await _sut.AddPendingAsync(pendingStructureGroup);
+		Result result = await _sut.AddPendingAsync(pendingStructureGroup);
 
 		// Assert
 		_logger.ReceivedLog(
@@ -136,12 +147,8 @@ public class StructureGroupsServiceTests
 		_logger.Received().LogInformation("Pending structure group created");
 	}
 
-	#endregion
-
-	#region DoesStructureGroupExistAsync
-
 	[Fact]
-	public async Task DoesStructureGroupExistAsync_ShouldReturnTrue_WhenAPendingStructureGroupsExistsInDb()
+	public async Task AddPendingAsync_ShouldReturnConflictResult_WhenPendingStructureGroupExists()
 	{
 		// Arrange
 		const string path = "path";
@@ -152,38 +159,14 @@ public class StructureGroupsServiceTests
 		await _dbContext.SaveChangesAsync();
 
 		// Act
-		bool result = await _sut.DoesStructureGroupExistAsync(path);
+		Result result = await _sut.AddPendingAsync(new PendingStructureGroup { Name = path });
 
 		// Assert
-		result.Should().BeTrue();
+		result.Status.Should().Be(ResultStatus.Conflict);
 	}
 
 	[Fact]
-	public async Task
-		DoesStructureGroupExistAsync_ShouldReturnTrue_WhenNextcloudFolderExistsInRootFolder()
-	{
-		// Arrange
-		const string structureGroupName = "path";
-
-		NextcloudOptions nextcloudOptions = new()
-		{
-			StructureBasePath = "/"
-		};
-		_nextcloudOptions.Value.Returns(nextcloudOptions);
-
-		string path = nextcloudOptions.CombineWithStructureBasePath(structureGroupName);
-		_nextcloudApi.DoesFolderExistAsync(path).Returns(true);
-
-		// Act
-		bool result = await _sut.DoesStructureGroupExistAsync(structureGroupName);
-
-		// Assert
-		result.Should().BeTrue();
-	}
-
-	[Fact]
-	public async Task
-		DoesStructureGroupExistAsync_ShouldReturnTrue_WhenNextcloudFolderExistsSubFolder()
+	public async Task AddPendingAsync_ShouldReturnConflictResult_WhenFolderExistsInNextcloud()
 	{
 		// Arrange
 		const string structureGroupName = "path";
@@ -198,48 +181,10 @@ public class StructureGroupsServiceTests
 		_nextcloudApi.DoesFolderExistAsync(path).Returns(true);
 
 		// Act
-		bool result = await _sut.DoesStructureGroupExistAsync(structureGroupName);
+		Result result = await _sut.AddPendingAsync(new PendingStructureGroup { Name = structureGroupName });
 
 		// Assert
-		result.Should().BeTrue();
-	}
-
-	[Fact]
-	public async Task
-		DoesStructureGroupExistAsync_ShouldReturnFalse_WhenNextcloudDoesNotExist()
-	{
-		// Arrange
-		const string structureGroupName = "path";
-
-		NextcloudOptions nextcloudOptions = new();
-		_nextcloudOptions.Value.Returns(nextcloudOptions);
-
-		string path = nextcloudOptions.CombineWithStructureBasePath(structureGroupName);
-		_nextcloudApi.DoesFolderExistAsync(path).Returns(false);
-
-		// Act
-		bool result = await _sut.DoesStructureGroupExistAsync(path);
-
-		// Assert
-		result.Should().BeFalse();
-	}
-
-	[Fact]
-	public async Task DoesStructureGroupExistAsync_ShouldReturnFalse_WhenNextcloudThrowsException()
-	{
-		// Arrange
-		const string structureGroupName = "path";
-
-		NextcloudOptions nextcloudOptions = new();
-		_nextcloudOptions.Value.Returns(nextcloudOptions);
-
-		_nextcloudApi.DoesFolderExistAsync(Arg.Any<string>()).ThrowsAsync<Exception>();
-
-		// Act
-		Func<Task> action = () => _sut.DoesStructureGroupExistAsync(structureGroupName);
-
-		// Assert
-		await action.Should().ThrowExactlyAsync<Exception>();
+		result.Status.Should().Be(ResultStatus.Conflict);
 	}
 
 	#endregion
