@@ -1,11 +1,11 @@
 ﻿<div style="width: @(Width)px" class="d-inline-flex justify-content-center">
-    <span class="bi bi-three-dots" title="@TitleTextInternal"></span>
+	<span class="bi bi-three-dots" title="@TitleTextInternal"></span>
 </div>
 
 @code {
-    [Parameter] public int Width { get; set; } = 40;
-    
-    [Parameter] public string? TitleText { get; set; }
+	[Parameter] public int Width { get; set; } = 40;
 
-    private string TitleTextInternal => !string.IsNullOrEmpty(TitleText) ? TitleText : "ellipsis";
+	[Parameter] public string? TitleText { get; set; }
+
+	private string TitleTextInternal => !string.IsNullOrEmpty(TitleText) ? TitleText : "ellipsis";
 }

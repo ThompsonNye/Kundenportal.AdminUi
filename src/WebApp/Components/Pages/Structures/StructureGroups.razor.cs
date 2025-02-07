@@ -8,155 +8,153 @@ namespace Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
 
 public partial class StructureGroups : IAsyncDisposable
 {
-    public const string Route = "structure-groups";
+	public const string Route = "structure-groups";
 
-    [Inject] public ILogger<StructureGroups>? Logger { get; set; }
+	private readonly Model _model = new();
+	private HubConnection? _structureGroupsConnection;
 
-    [Inject] public NavigationManager? NavigationManager { get; set; }
+	[Inject] public ILogger<StructureGroups>? Logger { get; set; }
 
-    [Inject] public IStructureGroupsService? StructureGroupsService { get; set; }
+	[Inject] public NavigationManager? NavigationManager { get; set; }
 
-    private readonly Model _model = new();
-    private HubConnection? _structureGroupsConnection;
+	[Inject] public IStructureGroupsService? StructureGroupsService { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadStructureGroupsAsync();
-        await CreateHubConnectionsAsync();
-    }
+	public async ValueTask DisposeAsync()
+	{
+		if (_structureGroupsConnection is not null) await _structureGroupsConnection.DisposeAsync();
 
-    private async Task LoadStructureGroupsAsync()
-    {
-        await LoadStructureGroupDataAsync();
-        await LoadPendingStructureGroupDataAsync();
-    }
+		GC.SuppressFinalize(this);
+	}
 
-    private async Task LoadStructureGroupDataAsync()
-    {
-        try
-        {
-            _model.StructureGroups = (await StructureGroupsService!.GetAllAsync()).ToList();
-        }
-        catch (Exception ex)
-        {
-            Logger!.LogError(ex, "Failed to load structure groups");
-        }
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadStructureGroupsAsync();
+		await CreateHubConnectionsAsync();
+	}
 
-    private async Task LoadPendingStructureGroupDataAsync()
-    {
-        try
-        {
-            _model.PendingStructureGroups = (await StructureGroupsService!.GetPendingAsync()).ToList();
-            Logger!.LogDebug("Loaded {Count} pending structure groups from db", _model.PendingStructureGroups.Count);
-        }
-        catch (Exception ex)
-        {
-            Logger!.LogError(ex, "Failed to load pending structure groups");
-        }
-    }
+	private async Task LoadStructureGroupsAsync()
+	{
+		await LoadStructureGroupDataAsync();
+		await LoadPendingStructureGroupDataAsync();
+	}
 
-    private async Task CreateHubConnectionsAsync()
-    {
-        Uri uri = NavigationManager!.ToAbsoluteUri($"/hubs{StructureGroupHub.Route}");
-        _structureGroupsConnection = new HubConnectionBuilder()
-            .WithUrl(uri)
-            .Build();
+	private async Task LoadStructureGroupDataAsync()
+	{
+		try
+		{
+			_model.StructureGroups = (await StructureGroupsService!.GetAllAsync()).ToList();
+		}
+		catch (Exception ex)
+		{
+			Logger!.LogError(ex, "Failed to load structure groups");
+		}
+	}
 
-        _structureGroupsConnection.On<PendingStructureGroup>(
-            StructureGroupHub.NewPendingStructureGroupMethod, OnNewPendingStructureGroupAsync);
+	private async Task LoadPendingStructureGroupDataAsync()
+	{
+		try
+		{
+			_model.PendingStructureGroups = (await StructureGroupsService!.GetPendingAsync()).ToList();
+			Logger!.LogDebug("Loaded {Count} pending structure groups from db", _model.PendingStructureGroups.Count);
+		}
+		catch (Exception ex)
+		{
+			Logger!.LogError(ex, "Failed to load pending structure groups");
+		}
+	}
 
-        _structureGroupsConnection.On<StructureGroup>(
-            StructureGroupHub.NewStructureGroupMethod, OnNewStructureGroupAsync);
+	private async Task CreateHubConnectionsAsync()
+	{
+		var uri = NavigationManager!.ToAbsoluteUri($"/hubs{StructureGroupHub.Route}");
+		_structureGroupsConnection = new HubConnectionBuilder()
+			.WithUrl(uri)
+			.Build();
 
-        await _structureGroupsConnection.StartAsync();
-    }
+		_structureGroupsConnection.On<PendingStructureGroup>(
+			StructureGroupHub.NewPendingStructureGroupMethod, OnNewPendingStructureGroupAsync);
 
-    private void OnEditStructureGroupClicked(Guid structureGroupId)
-    {
-        NavigationManager!.NavigateTo($"{EditStructureGroup.RouteEditBase}/{structureGroupId}");
-    }
+		_structureGroupsConnection.On<StructureGroup>(
+			StructureGroupHub.NewStructureGroupMethod, OnNewStructureGroupAsync);
 
-    private void OnCreateStructureClicked()
-    {
-        Logger!.LogInformation("Create Structure Option ausgewählt");
-    }
+		await _structureGroupsConnection.StartAsync();
+	}
 
-    private async Task OnNewPendingStructureGroupAsync(PendingStructureGroup pendingStructureGroup)
-    {
-        Logger!.LogDebug("Got new pending structure group");
-        
-        try
-        {
-            if (_model.PendingStructureGroups.Any(x => x.Id == pendingStructureGroup.Id))
-            {
-                Logger!.LogDebug("A pending structure group with id {Id} is already present in the page model", pendingStructureGroup.Id);
-                return;
-            }
+	private void OnEditStructureGroupClicked(Guid structureGroupId)
+	{
+		NavigationManager!.NavigateTo($"{EditStructureGroup.RouteEditBase}/{structureGroupId}");
+	}
 
-            _model.PendingStructureGroups.Add(pendingStructureGroup);
-            Logger!.LogDebug("Added new pending structure group to page model");
-            await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception ex)
-        {
-            Logger!.LogError(ex, "Failed to add new pending structure group to page model");
-        }
-    }
+	private void OnCreateStructureClicked()
+	{
+		Logger!.LogInformation("Create Structure Option ausgewählt");
+	}
 
-    private async Task OnNewStructureGroupAsync(StructureGroup structureGroup)
-    {
-        Logger!.LogDebug("Got new structure group");
+	private async Task OnNewPendingStructureGroupAsync(PendingStructureGroup pendingStructureGroup)
+	{
+		Logger!.LogDebug("Got new pending structure group");
 
-        try
-        {
-            AddNewStructureGroup(structureGroup);
-            RemoveCorrespondingPendingStructureGroup(structureGroup);
-        }
-        catch (Exception ex)
-        {
-            Logger!.LogError(ex, "Failed to add new structure group to page model");
-        }
-        finally
-        {
-            await InvokeAsync(StateHasChanged);
-        }
-    }
+		try
+		{
+			if (_model.PendingStructureGroups.Any(x => x.Id == pendingStructureGroup.Id))
+			{
+				Logger!.LogDebug("A pending structure group with id {Id} is already present in the page model",
+					pendingStructureGroup.Id);
+				return;
+			}
 
-    private void AddNewStructureGroup(StructureGroup structureGroup)
-    {
-        if (_model.StructureGroups.Any(x => x.Id == structureGroup.Id))
-        {
-            Logger!.LogDebug("A structure group with id {Id} is already present in the page model", structureGroup.Id);
-            return;
-        }
-        
-        _model.StructureGroups.Add(structureGroup);
-        Logger!.LogDebug("Added new structure group to page model");
-    }
+			_model.PendingStructureGroups.Add(pendingStructureGroup);
+			Logger!.LogDebug("Added new pending structure group to page model");
+			await InvokeAsync(StateHasChanged);
+		}
+		catch (Exception ex)
+		{
+			Logger!.LogError(ex, "Failed to add new pending structure group to page model");
+		}
+	}
 
-    private void RemoveCorrespondingPendingStructureGroup(StructureGroup structureGroup)
-    {
-        _model.PendingStructureGroups.RemoveAll(x => x.Id == structureGroup.Id);
-    }
+	private async Task OnNewStructureGroupAsync(StructureGroup structureGroup)
+	{
+		Logger!.LogDebug("Got new structure group");
 
-    public class Model
-    {
-        // Using lists here because the values can be updates after the fact
-        // when receiving a notification via SignalR
+		try
+		{
+			AddNewStructureGroup(structureGroup);
+			RemoveCorrespondingPendingStructureGroup(structureGroup);
+		}
+		catch (Exception ex)
+		{
+			Logger!.LogError(ex, "Failed to add new structure group to page model");
+		}
+		finally
+		{
+			await InvokeAsync(StateHasChanged);
+		}
+	}
 
-        public List<StructureGroup> StructureGroups { get; set; } = [];
+	private void AddNewStructureGroup(StructureGroup structureGroup)
+	{
+		if (_model.StructureGroups.Any(x => x.Id == structureGroup.Id))
+		{
+			Logger!.LogDebug("A structure group with id {Id} is already present in the page model", structureGroup.Id);
+			return;
+		}
 
-        public List<PendingStructureGroup> PendingStructureGroups { get; set; } = [];
-    }
+		_model.StructureGroups.Add(structureGroup);
+		Logger!.LogDebug("Added new structure group to page model");
+	}
 
-    public async ValueTask DisposeAsync()
-    {
-        if (_structureGroupsConnection is not null)
-        {
-            await _structureGroupsConnection.DisposeAsync();
-        }
-        
-        GC.SuppressFinalize(this);
-    }
+	private void RemoveCorrespondingPendingStructureGroup(StructureGroup structureGroup)
+	{
+		_model.PendingStructureGroups.RemoveAll(x => x.Id == structureGroup.Id);
+	}
+
+	public class Model
+	{
+		// Using lists here because the values can be updates after the fact
+		// when receiving a notification via SignalR
+
+		public List<StructureGroup> StructureGroups { get; set; } = [];
+
+		public List<PendingStructureGroup> PendingStructureGroups { get; set; } = [];
+	}
 }

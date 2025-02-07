@@ -1,21 +1,16 @@
 ﻿<li>
-    <button type="button" class="dropdown-item" @onclick="OnClick">
-        <div class="d-inline-flex align-items-center gap-1">
-            <i class="bi @AdditionalCss" title="@Title" aria-hidden="true"></i>
-            @Title
-        </div>
-    </button>
+	<button type="button" class="dropdown-item" @onclick="OnClick">
+		<div class="d-inline-flex align-items-center gap-1">
+			<i class="bi @AdditionalCss" title="@Title" aria-hidden="true"></i>
+			@Title
+		</div>
+	</button>
 </li>
 
 @code {
-    [Parameter]
-    public string? AdditionalCss { get; set; }
-    
-    [Parameter]
-    [EditorRequired]
-    public string? Title { get; set; }
-    
-    [Parameter]
-    [EditorRequired]
-    public EventCallback<MouseEventArgs> OnClick { get; set; }
+	[Parameter] public string? AdditionalCss { get; set; }
+
+	[Parameter] [EditorRequired] public string? Title { get; set; }
+
+	[Parameter] [EditorRequired] public EventCallback<MouseEventArgs> OnClick { get; set; }
 }

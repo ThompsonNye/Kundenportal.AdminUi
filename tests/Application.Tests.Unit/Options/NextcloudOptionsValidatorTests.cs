@@ -1,7 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using AutoFixture;
-using FluentAssertions;
-using FluentValidation.Results;
+﻿using FluentAssertions;
 using Kundenportal.AdminUi.Application.Options;
 using SharedUnitTestLogic;
 
@@ -9,207 +6,207 @@ namespace Application.Tests.Unit.Options;
 
 public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTestBase
 {
-    private readonly NextcloudOptionsValidator _sut = new();
+	private readonly NextcloudOptionsValidator _sut = new();
 
-    public readonly NextcloudOptions Options = new()
-    {
-        StructureBasePath = "/",
-        Host = "http://localhost",
-        Username = "user",
-        Password = "password",
-        RetryDelay = 1
-    };
+	public readonly NextcloudOptions Options = new()
+	{
+		StructureBasePath = "/",
+		Host = "http://localhost",
+		Username = "user",
+		Password = "password",
+		RetryDelay = 1
+	};
 
-    [Fact]
-    public void Validate_ShouldPass_WhenAllValuesAreValid()
-    {
-        // Arrange
+	[Fact]
+	public void Validate_ShouldPass_WhenAllValuesAreValid()
+	{
+		// Arrange
 
-        // Act
-        ValidationResult result = _sut.Validate(Options);
+		// Act
+		var result = _sut.Validate(Options);
 
-        // Assert
-        result.IsValid.Should().BeTrue();
-    }
-    
-    #region StructureBasePath
+		// Assert
+		result.IsValid.Should().BeTrue();
+	}
 
-    [Theory]
-    [InlineData("/")]
-    [InlineData("/foo")]
-    [InlineData("/foo/bar")]
-    [InlineData("/foo/bar/test")]
-    public void Validate_ShouldPass_WhenStructureBasePathStartsWithASlashAndDoesNotEndWithASlash(string value)
-    {
-        // Arrange
-        Options.StructureBasePath = value;
+	#region Username
 
-        // Act
-        ValidationResult result = _sut.Validate(Options);
+	[Fact]
+	public void Validate_ShouldFail_WhenUsernameIsEmpty()
+	{
+		// Arrange
+		Options.Username = "";
 
-        // Assert
-        result.IsValid.Should().BeTrue();
-    }
+		// Act
+		var result = _sut.Validate(Options);
 
-    [Fact]
-    public void Validate_ShouldFail_WhenStructureBasePathIsEmpty()
-    {
-        // Arrange
-        Options.StructureBasePath = "";
+		// Assert
+		result.IsValid.Should().BeFalse();
+		result.Errors.Should().Contain(x =>
+			x.PropertyName == nameof(NextcloudOptions.Username) &&
+			x.ErrorCode == "NotEmptyValidator" &&
+			x.ErrorMessage == "'Username' must not be empty.");
+	}
 
-        // Act
-        ValidationResult result = _sut.Validate(Options);
+	#endregion
 
-        // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(x =>
-            x.PropertyName == nameof(NextcloudOptions.StructureBasePath) &&
-            x.ErrorCode == "NotEmptyValidator" &&
-            x.ErrorMessage == "'Structure Base Path' must not be empty.");
-    }
-    
-    [Theory]
-    [InlineData("foo")]
-    [InlineData("foo/bar")]
-    [InlineData("foo/bar/test")]
-    public void Validate_ShouldFail_WhenStructureBasePathDoesNotStartWithASlash(string value)
-    {
-        // Arrange
-        Options.StructureBasePath = value;
+	#region Password
 
-        // Act
-        ValidationResult result = _sut.Validate(Options);
+	[Fact]
+	public void Validate_ShouldFail_WhenPasswordIsEmpty()
+	{
+		// Arrange
+		Options.Password = "";
 
-        // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(x =>
-            x.PropertyName == nameof(NextcloudOptions.StructureBasePath) &&
-            x.ErrorCode == NextcloudOptionsValidator.ErrorCodeMissingLeadingSlash &&
-            x.ErrorMessage == "'Structure Base Path' has to start with a slash");
-    }
-    
-    [Theory]
-    [InlineData("/foo/")]
-    [InlineData("/foo/bar/")]
-    [InlineData("/foo/bar/test/")]
-    public void Validate_ShouldFail_WhenStructureBasePathEndsWithASlash(string value)
-    {
-        // Arrange
-        Options.StructureBasePath = value;
+		// Act
+		var result = _sut.Validate(Options);
 
-        // Act
-        ValidationResult result = _sut.Validate(Options);
+		// Assert
+		result.IsValid.Should().BeFalse();
+		result.Errors.Should().Contain(x =>
+			x.PropertyName == nameof(NextcloudOptions.Password) &&
+			x.ErrorCode == "NotEmptyValidator" &&
+			x.ErrorMessage == "'Password' must not be empty.");
+	}
 
-        // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(x =>
-            x.PropertyName == nameof(NextcloudOptions.StructureBasePath) &&
-            x.ErrorCode == NextcloudOptionsValidator.ErrorCodeMissingTrailingSlash &&
-            x.ErrorMessage == "'Structure Base Path' cannot end with a slash");
-    }
+	#endregion
 
-    #endregion
+	#region RetryDelay
 
-    #region Host
+	[Theory]
+	[InlineData(0)]
+	[InlineData(0 - 1)]
+	public void Validate_ShouldFail_WhenRetryDelayIsLessThanOrEqualTo0(double value)
+	{
+		// Arrange
+		Options.RetryDelay = value;
 
-    [Fact]
-    public void Validate_ShouldFail_WhenHostIsEmpty()
-    {
-        // Arrange
-        Options.Host = "";
+		// Act
+		var result = _sut.Validate(Options);
 
-        // Act
-        var result = _sut.Validate(Options);
+		// Assert
+		result.IsValid.Should().BeFalse();
+		result.Errors.Should().Contain(x =>
+			x.PropertyName == nameof(NextcloudOptions.RetryDelay) &&
+			x.ErrorCode == "GreaterThanValidator" &&
+			x.ErrorMessage == "'Retry Delay' must be greater than '0'.");
+	}
 
-        // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(x =>
-            x.PropertyName == nameof(NextcloudOptions.Host) &&
-            x.ErrorCode == "NotEmptyValidator" &&
-            x.ErrorMessage == "'Host' must not be empty.");
-    }
+	#endregion
 
-    [Fact]
-    public void Validate_ShouldFail_WhenHostIsNotAUri()
-    {
-        // Arrange
-        Options.Host = "foobar";
+	#region StructureBasePath
 
-        // Act
-        var result = _sut.Validate(Options);
+	[Theory]
+	[InlineData("/")]
+	[InlineData("/foo")]
+	[InlineData("/foo/bar")]
+	[InlineData("/foo/bar/test")]
+	public void Validate_ShouldPass_WhenStructureBasePathStartsWithASlashAndDoesNotEndWithASlash(string value)
+	{
+		// Arrange
+		Options.StructureBasePath = value;
 
-        // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(x =>
-            x.PropertyName == nameof(NextcloudOptions.Host) &&
-            x.ErrorCode == NextcloudOptionsValidator.ErrorCodeNotAUri &&
-            x.ErrorMessage == "'Host' is not a valid uri");
-    }
+		// Act
+		var result = _sut.Validate(Options);
 
-    #endregion
+		// Assert
+		result.IsValid.Should().BeTrue();
+	}
 
-    #region Username
+	[Fact]
+	public void Validate_ShouldFail_WhenStructureBasePathIsEmpty()
+	{
+		// Arrange
+		Options.StructureBasePath = "";
 
-    [Fact]
-    public void Validate_ShouldFail_WhenUsernameIsEmpty()
-    {
-        // Arrange
-        Options.Username = "";
+		// Act
+		var result = _sut.Validate(Options);
 
-        // Act
-        var result = _sut.Validate(Options);
+		// Assert
+		result.IsValid.Should().BeFalse();
+		result.Errors.Should().Contain(x =>
+			x.PropertyName == nameof(NextcloudOptions.StructureBasePath) &&
+			x.ErrorCode == "NotEmptyValidator" &&
+			x.ErrorMessage == "'Structure Base Path' must not be empty.");
+	}
 
-        // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(x =>
-            x.PropertyName == nameof(NextcloudOptions.Username) &&
-            x.ErrorCode == "NotEmptyValidator" &&
-            x.ErrorMessage == "'Username' must not be empty.");
-    }
+	[Theory]
+	[InlineData("foo")]
+	[InlineData("foo/bar")]
+	[InlineData("foo/bar/test")]
+	public void Validate_ShouldFail_WhenStructureBasePathDoesNotStartWithASlash(string value)
+	{
+		// Arrange
+		Options.StructureBasePath = value;
 
-    #endregion
+		// Act
+		var result = _sut.Validate(Options);
 
-    #region Password
+		// Assert
+		result.IsValid.Should().BeFalse();
+		result.Errors.Should().Contain(x =>
+			x.PropertyName == nameof(NextcloudOptions.StructureBasePath) &&
+			x.ErrorCode == NextcloudOptionsValidator.ErrorCodeMissingLeadingSlash &&
+			x.ErrorMessage == "'Structure Base Path' has to start with a slash");
+	}
 
-    [Fact]
-    public void Validate_ShouldFail_WhenPasswordIsEmpty()
-    {
-        // Arrange
-        Options.Password = "";
+	[Theory]
+	[InlineData("/foo/")]
+	[InlineData("/foo/bar/")]
+	[InlineData("/foo/bar/test/")]
+	public void Validate_ShouldFail_WhenStructureBasePathEndsWithASlash(string value)
+	{
+		// Arrange
+		Options.StructureBasePath = value;
 
-        // Act
-        var result = _sut.Validate(Options);
+		// Act
+		var result = _sut.Validate(Options);
 
-        // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(x =>
-            x.PropertyName == nameof(NextcloudOptions.Password) &&
-            x.ErrorCode == "NotEmptyValidator" &&
-            x.ErrorMessage == "'Password' must not be empty.");
-    }
+		// Assert
+		result.IsValid.Should().BeFalse();
+		result.Errors.Should().Contain(x =>
+			x.PropertyName == nameof(NextcloudOptions.StructureBasePath) &&
+			x.ErrorCode == NextcloudOptionsValidator.ErrorCodeMissingTrailingSlash &&
+			x.ErrorMessage == "'Structure Base Path' cannot end with a slash");
+	}
 
-    #endregion
+	#endregion
 
-    #region RetryDelay
+	#region Host
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(0-1)]
-    public void Validate_ShouldFail_WhenRetryDelayIsLessThanOrEqualTo0(double value)
-    {
-        // Arrange
-        Options.RetryDelay = value;
+	[Fact]
+	public void Validate_ShouldFail_WhenHostIsEmpty()
+	{
+		// Arrange
+		Options.Host = "";
 
-        // Act
-        ValidationResult result = _sut.Validate(Options);
+		// Act
+		var result = _sut.Validate(Options);
 
-        // Assert
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(x =>
-            x.PropertyName == nameof(NextcloudOptions.RetryDelay) &&
-            x.ErrorCode == "GreaterThanValidator" &&
-            x.ErrorMessage == "'Retry Delay' must be greater than '0'.");
-    }
+		// Assert
+		result.IsValid.Should().BeFalse();
+		result.Errors.Should().Contain(x =>
+			x.PropertyName == nameof(NextcloudOptions.Host) &&
+			x.ErrorCode == "NotEmptyValidator" &&
+			x.ErrorMessage == "'Host' must not be empty.");
+	}
 
-    #endregion
+	[Fact]
+	public void Validate_ShouldFail_WhenHostIsNotAUri()
+	{
+		// Arrange
+		Options.Host = "foobar";
+
+		// Act
+		var result = _sut.Validate(Options);
+
+		// Assert
+		result.IsValid.Should().BeFalse();
+		result.Errors.Should().Contain(x =>
+			x.PropertyName == nameof(NextcloudOptions.Host) &&
+			x.ErrorCode == NextcloudOptionsValidator.ErrorCodeNotAUri &&
+			x.ErrorMessage == "'Host' is not a valid uri");
+	}
+
+	#endregion
 }

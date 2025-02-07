@@ -16,7 +16,7 @@ services:
       POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
     volumes:
       - db-data:/var/lib/postgresql/data
-        
+
   broker:
     image: masstransit/rabbitmq
     restart: unless-stopped

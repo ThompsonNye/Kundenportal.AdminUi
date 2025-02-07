@@ -1,37 +1,38 @@
-﻿@foreach (string errorMessage in _errorMessages)
+﻿@foreach (var errorMessage in _errorMessages)
 {
-    <div class="validation-message">@errorMessage</div>
+	<div class="validation-message">@errorMessage</div>
 }
 
 @code {
-    [EditorRequired, Parameter] public string? For { get; set; }
+	[EditorRequired] [Parameter] public string? For { get; set; }
 
-    [CascadingParameter] public EditContext? EditContext { get; set; }
+	[CascadingParameter] public EditContext? EditContext { get; set; }
 
-    private FieldIdentifier _fieldIdentifier;
-    private string[] _errorMessages = [];
+	private FieldIdentifier _fieldIdentifier;
+	private string[] _errorMessages = [];
 
-    protected override void OnInitialized()
-    {
-        if (string.IsNullOrEmpty(For))
-        {
-            throw new InvalidOperationException($"{nameof(For)} parameter is required");
-        }
+	protected override void OnInitialized()
+	{
+		if (string.IsNullOrEmpty(For))
+		{
+			throw new InvalidOperationException($"{nameof(For)} parameter is required");
+		}
 
-        if (EditContext is null)
-        {
-            throw new InvalidOperationException($"No cascading {nameof(EditContext)} found. Ensure to use this component within an {nameof(EditForm)}");
-        }
+		if (EditContext is null)
+		{
+			throw new InvalidOperationException($"No cascading {nameof(EditContext)} found. Ensure to use this component within an {nameof(EditForm)}");
+		}
 
-        _fieldIdentifier = EditContext.Field(For);
+		_fieldIdentifier = EditContext.Field(For);
 
-        GetValidationMessagesFromEditContext();
-        EditContext.OnValidationStateChanged += (_, _) => GetValidationMessagesFromEditContext();
-    }
+		GetValidationMessagesFromEditContext();
+		EditContext.OnValidationStateChanged += (_, _) => GetValidationMessagesFromEditContext();
+	}
 
-    private void GetValidationMessagesFromEditContext()
-    {
-        _errorMessages = EditContext!.GetValidationMessages(_fieldIdentifier).ToArray();
-        StateHasChanged();
-    }
+	private void GetValidationMessagesFromEditContext()
+	{
+		_errorMessages = EditContext!.GetValidationMessages(_fieldIdentifier).ToArray();
+		StateHasChanged();
+	}
+
 }

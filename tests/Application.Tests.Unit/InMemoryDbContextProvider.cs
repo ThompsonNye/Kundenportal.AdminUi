@@ -6,12 +6,12 @@ namespace Application.Tests.Unit;
 
 public static class InMemoryDbContextProvider
 {
-    public static IApplicationDbContext GetDbContext()
-    {
-        DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
+	public static IApplicationDbContext GetDbContext()
+	{
+		var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+			.UseInMemoryDatabase(Guid.NewGuid().ToString())
+			.Options;
 
-        return new ApplicationDbContext(options);
-    }
+		return new ApplicationDbContext(options);
+	}
 }

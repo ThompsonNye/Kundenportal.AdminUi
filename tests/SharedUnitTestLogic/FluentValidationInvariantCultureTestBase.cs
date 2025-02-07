@@ -1,12 +1,13 @@
 ﻿using System.Globalization;
+using FluentValidation;
 
 namespace SharedUnitTestLogic;
 
 public abstract class FluentValidationInvariantCultureTestBase
 {
-    protected FluentValidationInvariantCultureTestBase()
-    {
-        FluentValidation.ValidatorOptions.Global.LanguageManager.Culture
-            = CultureInfo.InvariantCulture;
-    }
+	protected FluentValidationInvariantCultureTestBase()
+	{
+		ValidatorOptions.Global.LanguageManager.Culture
+			= CultureInfo.InvariantCulture;
+	}
 }

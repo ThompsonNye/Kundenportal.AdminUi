@@ -2,5 +2,5 @@
 
 public static class SwaggerDocConstants
 {
-    public const string StructureGroupTag = "Structure Groups";
+	public const string StructureGroupTag = "Structure Groups";
 }

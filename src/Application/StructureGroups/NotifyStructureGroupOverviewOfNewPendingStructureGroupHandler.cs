@@ -7,28 +7,29 @@ using Microsoft.Extensions.Logging;
 namespace Kundenportal.AdminUi.Application.StructureGroups;
 
 public class NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler(
-    IHubContext<StructureGroupHub> hubContext,
-    ILogger<NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler> logger)
-    : IConsumer<PendingStructureGroupCreated>
+	IHubContext<StructureGroupHub> hubContext,
+	ILogger<NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler> logger)
+	: IConsumer<PendingStructureGroupCreated>
 {
-    private readonly IHubContext<StructureGroupHub> _hubContext = hubContext;
-    private readonly ILogger<NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler> _logger = logger;
+	private readonly IHubContext<StructureGroupHub> _hubContext = hubContext;
+	private readonly ILogger<NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler> _logger = logger;
 
-    public async Task Consume(ConsumeContext<PendingStructureGroupCreated> context)
-    {
-        try
-        {
-            PendingStructureGroup pendingStructureGroup = new PendingStructureGroup
-            {
-                Id = context.Message.Id,
-                Name = context.Message.Name
-            };
-            await _hubContext.Clients.All.SendAsync(StructureGroupHub.NewPendingStructureGroupMethod, pendingStructureGroup,
-                cancellationToken: context.CancellationToken);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to send message to the structure group hub");
-        }
-    }
+	public async Task Consume(ConsumeContext<PendingStructureGroupCreated> context)
+	{
+		try
+		{
+			var pendingStructureGroup = new PendingStructureGroup
+			{
+				Id = context.Message.Id,
+				Name = context.Message.Name
+			};
+			await _hubContext.Clients.All.SendAsync(StructureGroupHub.NewPendingStructureGroupMethod,
+				pendingStructureGroup,
+				context.CancellationToken);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Failed to send message to the structure group hub");
+		}
+	}
 }

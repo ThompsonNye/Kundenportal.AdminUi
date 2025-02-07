@@ -8,17 +8,17 @@ using Microsoft.EntityFrameworkCore;
 namespace Kundenportal.AdminUi.Infrastructure.Persistence;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options), IApplicationDbContext
+	: IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options), IApplicationDbContext
 {
-    public DbSet<StructureGroup> StructureGroups { get; set; } = null!;
+	public DbSet<StructureGroup> StructureGroups { get; set; } = null!;
 
-    public DbSet<PendingStructureGroup> PendingStructureGroups { get; set; } = null!;
+	public DbSet<PendingStructureGroup> PendingStructureGroups { get; set; } = null!;
 
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        base.OnModelCreating(builder);
-        builder.ApplyConfigurationsFromAssembly(typeof(IInfrastructureMarker).Assembly);
+	protected override void OnModelCreating(ModelBuilder builder)
+	{
+		base.OnModelCreating(builder);
+		builder.ApplyConfigurationsFromAssembly(typeof(IInfrastructureMarker).Assembly);
 
-        builder.AddTransactionalOutboxEntities();
-    }
+		builder.AddTransactionalOutboxEntities();
+	}
 }

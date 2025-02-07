@@ -6,18 +6,17 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Configurations;
 
 public sealed class PendingStructureGroupEntityTypeConfiguration : IEntityTypeConfiguration<PendingStructureGroup>
 {
-    public void Configure(EntityTypeBuilder<PendingStructureGroup> builder)
-    {
+	public void Configure(EntityTypeBuilder<PendingStructureGroup> builder)
+	{
+		builder.HasKey(x => x.Id);
 
-        builder.HasKey(x => x.Id);
+		builder.Property(x => x.Name)
+			.IsRequired()
+			.HasMaxLength(StructureGroup.MaxLengthName);
 
-        builder.Property(x => x.Name)
-            .IsRequired()
-            .HasMaxLength(StructureGroup.MaxLengthName);
-
-        builder.HasIndex(x => new
-        {
-            x.Name
-        }).IsUnique();
-    }
+		builder.HasIndex(x => new
+		{
+			x.Name
+		}).IsUnique();
+	}
 }

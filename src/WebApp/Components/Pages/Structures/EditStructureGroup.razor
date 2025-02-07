@@ -6,41 +6,41 @@
 @rendermode InteractiveServer
 
 @{
-    string title = Id.HasValue ? Texts.TitleEditStructureGroup : Texts.TitleCreateStructureGroup;
+	var title = Id.HasValue ? Texts.TitleEditStructureGroup : Texts.TitleCreateStructureGroup;
 }
 
 <PageTitle>@title</PageTitle>
 <h3>@title</h3>
 
-<DisplayMessage Message="@_errorMessage" Type="DisplayMessageType.Danger" OnClose="@ResetErrorMessage" />
+<DisplayMessage Message="@_errorMessage" Type="DisplayMessageType.Danger" OnClose="@ResetErrorMessage"/>
 
 <EditForm FormName="edit-structure-group" EditContext="_editContext" OnSubmit="@OnSubmitAsync">
-    <DataAnnotationsValidator />
+	<DataAnnotationsValidator/>
 
-    @{
-        string? validatingDisabledChoice = _submitted ? "disabled" : null;
-        string? validatingReadonlyChoice = _submitted ? "readonly" : null;
-    }
+	@{
+		var validatingDisabledChoice = _submitted ? "disabled" : null;
+		var validatingReadonlyChoice = _submitted ? "readonly" : null;
+	}
 
-    <div class="mb-2">
-        <div class="form-floating">
-            <InputText placeholder=""
-                       class="form-control"
-                       @bind-Value="_model.Name"
-                       readonly="@validatingReadonlyChoice"
-                       disabled="@validatingDisabledChoice"
-                       maxlength="@StructureGroup.MaxLengthName"
-                        ></InputText>
-            <label for="name">@Texts.LabelEditStructureGroupName</label>
-            <ValidationMessage For="() => _model.Name"></ValidationMessage>
-        </div>
-    </div>
+	<div class="mb-2">
+		<div class="form-floating">
+			<InputText placeholder=""
+			           class="form-control"
+			           @bind-Value="_model.Name"
+			           readonly="@validatingReadonlyChoice"
+			           disabled="@validatingDisabledChoice"
+			           maxlength="@StructureGroup.MaxLengthName">
+			</InputText>
+			<label for="name">@Texts.LabelEditStructureGroupName</label>
+			<ValidationMessage For="() => _model.Name"></ValidationMessage>
+		</div>
+	</div>
 
-    <button class="btn btn-primary d-flex gap-2 align-items-center @validatingDisabledChoice" disabled="@validatingDisabledChoice" type="submit">
-        @if (_submitted)
-        {
-            <span class="spinner-grow spinner-grow-sm"></span>
-        }
-        <span>@Texts.ButtonTextCreate</span>
-    </button>
+	<button class="btn btn-primary d-flex gap-2 align-items-center @validatingDisabledChoice" disabled="@validatingDisabledChoice" type="submit">
+		@if (_submitted)
+		{
+			<span class="spinner-grow spinner-grow-sm"></span>
+		}
+		<span>@Texts.ButtonTextCreate</span>
+	</button>
 </EditForm>
