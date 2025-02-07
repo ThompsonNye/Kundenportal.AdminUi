@@ -1,7 +1,7 @@
 FROM docker.io/alpine:latest
 
 # Install dependencies first to prevent reinstalling when a file changes
-RUN apk add --update dos2unix curl
+RUN apk add --update dos2unix curl jq
 
 RUN mkdir -p /scripts
 COPY ./create-structures-folder.sh /scripts
