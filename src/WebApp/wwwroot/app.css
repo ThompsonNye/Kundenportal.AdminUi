@@ -67,21 +67,21 @@ h1:focus {
 }
 
 .link-as-button {
+    color: currentColor;
     padding: .25em;
-    border: 1px solid var(--bs-dark);
-    border-radius: var(--border-radius);
     min-width: 2em;
+    border: 1px solid currentColor;
+    border-radius: var(--border-radius);
 }
 
 a.link-as-button {
-    color: var(--bs-dark);
     text-decoration: none;
-    transition: 0.3s;
+    transition: 0.1s;
 }
 
 .link-as-button:focus-visible, .link-as-button:hover {
-    color: var(--bs-light);
-    background-color: var(--bs-dark); 
+    color: currentColor;
+    border-color: currentColor;
 }
 
 .dropdown-focusable {
@@ -91,5 +91,5 @@ a.link-as-button {
 }
 
 .dropdown-focusable:focus-visible, .dropdown-focusable:hover {
-    border-color: var(--bs-dark);
+    border-color: currentColor;
 }
