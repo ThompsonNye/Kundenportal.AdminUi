@@ -3,6 +3,7 @@ using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Filters;
 using Kundenportal.AdminUi.Application.Preferences;
+using Kundenportal.AdminUi.Infrastructure.Options;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ public static class DependencyInjectionExtensions
     {
         services.AddApplicationDbContext(configuration);
 
-        services.AddMessaging();
+        services.AddMessaging(configuration);
 
         return services;
     }
@@ -42,7 +43,7 @@ public static class DependencyInjectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddMessaging(this IServiceCollection services)
+    private static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMassTransit(x =>
         {
@@ -53,6 +54,8 @@ public static class DependencyInjectionExtensions
 
             x.UsingRabbitMq((context, cfg) =>
             {
+                ConfigureHost(cfg, configuration);
+
                 cfg.UseConsumeFilter(typeof(ValidationFilter<>), context);
 
                 cfg.UseDelayedRedelivery(r =>
@@ -77,5 +80,27 @@ public static class DependencyInjectionExtensions
         });
 
         return services;
+    }
+
+    /// <summary>
+    /// Configures the RabbitMq instance connection details. Retrieves the options to use from configuration or falls back to the default values.
+    /// </summary>
+    /// <param name="cfg"></param>
+    /// <param name="configuration"></param>
+    private static void ConfigureHost(IRabbitMqBusFactoryConfigurator cfg, IConfiguration configuration)
+    {
+        RabbitMqOptions rabbitMqOptions = configuration
+            .GetSection(RabbitMqOptions.SectionName)
+            .Get<RabbitMqOptions>()
+            ?? new RabbitMqOptions();
+
+        cfg.Host(
+            rabbitMqOptions.Host,
+            rabbitMqOptions.VirtualHost,
+            h =>
+            {
+                h.Username(rabbitMqOptions.Username);
+                h.Password(rabbitMqOptions.Password);
+            });
     }
 }
