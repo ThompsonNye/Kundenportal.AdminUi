@@ -105,11 +105,15 @@ unit and integration tests:
 
         - dotnet tool restore
         - dotnet restore
-        - dotnet test --no-restore $(echo $TEST_FILTER) --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory ./$TEST_RESULTS_DIRECTORY --logger:"junit;LogFileName={assembly}.test-results.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+        - dotnet test --no-restore $(echo $TEST_FILTER) --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory $TEST_RESULTS_DIRECTORY --logger:"junit;LogFileName={assembly}.test-results.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
     coverage: '/Coverage: (\d{1,3}\.?\d{0,2})%/'
-    
     rules:
         - !reference [.prepare.run-always, rules]
+    artifacts:
+        paths:
+            - $TEST_RESULTS_DIRECTORY
+        name: TestResults
+        expire_in: 1min
 
 code coverage:
     stage: coverage
@@ -128,8 +132,6 @@ code coverage:
         - chmod +x $SCRIPT_PATH
         - $SCRIPT_PATH $COVERAGE_REPORT_DIR/index.html $COVERAGE_TYPE
     dependencies:
-        - unit and integration tests
-    needs:
         - unit and integration tests
     rules:
         - !reference [.prepare.run-always, rules]
