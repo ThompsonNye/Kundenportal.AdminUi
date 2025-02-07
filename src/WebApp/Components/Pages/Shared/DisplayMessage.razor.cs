@@ -23,10 +23,10 @@ public partial class DisplayMessage
         [DisplayMessageType.Warning] = "exclamation-circle",
         [DisplayMessageType.Danger] = "x-circle"
     };
-    
+
     [Parameter]
     public string? Message { get; set; }
-    
+
     [Parameter]
     [EditorRequired]
     public DisplayMessageType Type { get; set; }
@@ -48,7 +48,7 @@ public partial class DisplayMessage
 
     private Task OnCloseClickedAsync()
     {
-        return !OnClose.HasDelegate ? Task.CompletedTask : OnClose.InvokeAsync();
+        return OnClose.HasDelegate ? OnClose.InvokeAsync() : Task.CompletedTask;
     }
 }
 

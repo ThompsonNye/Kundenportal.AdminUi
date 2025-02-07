@@ -165,4 +165,7 @@
   <data name="NoStructureGroups" xml:space="preserve">
     <value>Keine Strukturgruppen gefunden.</value>
   </data>
+  <data name="GenericErrorMessage" xml:space="preserve">
+    <value>Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</value>
+  </data>
 </root>

@@ -5,6 +5,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations;
+using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
 
 namespace Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
@@ -33,6 +34,8 @@ public partial class EditStructureGroup
     private readonly EditContext _editContext;
     private readonly ValidationMessageStore _validationMessageStore;
 
+    private string? _errorMessage;
+    
     public EditStructureGroup()
     {
         _editContext = new EditContext(_model);
@@ -46,6 +49,7 @@ public partial class EditStructureGroup
         try
         {
             _validationMessageStore.Clear();
+            
             _submitted = true;
 
             await OnSubmitLogicAsync();
@@ -71,17 +75,35 @@ public partial class EditStructureGroup
             return;
         }
 
-        await TriggerCreationOfStructureGroupFolderAsync();
+        bool success = await CreatePendingStructureGroupAsync();
+        if (!success)
+        {
+            return;
+        }
+        
         NavigationManager!.NavigateTo(StructureGroups.Route);
     }
 
-    private async Task TriggerCreationOfStructureGroupFolderAsync()
+    private async Task<bool> CreatePendingStructureGroupAsync()
     {
-        Logger!.LogInformation("Name: {Name}", _model.Name);
-        await PublishEndpoint!.Publish(new CreateStructureGroupCommand
+        try
         {
-            Name = _model.Name
-        });
+            PendingStructureGroup pendingStructureGroup = new()
+            {
+                Id = Guid.NewGuid(),
+                Name = _model.Name
+            };
+            await StructureGroupsService!.AddPendingAsync(pendingStructureGroup);
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger!.LogError(ex, "Failed to create pending structure group");
+            _errorMessage = Texts.GenericErrorMessage;
+        }
+
+        return false;
     }
 
     private async Task<bool> RunCustomValidationAsync()
@@ -94,6 +116,12 @@ public partial class EditStructureGroup
         }
 
         return !folderExists;
+    }
+
+    private void ResetErrorMessage()
+    {
+        _errorMessage = null;
+        StateHasChanged();
     }
 
     public class Model

@@ -69,6 +69,15 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut..
+        /// </summary>
+        public static string GenericErrorMessage {
+            get {
+                return ResourceManager.GetString("GenericErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string LabelEditStructureGroupName {

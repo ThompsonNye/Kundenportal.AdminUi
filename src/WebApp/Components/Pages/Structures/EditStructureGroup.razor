@@ -12,7 +12,9 @@
 <PageTitle>@title</PageTitle>
 <h3>@title</h3>
 
-<EditForm FormName="edit-structure-group" EditContext="_editContext" OnSubmit="OnSubmitAsync">
+<DisplayMessage Message="@_errorMessage" Type="DisplayMessageType.Danger" OnClose="@ResetErrorMessage" />
+
+<EditForm FormName="edit-structure-group" EditContext="_editContext" OnSubmit="@OnSubmitAsync">
     <DataAnnotationsValidator />
 
     @{

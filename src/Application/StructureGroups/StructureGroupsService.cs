@@ -2,7 +2,9 @@
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Kundenportal.AdminUi.Application.StructureGroups;
@@ -13,18 +15,24 @@ public interface IStructureGroupsService
     
     Task<IEnumerable<PendingStructureGroup>> GetPendingAsync(CancellationToken cancellationToken = default);
 
+    Task AddPendingAsync(PendingStructureGroup pendingStructureGroup, CancellationToken cancellationToken = default);
+
     Task<bool> DoesStructureGroupExistAsync(string name, CancellationToken cancellationToken = default);
 }
 
 public sealed class StructureGroupsService(
     IApplicationDbContext dbContext,
     INextcloudApi nextcloud,
-    IOptions<NextcloudOptions> nextcloudOptions)
+    IOptions<NextcloudOptions> nextcloudOptions,
+    IPublishEndpoint publishEndpoint,
+    ILogger<StructureGroupsService> logger)
     : IStructureGroupsService
 {
     private readonly IApplicationDbContext _dbContext = dbContext;
     private readonly INextcloudApi _nextcloud = nextcloud;
     private readonly IOptions<NextcloudOptions> _nextcloudOptions = nextcloudOptions;
+    private readonly IPublishEndpoint _publishEndpoint = publishEndpoint;
+    private readonly ILogger<StructureGroupsService> _logger = logger;
 
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
@@ -54,6 +62,23 @@ public sealed class StructureGroupsService(
         {
             _semaphore.Release();
         }
+    }
+
+    public async Task AddPendingAsync(PendingStructureGroup pendingStructureGroup, CancellationToken cancellationToken = default)
+    {
+        _logger.LogDebug("Creating pending structure group with id {Id} and name {Name}", pendingStructureGroup.Id, pendingStructureGroup.Name);
+
+        _dbContext.PendingStructureGroups.Add(pendingStructureGroup);
+
+        await _publishEndpoint.Publish(new PendingStructureGroupCreated
+        {
+            Id = pendingStructureGroup.Id,
+            Name = pendingStructureGroup.Name
+        }, cancellationToken);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("Pending structure group created");
     }
 
     public async Task<bool> DoesStructureGroupExistAsync(string name, CancellationToken cancellationToken = default)

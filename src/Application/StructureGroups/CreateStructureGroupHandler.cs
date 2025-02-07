@@ -28,7 +28,6 @@ public sealed class CreateStructureGroupHandler(
         await CreateFolderInNextcloudAsync(context);
 
         await UpdateDbAsync(context);
-        await PublishEventAsync(context);
     }
 
     private async Task CreateFolderInNextcloudAsync(ConsumeContext<PendingStructureGroupCreated> context)
@@ -68,6 +67,12 @@ public sealed class CreateStructureGroupHandler(
                 _dbContext.PendingStructureGroups.Remove(pendingStructureGroup);
             }
             
+            await context.Publish(new StructureGroupCreated
+            {
+                Id = context.Message.Id,
+                Name = context.Message.Name
+            });
+            
             await _dbContext.SaveChangesAsync(context.CancellationToken);
             
             _logger.LogDebug("Saved structure group with {Id} and removed pending structure group with same id in database", context.Message.Id);
@@ -77,24 +82,6 @@ public sealed class CreateStructureGroupHandler(
             _logger.LogError(ex, "Failed to save the structure group in the db");
             
             // TODO Delete folder in Nextcloud?
-        }
-    }
-
-    private async Task PublishEventAsync(ConsumeContext<PendingStructureGroupCreated> context)
-    {
-        try
-        {   
-            await context.Publish(new StructureGroupCreated
-            {
-                Id = context.Message.Id,
-                Name = context.Message.Name
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to publish event");
-            
-            // TODO Do something here?
         }
     }
 }

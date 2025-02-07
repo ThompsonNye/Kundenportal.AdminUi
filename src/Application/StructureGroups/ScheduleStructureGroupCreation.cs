@@ -2,7 +2,7 @@
 
 namespace Kundenportal.AdminUi.Application.StructureGroups;
 
-public class CreateStructureGroupCommand
+public class ScheduleStructureGroupCreation
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 
