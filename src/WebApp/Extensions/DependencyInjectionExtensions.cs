@@ -58,6 +58,7 @@ public static class DependencyInjectionExtensions
 			{
 				t.AddAspNetCoreInstrumentation()
 					.AddHttpClientInstrumentation()
+					.AddEntityFrameworkCoreInstrumentation()
 					.AddOtlpExporter()
 					.AddSource(DiagnosticHeaders.DefaultListenerName)
 					.AddSource(activitySource.Name);
