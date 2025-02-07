@@ -1,12 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using NSubstitute.Core;
 using Serilog.Core;
 
-namespace Application.Tests.Unit;
+namespace SharedUnitTestLogic;
 
 public static partial class LoggerTestExtensions
 {

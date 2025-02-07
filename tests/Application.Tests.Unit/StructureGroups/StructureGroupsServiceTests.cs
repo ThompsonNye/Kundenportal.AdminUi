@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using SharedUnitTestLogic;
 
 namespace Application.Tests.Unit.StructureGroups;
 
