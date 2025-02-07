@@ -23,9 +23,31 @@ public sealed class CreateStructureGroupHandler(
 
     public async Task Consume(ConsumeContext<PendingStructureGroupCreated> context)
     {
+        if (await StructureGroupExistsAsync(context))
+        {
+            return;
+        }
+        
         await CreateFolderInNextcloudAsync(context);
 
         await UpdateDbAsync(context);
+    }
+
+    private async Task<bool> StructureGroupExistsAsync(ConsumeContext<PendingStructureGroupCreated> context)
+    {
+        try
+        {
+            StructureGroup? existingStructureGroup = await _dbContext.StructureGroups.FindAsync(
+                [context.Message.Id], context.CancellationToken);
+            return existingStructureGroup is not null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to check whether the structure group already exists");
+            
+            // Rethrowing the exception here so MassTransit automatically retries later
+            throw;
+        }
     }
 
     private async Task CreateFolderInNextcloudAsync(ConsumeContext<PendingStructureGroupCreated> context)
