@@ -83,3 +83,13 @@ Der Präfix kann, muss aber nicht genutzt werden. Er bietet die Möglichkeit, di
 | `OTEL_SERVICE_NAME`           |                                                                         | Sinnvoll     | Service Name for the Application in OpenTelemetry traces. Nur als Umgebungsvariable. | 
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | http://localhost:4318                                                   | Nein         | Der Endpoint für den OpenTelemetry Exporter                                          |
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | http/protobuf                                                           | Nein         | Das OLTP Protokoll. Erlaubte Werte: grpc, http/protobuf                              |
+
+## Projektaufbau
+
+Der Aufbau des Codes orientiert sich lose an der Clean Architecture. Allerdings wird auf das Domain Projekt verzichtet,
+da kein Domain Driven Design (DDD) eingesetzt wird und das Domain Projekt daher sonst nur die Models beinhalten würde.
+Die Models wurden daher einfach im Application Projekt angelegt.
+
+Außerdem werden Services im Application Projekt, die zum gleichen Feature gehören, in wenig im Sinne von Vertical Slices
+zusammen abgelegt, teilweise auch in der gleichen Datei. Hier wird aber bisher nicht strikt darauf geachtet, dabei 
+eine Strategie konsequent umzusetzen.
