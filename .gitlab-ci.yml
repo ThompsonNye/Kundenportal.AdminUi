@@ -97,13 +97,7 @@ compile:
     stage: build
     image: $DOTNET_SDK_IMAGE
     script:
-        # Since the Docker Compose project files are in the root, the building needs to be specific about the projects
-
-        # Build the WebApp project which will also build all of its dependencies
-        - dotnet build src/WebApp/WebApp.csproj
-
-        # Then build all C# projects in the tests folder
-        - find tests/ -iname *.csproj -exec dotnet build {} \;
+        - dotnet build
 
 unit and integration tests:
     stage: test
