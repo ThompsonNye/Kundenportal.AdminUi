@@ -116,7 +116,7 @@ code coverage:
     script:
         - pwd
         - ls -lha
-        - ls -lha $TEST_RESULTS_DIRECTORY
+        - find . -iname coverage.cobertura.xml
 
         - dotnet tool restore
         - dotnet reportgenerator -reports:"./$TEST_RESULTS_DIRECTORY/*/coverage.cobertura.xml" -targetdir:"$COVERAGE_REPORT_DIR" -reporttypes:Html
