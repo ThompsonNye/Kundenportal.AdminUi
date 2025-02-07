@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using OpenTelemetry.Trace;
 using System.Diagnostics;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Kundenportal.AdminUi.WebApp.Extensions;
 
@@ -57,8 +59,21 @@ public static class DependencyInjectionExtensions
 			.WithTracing(t =>
 			{
 				t.AddAspNetCoreInstrumentation()
-					.AddHttpClientInstrumentation()
 					.AddEntityFrameworkCoreInstrumentation()
+					.AddHttpClientInstrumentation(o =>
+					{
+						o.EnrichWithHttpResponseMessage = (activity, message) =>
+						{
+							if (message.StatusCode == HttpStatusCode.NotFound &&
+								message.RequestMessage?.Method == new HttpMethod("PROPFIND") &&
+							    message.RequestMessage?.RequestUri.AbsolutePath is { } path &&
+							    new Regex(@"/remote\.php/dav/files/admin/[a-zA-Z0-9-_]+/[a-zA-Z0-9-_]+").IsMatch(path)
+							    )
+							{
+								activity.SetStatus(ActivityStatusCode.Ok);
+							}
+						};
+					})
 					.AddOtlpExporter()
 					.AddSource(DiagnosticHeaders.DefaultListenerName)
 					.AddSource(activitySource.Name);
