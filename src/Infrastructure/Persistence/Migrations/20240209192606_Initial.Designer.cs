@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240207201716_Initial")]
+    [Migration("20240209192606_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -92,13 +92,16 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Kundenportal.AdminUi.Application.Models.StructureGroup", b =>
                 {
-                    b.Property<Guid?>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Path")
                         .IsRequired()

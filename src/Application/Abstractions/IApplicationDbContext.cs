@@ -7,7 +7,5 @@ public interface IApplicationDbContext
 {
     DbSet<StructureGroup> StructureGroups { get; }
 
-    DbSet<PendingStructureGroup> PendingStructureGroups { get; }
-
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

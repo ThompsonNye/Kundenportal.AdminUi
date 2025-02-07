@@ -11,15 +11,84 @@
 <PageTitle>@title</PageTitle>
 <h3>@title</h3>
 
-<EditForm FormName="edit-structure-group" Model="_model" OnValidSubmit="OnValidSubmitAsync">
+<EditForm FormName="edit-structure-group" EditContext="_editContext" OnSubmit="OnSubmitAsync">
     <DataAnnotationsValidator />
-    <div class="form-floating mb-2">
-        <InputText
-            placeholder=""
-            class="form-control"
-            @bind-Value="_model.Name"></InputText>
-        <label for="name" class="form-label">@Texts.LabelEditStructureGroupName</label>
-        <ValidationMessage For="() => _model.Name"></ValidationMessage>
+    
+    <div class="mb-4">
+        @for (int i = 0; i < _model.PathParts.Count; i++)
+        {
+            int index = i;
+            bool isLastItem = index >= (_model.PathParts.Count - 1);
+            string labelFor = $"pathparts_{i}";
+            string label = $"{Texts.LabelEditStructureGroupPathPart} {i + 1}";
+
+            <div class="@(!isLastItem ? "mb-2" : null)">
+                @if (!isLastItem)
+                {
+                    <div class="form-floating">
+                        <input type="text"
+                               placeholder=""
+                               class="form-control"
+                               @bind:event="oninput"
+                               @bind:get="_model.PathParts[index]"
+                               @bind:set="value => _model.PathParts[index] = value" />
+                        <label for="@labelFor" class="form-label">@label</label>
+                    </div>
+                }
+                else
+                {
+                    bool isFilled = !string.IsNullOrWhiteSpace(_model.PathParts[index]);
+                    string? disabledChoice = !isFilled ? "disabled" : null;
+                    
+                    <div class="input-group">
+                        <div class="form-floating flex-grow-1">
+                            <input type="text"
+                                   placeholder=""
+                                   class="form-control border-radius-right-0"
+                                   @bind:event="oninput"
+                                   @bind:get="_model.PathParts[index]"
+                                   @bind:set="value => _model.PathParts[index] = value" />
+                            <label for="@labelFor" class="form-label">@label</label>
+                        </div>
+                        <button 
+                            type="button" 
+                            title="@Texts.ButtonTitleEditStructureGroupAddPathPart" 
+                            class="btn btn-outline-secondary @disabledChoice" 
+                            disabled="@disabledChoice" 
+                            @onclick=AddPathPart>
+                            <i class="bi bi-plus fs-5"></i>
+                        </button>
+                    </div>
+                }
+                <div class="tmp">
+                    <ValidationMessageForNamedField For="@GetFieldIdNameForPathPart(index)"></ValidationMessageForNamedField>
+                </div>
+            </div>
+        }
+        <ValidationMessage For="() => _model.PathParts"></ValidationMessage>
+        @if (_model.PathPartsUntilFirstEmpty.Any())
+        {
+            <div>
+                <div class="form-text">Resulting path:</div>
+                <div class="form-text d-flex gap-2">
+                    @foreach (string value in _model.PathPartsUntilFirstEmpty)
+                    {
+                        <span>/</span>
+                        <span>@value</span>
+                    }
+                </div>
+            </div>
+        }
     </div>
-    <button class="btn btn-primary" type="submit">Ok</button>
+
+    @{
+        string? validatingDisabledChoice = _validating ? "disabled" : null;
+    }
+    <button class="btn btn-primary d-flex gap-2 align-items-center @validatingDisabledChoice" disabled="@validatingDisabledChoice" type="submit">
+        @if (_validating)
+        {
+            <span class="spinner-grow spinner-grow-sm"></span>
+        }
+        <span>Ok</span>
+    </button>
 </EditForm>

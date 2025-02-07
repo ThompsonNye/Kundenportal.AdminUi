@@ -1,6 +1,9 @@
 volumes:
   kundenportal_adminui-dev-db-data:
   kundenportal_adminui-dev-broker-data:
+  kundenportal_adminui-dev-nextcloud-data:
+  kundenportal_adminui-dev-nextcloud-db-data:
+  kundenportal_adminui-dev-mail-data:
 
 services:
   kundenportal.adminui.db:
@@ -22,3 +25,62 @@ services:
       - 5672:5672
     volumes:
       - kundenportal_adminui-dev-broker-data:/var/lib/rabbitmq
+
+  kundenportal.adminui.nextcloud:
+    image: docker.io/nextcloud:production
+    volumes:
+      - kundenportal_adminui-dev-nextcloud-data:/var/www/html
+    environment:
+      MYSQL_HOST: kundenportal.adminui.nextcloud.db
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: dbpassword
+      NEXTCLOUD_ADMIN_USER: admin
+      NEXTCLOUD_ADMIN_PASSWORD: admin1+.
+    restart: unless-stopped
+    ports:
+      - 50000:80
+    depends_on:
+      kundenportal.adminui.nextcloud.db:
+        condition: service_healthy
+    healthcheck:
+      test: curl -sSf 'http://localhost/status.php' | grep '"installed":true' | grep '"maintenance":false' | grep '"needsDbUpgrade":false' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kundenportal.adminui.nextcloud.db:
+    image: docker.io/mariadb:10.6
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    volumes:
+      - kundenportal_adminui-dev-nextcloud-db-data:/var/lib/mysql
+    environment:
+      MARIADB_DATABASE: nextcloud
+      MARIADB_USER: dbuser
+      MARIADB_PASSWORD: dbpassword
+      MARIADB_RANDOM_ROOT_PASSWORD: "true"
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: "mysqladmin ping -u $$MARIADB_USER --password=$$MARIADB_PASSWORD | grep 'mysqld is alive' || exit 1"
+      start_period: 5s
+      interval: 2s
+      timeout: 2s
+      retries: 5
+
+  kundenportal.adminui.mail:
+    image: docker.io/maildev/maildev:2.1.0
+    restart: unless-stopped
+    environment:
+      MAILDEV_MAIL_DIRECTORY: /var/opt/maildev
+      MAILDEV_SMTP_PORT: 25
+      MAILDEV_INCOMING_USER: mailuser
+      MAILDEV_INCOMING_PASS: mailpassword
+    volumes:
+      - kundenportal_adminui-dev-mail-data:/var/opt/maildev
+    # Default user is node (uid 1000). But volumes are owned by root, so the user in the container has to be root
+    user: "root:root"
+    ports:
+      - 1025:25
+      - 50001:1080

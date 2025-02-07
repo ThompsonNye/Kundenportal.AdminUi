@@ -39,10 +39,10 @@
 <div id="structure-groups">
     @foreach(var group in _model.StructureGroups)
     {
-        string optionsId = $"options-{group.Id!.Value}";
+        string optionsId = $"options-{group.Id}";
         
         <div class="d-flex justify-content-between">
-            <div id="group-@(group.Id!.Value)-details" class="d-flex w-100 justify-content-between">
+            <div id="group-@(group.Id)-details" class="d-flex w-100 justify-content-between">
                 <span class="w-100">@group.Name</span>
                 <span class="w-100">@group.Path</span>
             </div>
@@ -58,7 +58,7 @@
                 <ul class="dropdown-menu" aria-labelledby="@optionsId">
                     <StructureGroupOverviewOption 
                         Title="@Texts.TitleEditStructureGroup"
-                        OnClick="() => OnEditStructureGroupClicked(group.Id.Value)"
+                        OnClick="() => OnEditStructureGroupClicked(group.Id)"
                         AdditionalCss="bi-pencil"
                     />
                     <StructureGroupOverviewOption 

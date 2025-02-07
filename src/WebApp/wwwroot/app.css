@@ -93,3 +93,12 @@ a.link-as-button {
 .dropdown-focusable:focus-visible, .dropdown-focusable:hover {
     border-color: currentColor;
 }
+
+.border-radius-right-0 {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.ml-1 {
+    margin-left: .25rem !important;
+}

@@ -57,7 +57,8 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Path = table.Column<string>(type: "text", nullable: false)
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    ParentId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {

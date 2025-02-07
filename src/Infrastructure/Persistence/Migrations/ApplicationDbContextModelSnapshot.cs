@@ -87,37 +87,18 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Kundenportal.AdminUi.Application.Models.PendingStructureGroup", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name", "Path")
-                        .IsUnique();
-
-                    b.ToTable("PendingStructureGroups", (string)null);
-                });
-
             modelBuilder.Entity("Kundenportal.AdminUi.Application.Models.StructureGroup", b =>
                 {
-                    b.Property<Guid?>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Path")
                         .IsRequired()

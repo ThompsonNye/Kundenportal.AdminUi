@@ -11,16 +11,20 @@ public static class CreateStructureGroup
 
         public required string Name { get; set; }
     }
-    
-    public class Handler(ILogger<Handler> logger) : IConsumer<Command>
+
+    public class Handler(
+        ILogger<Handler> logger)
+        : IConsumer<Command>
     {
         private readonly ILogger<Handler> _logger = logger;
 
-        public async Task Consume(ConsumeContext<Command> context)
+        public Task Consume(ConsumeContext<Command> context)
         {
-            _logger.LogInformation("Fake creating a structure group with id {Id} and name {Name}", context.Message.Id, context.Message.Name);
-            await Task.Delay(5000, context.CancellationToken);
-            _logger.LogInformation("Done, fake created structure group {Id} and name {Name}", context.Message.Id, context.Message.Name);
+            _logger.LogDebug("Creating a structure group with id {Id} and name {Name}", context.Message.Id, context.Message.Name);
+
+            _logger.LogWarning("Not implemented yet");
+
+            return Task.CompletedTask;
         }
     }
 }
