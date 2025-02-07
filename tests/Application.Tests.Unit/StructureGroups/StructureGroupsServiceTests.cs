@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
-namespace Application.Tests.Unit;
+namespace Application.Tests.Unit.StructureGroups;
 
 public class StructureGroupsServiceTests
 {
