@@ -69,7 +69,7 @@ namespace Kundenportal.AdminUi.WebApp {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Eine Struktur ist ein Ordner, für den Benutzer berechtigt und eine vordefinierte Ordner- und Dateistruktur angelegt werden kann..
+        ///   Looks up a localized string similar to Eine Struktur ist ein Ordner, für den Benutzer berechtigt und eine vordefinierte Ordner- und Dateistruktur angelegt werden können..
         /// </summary>
         internal static string StructureExplanation {
             get {
