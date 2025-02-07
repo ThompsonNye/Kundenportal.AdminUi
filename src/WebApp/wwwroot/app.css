@@ -1,3 +1,7 @@
+:root {
+    --border-radius: .125rem;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -63,10 +67,10 @@ h1:focus {
 }
 
 .link-as-button {
-    padding: .25rem;
+    padding: .25em;
     border: 1px solid var(--bs-dark);
-    border-radius: .125rem;
-    min-width: 2rem;
+    border-radius: var(--border-radius);
+    min-width: 2em;
 }
 
 a.link-as-button {
@@ -75,7 +79,17 @@ a.link-as-button {
     transition: 0.3s;
 }
 
-.link-as-button:hover {
+.link-as-button:focus-visible, .link-as-button:hover {
     color: var(--bs-light);
     background-color: var(--bs-dark); 
+}
+
+.dropdown-focusable {
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
+    transition: 0.1s;
+}
+
+.dropdown-focusable:focus-visible, .dropdown-focusable:hover {
+    border-color: var(--bs-dark);
 }
