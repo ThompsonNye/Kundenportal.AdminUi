@@ -2,7 +2,7 @@
 
 namespace Kundenportal.AdminUi.Application.StructureGroups;
 
-public class PendingStructureGroupCreated : CorrelatedBy<Guid>
+public class StructureGroupCreated : CorrelatedBy<Guid>
 {
     public required Guid Id { get; set; }
 

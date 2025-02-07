@@ -85,10 +85,3 @@ public sealed class CreateStructureGroupHandler(
         }
     }
 }
-
-public class StructureGroupCreated
-{
-    public required Guid Id { get; set; }
-
-    public required string Name { get; set; }
-}
