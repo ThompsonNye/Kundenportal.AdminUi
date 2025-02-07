@@ -1,0 +1,122 @@
+default:
+    image: docker:24.0.5
+    artifacts:
+        expire_in: 1h
+
+variables:
+    DOTNET_SDK_IMAGE: mcr.microsoft.com/dotnet/sdk:8.0-alpine
+    GIT_STRATEGY: clone
+    GIT_DEPTH: "0"
+
+stages:
+    - .pre
+    - build
+    - test
+    - deploy
+
+workflow:
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+        - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+          when: never
+        - if: $CI_COMMIT_BRANCH
+
+include:
+    - template: Security/SAST.gitlab-ci.yml
+    - template: Code-Quality.gitlab-ci.yml
+    - template: Jobs/Secret-Detection.latest.gitlab-ci.yml
+
+
+# ================================
+# ===== GitLab Job Templates =====
+# ================================
+
+code_quality:
+    rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+secret_detection:
+    needs: []
+    dependencies: []
+    rules:
+        - !reference [.prepare.run-always, rules]
+    artifacts:
+        paths:
+            - gl-secret-detection-report.json
+
+security-code-scan-sast:
+    needs: []
+    dependencies: []
+    rules:
+        - when: never
+
+semgrep-sast:
+    needs: []
+    dependencies: []
+    rules:
+        - !reference [.prepare.run-always, rules]
+
+# =================================
+# =========== Prepares ============
+# =================================
+
+.prepare.run-always:
+    rules:
+        - if: $CI_COMMIT_BRANCH
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+.prepare.calculate-coverage: &calculate-coverage
+    - dotnet reportgenerator -reports:"./$TEST_RESULTS_DIRECTORY/*/coverage.cobertura.xml" -targetdir:"$COVERAGE_REPORT_DIR" -reporttypes:Html
+    - sh scripts/calculate-coverage.sh ./$COVERAGE_REPORT_DIR/index.html $COVERAGE_TYPE
+
+.prepare.test-scripts: &test-scripts
+    - dotnet tool restore
+    - dotnet restore
+    - dotnet test --no-restore $(echo $TEST_FILTER) --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory ./$TEST_RESULTS_DIRECTORY --logger:"junit;LogFileName={assembly}.test-results.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+    - *calculate-coverage
+
+# =================================
+# ========== Custom Jobs ==========
+# =================================
+    
+set-env-vars:
+    stage: .pre
+    image: $DOTNET_SDK_IMAGE
+    script:
+        - apk add --update jq
+        - dotnet tool restore
+        - export VERSION_INFO=$(dotnet nbgv get-version --format json)
+        - echo "ASSEMBLY_INFORMATIONAL_VERSION=$(echo $VERSION_INFO | jq -r '.AssemblyInformationalVersion')" >> variables.env
+        - echo "VERSION=$(echo $VERSION_INFO | jq -r '.SemVer2')" >> variables.env
+        - echo "VERSION_SIMPLE=$(echo $VERSION_INFO | jq -r '.CloudBuildVersionVars.GitBuildVersionSimple')" >> variables.env
+    artifacts:
+        reports:
+            dotenv: variables.env
+
+compile:
+    stage: build
+    image: $DOTNET_SDK_IMAGE
+    script:
+        - dotnet build
+
+unit and integration tests:
+    stage: test
+    variables:
+        TEST_RESULTS_DIRECTORY: TestResults
+        COVERAGE_REPORT_DIR: CoverageReport
+        COVERAGE_TYPE: line
+        TEST_FILTER: --filter "FullyQualifiedName~Tests.Unit|FullyQualifiedName~Tests.Integration"
+    script:
+        - wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+        - chmod +x ./dotnet-install.sh
+        - ./dotnet-install.sh --channel 8.0 && export DOTNET_NOLOGO=true
+        - *test-scripts
+    coverage: '/Coverage: (\d{1,3}\.?\d{0,2})%/'
+    artifacts:
+        reports:
+            coverage_report:
+                coverage_format: cobertura
+                path: ./$TEST_RESULTS_DIRECTORY/*/coverage.cobertura.xml
+            junit: ./$TEST_RESULTS_DIRECTORY/*.test-results.xml
+    rules:
+        - !reference [.prepare.run-always, rules]
