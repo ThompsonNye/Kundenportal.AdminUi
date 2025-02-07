@@ -19,7 +19,9 @@ public class FluentOptionsValidation<TOptions>(
 	{
 		if (Name != name)
 			// Ignored if not validating this instance.
+		{
 			return ValidateOptionsResult.Skip;
+		}
 
 		// Ensure options are provided to validate against
 		ArgumentNullException.ThrowIfNull(options);
@@ -28,14 +30,22 @@ public class FluentOptionsValidation<TOptions>(
 			.Select(x => x.Validate(options))
 			.ToArray();
 
-		if (validationResults.Length == 0) return ValidateOptionsResult.Skip;
+		if (validationResults.Length == 0)
+		{
+			return ValidateOptionsResult.Skip;
+		}
 
-		if (validationResults.All(x => x.IsValid)) return ValidateOptionsResult.Success;
+		if (validationResults.All(x => x.IsValid))
+		{
+			return ValidateOptionsResult.Success;
+		}
 
 		string typeName = options.GetType().Name;
-		List<string> errors = new List<string>();
+		List<string> errors = new();
 		foreach (ValidationFailure? error in validationResults.SelectMany(x => x.Errors))
+		{
 			errors.Add($"Fluent validation failed for options '{typeName}': {error.ErrorMessage}.");
+		}
 
 		return ValidateOptionsResult.Fail(errors);
 	}

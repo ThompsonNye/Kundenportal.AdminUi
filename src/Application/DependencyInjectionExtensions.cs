@@ -58,7 +58,10 @@ public static class DependencyInjectionExtensions
 						ShouldHandle = async response =>
 						{
 							bool handledByDefault = await new HttpRetryStrategyOptions().ShouldHandle(response);
-							if (handledByDefault) return true;
+							if (handledByDefault)
+							{
+								return true;
+							}
 
 							return retryableExceptions.Contains(response.GetType());
 						}

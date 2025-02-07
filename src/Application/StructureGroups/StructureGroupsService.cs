@@ -95,7 +95,10 @@ public sealed class StructureGroupsService(
 		bool pendingGroupExists =
 			await DoesAPendingStructureGroupWithThatNameAlreadyExistAsync(name, cancellationToken);
 
-		if (pendingGroupExists) return true;
+		if (pendingGroupExists)
+		{
+			return true;
+		}
 
 		bool existsInNextcloud = await DoesStructureGroupFolderExistInNextcloudAsync(name, cancellationToken);
 		return existsInNextcloud;

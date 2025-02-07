@@ -15,8 +15,10 @@ public static partial class LoggerTestExtensions
 		MatchCollection matches = LoggingParametersRegex().Matches(message);
 
 		if (matches.Count != parameters.Length)
+		{
 			throw new InvalidOperationException(
 				"Found different number of log message parameters than object parameters");
+		}
 
 		for (int i = 0; i < matches.Count; i++)
 		{
@@ -41,8 +43,10 @@ public static partial class LoggerTestExtensions
 		MatchCollection matches = LoggingParametersRegex().Matches(message);
 
 		if (matches.Count != parameters.Length)
+		{
 			throw new InvalidOperationException(
 				"Found different number of log message parameters than object parameters");
+		}
 
 		for (int i = 0; i < matches.Count; i++)
 		{

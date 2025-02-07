@@ -90,7 +90,10 @@ public sealed class CreateStructureGroupHandler(
 
 			PendingStructureGroup? pendingStructureGroup = await _dbContext.PendingStructureGroups.FindAsync(
 				[context.Message.Id], context.CancellationToken);
-			if (pendingStructureGroup is not null) _dbContext.PendingStructureGroups.Remove(pendingStructureGroup);
+			if (pendingStructureGroup is not null)
+			{
+				_dbContext.PendingStructureGroups.Remove(pendingStructureGroup);
+			}
 
 			StructureGroupCreated structureGroupCreated = context.Message.Adapt<StructureGroupCreated>();
 			await context.Publish(structureGroupCreated);

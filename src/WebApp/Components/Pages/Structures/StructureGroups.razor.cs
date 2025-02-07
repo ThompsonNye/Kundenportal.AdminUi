@@ -21,7 +21,10 @@ public partial class StructureGroups : IAsyncDisposable
 
 	public async ValueTask DisposeAsync()
 	{
-		if (_structureGroupsConnection is not null) await _structureGroupsConnection.DisposeAsync();
+		if (_structureGroupsConnection is not null)
+		{
+			await _structureGroupsConnection.DisposeAsync();
+		}
 
 		GC.SuppressFinalize(this);
 	}

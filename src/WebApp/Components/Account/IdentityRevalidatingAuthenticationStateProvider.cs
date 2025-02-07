@@ -31,9 +31,15 @@ internal sealed class IdentityRevalidatingAuthenticationStateProvider(
 		ClaimsPrincipal principal)
 	{
 		ApplicationUser? user = await userManager.GetUserAsync(principal);
-		if (user is null) return false;
+		if (user is null)
+		{
+			return false;
+		}
 
-		if (!userManager.SupportsUserSecurityStamp) return true;
+		if (!userManager.SupportsUserSecurityStamp)
+		{
+			return true;
+		}
 
 		string? principalStamp = principal.FindFirstValue(options.Value.ClaimsIdentity.SecurityStampClaimType);
 		string userStamp = await userManager.GetSecurityStampAsync(user);

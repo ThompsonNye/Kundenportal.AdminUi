@@ -25,7 +25,10 @@ public class ExceptionHandlingMiddleware(
 	{
 		_logger.LogError(exception, "Unhandled error occurred in the application");
 
-		if (context.Response.HasStarted) return;
+		if (context.Response.HasStarted)
+		{
+			return;
+		}
 
 		ProblemHttpResult result = TypedResults.Problem(statusCode: 500);
 

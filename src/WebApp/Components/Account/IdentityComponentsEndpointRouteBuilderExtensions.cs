@@ -84,21 +84,27 @@ internal static class IdentityComponentsEndpointRouteBuilderExtensions
 		{
 			ApplicationUser? user = await userManager.GetUserAsync(context.User);
 			if (user is null)
+			{
 				return Results.NotFound($"Unable to load user with ID '{userManager.GetUserId(context.User)}'.");
+			}
 
 			string userId = await userManager.GetUserIdAsync(user);
 			downloadLogger.LogInformation("User with ID '{UserId}' asked for their personal data.", userId);
 
 			// Only include personal data for download
-			Dictionary<string, string> personalData = new Dictionary<string, string>();
+			Dictionary<string, string> personalData = new();
 			IEnumerable<PropertyInfo> personalDataProps = typeof(ApplicationUser).GetProperties().Where(
 				prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
 			foreach (PropertyInfo p in personalDataProps)
+			{
 				personalData.Add(p.Name, p.GetValue(user)?.ToString() ?? "null");
+			}
 
 			IList<UserLoginInfo> logins = await userManager.GetLoginsAsync(user);
 			foreach (UserLoginInfo l in logins)
+			{
 				personalData.Add($"{l.LoginProvider} external login provider key", l.ProviderKey);
+			}
 
 			personalData.Add("Authenticator Key", (await userManager.GetAuthenticatorKeyAsync(user))!);
 			byte[] fileBytes = JsonSerializer.SerializeToUtf8Bytes(personalData);

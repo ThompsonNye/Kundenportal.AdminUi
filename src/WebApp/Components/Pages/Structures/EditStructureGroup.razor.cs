@@ -62,13 +62,22 @@ public partial class EditStructureGroup
 	private async Task OnSubmitLogicAsync()
 	{
 		bool dataAnnotationsResult = _editContext.Validate();
-		if (!dataAnnotationsResult) return;
+		if (!dataAnnotationsResult)
+		{
+			return;
+		}
 
 		bool customValidationResult = await RunCustomValidationAsync();
-		if (!customValidationResult) return;
+		if (!customValidationResult)
+		{
+			return;
+		}
 
 		bool success = await CreatePendingStructureGroupAsync();
-		if (!success) return;
+		if (!success)
+		{
+			return;
+		}
 
 		NavigationManager!.NavigateTo(StructureGroups.Route);
 	}
@@ -105,7 +114,10 @@ public partial class EditStructureGroup
 
 		bool folderExists = await StructureGroupsService!.DoesStructureGroupExistAsync(_model.Name);
 
-		if (folderExists) _validationMessageStore.Add(() => _model.Name, Texts.ValidationErrorStructureGroupExists);
+		if (folderExists)
+		{
+			_validationMessageStore.Add(() => _model.Name, Texts.ValidationErrorStructureGroupExists);
+		}
 
 		return !folderExists;
 	}

@@ -32,7 +32,10 @@ public class ValidationFilter<T>(
 			.SelectMany(x => x.Errors)
 			.ToArray();
 
-		if (validationFailures.Length > 0) throw new ValidationException(validationFailures);
+		if (validationFailures.Length > 0)
+		{
+			throw new ValidationException(validationFailures);
+		}
 
 		await next.Send(context);
 	}

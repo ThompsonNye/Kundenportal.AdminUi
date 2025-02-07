@@ -18,7 +18,10 @@ public class NegativeRegularExpressionAttribute : ValidationAttribute
 
 	public override bool IsValid(object? value)
 	{
-		if (value is not string text) return true;
+		if (value is not string text)
+		{
+			return true;
+		}
 
 		return !Regex.IsMatch(text, _regularExpression);
 	}

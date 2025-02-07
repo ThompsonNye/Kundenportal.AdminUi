@@ -51,7 +51,9 @@ public sealed class NextcloudApi(
 		}
 
 		if (!response.IsSuccessful && response.StatusCode != 404)
+		{
 			throw new NextcloudRequestException(response.StatusCode);
+		}
 
 		return response.Resources
 			.Any(x => x.IsCollection);
@@ -69,9 +71,15 @@ public sealed class NextcloudApi(
 			$"remote.php/dav/files/{_nextcloudOptions.Value.Username}{path}",
 			parameters);
 
-		if (response.IsSuccessful) return;
+		if (response.IsSuccessful)
+		{
+			return;
+		}
 
-		if (response.StatusCode == 405) throw new NextcloudFolderExistsException(path);
+		if (response.StatusCode == 405)
+		{
+			throw new NextcloudFolderExistsException(path);
+		}
 
 		throw new NextcloudRequestException(response.StatusCode);
 	}
@@ -88,7 +96,10 @@ public sealed class NextcloudApi(
 			$"remote.php/dav/files/{_nextcloudOptions.Value.Username}{path}",
 			parameters);
 
-		if (response.IsSuccessful || response.StatusCode == 404) return;
+		if (response.IsSuccessful || response.StatusCode == 404)
+		{
+			return;
+		}
 
 		throw new NextcloudRequestException(response.StatusCode);
 	}

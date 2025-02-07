@@ -165,7 +165,7 @@ public class StructureGroupsServiceTests
 		// Arrange
 		const string structureGroupName = "path";
 
-		NextcloudOptions nextcloudOptions = new NextcloudOptions
+		NextcloudOptions nextcloudOptions = new()
 		{
 			StructureBasePath = "/"
 		};
@@ -188,7 +188,7 @@ public class StructureGroupsServiceTests
 		// Arrange
 		const string structureGroupName = "path";
 
-		NextcloudOptions nextcloudOptions = new NextcloudOptions
+		NextcloudOptions nextcloudOptions = new()
 		{
 			StructureBasePath = "/Structures"
 		};
