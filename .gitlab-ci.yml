@@ -86,11 +86,17 @@ set-env-vars:
         reports:
             dotenv: variables.env
 
-compile:
+compile app:
     stage: build
     image: $DOTNET_SDK_IMAGE
     script:
-        - dotnet build
+        - dotnet build ./src/WebApp/WebApp.csproj
+
+compile solution:
+    stage: build
+    image: $DOTNET_SDK_IMAGE
+    script:
+        - dotnet build ./Kundenportal.AdminUi.sln
 
 unit and integration tests:
     stage: test
