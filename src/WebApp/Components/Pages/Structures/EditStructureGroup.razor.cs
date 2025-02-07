@@ -1,6 +1,8 @@
 ﻿using Kundenportal.AdminUi.WebApp.Resources;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
+using Kundenportal.AdminUi.Application.StructureGroups;
+using MassTransit;
 
 namespace Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
 
@@ -14,12 +16,20 @@ public partial class EditStructureGroup
 
     [Inject]
     public ILogger<EditStructureGroup>? Logger { get; set; }
+    
+    [Inject]
+    public IPublishEndpoint? PublishEndpoint { get; init; }
+    
+    [Inject]
+    public NavigationManager? NavigationManager { get; init; }
 
     private readonly Model _model = new();
 
-    private void OnValidSubmit()
+    private async Task OnValidSubmitAsync()
     {
         Logger!.LogInformation("Name: {Name}", _model.Name);
+        await PublishEndpoint!.Publish<CreateStructureGroup.Command>(new { });
+        NavigationManager!.NavigateTo(StructureGroups.Route);
     }
 
     public class Model
