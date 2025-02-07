@@ -3,6 +3,7 @@ using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Infrastructure;
 using Kundenportal.AdminUi.WebApp;
 using Kundenportal.AdminUi.WebApp.Components;
+using Kundenportal.AdminUi.WebApp.Components.Middleware;
 using Kundenportal.AdminUi.WebApp.Endpoints;
 using Microsoft.AspNetCore.ResponseCompression;
 
@@ -52,6 +53,7 @@ app.MapAdditionalIdentityEndpoints();
 
 app.MapHubs();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapAppEndpoints();
 
 app.MapRedirectOnDefaultPath();
