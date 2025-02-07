@@ -109,6 +109,14 @@ public sealed class StructureGroupsService(
 		{
 			return true;
 		}
+		
+		bool structureGroupExists =
+			await DoesAStructureGroupWithThatNameAlreadyExistAsync(name, cancellationToken);
+
+		if (structureGroupExists)
+		{
+			return true;
+		}
 
 		bool existsInNextcloud = await DoesStructureGroupFolderExistInNextcloudAsync(name, cancellationToken);
 		return existsInNextcloud;
@@ -126,6 +134,16 @@ public sealed class StructureGroupsService(
 	{
 		bool exists = await _dbContext
 			.PendingStructureGroups
+			.AnyAsync(x => x.Name == name, cancellationToken);
+
+		return exists;
+	}
+	
+	private async Task<bool> DoesAStructureGroupWithThatNameAlreadyExistAsync(string name,
+		CancellationToken cancellationToken = default)
+	{
+		bool exists = await _dbContext
+			.StructureGroups
 			.AnyAsync(x => x.Name == name, cancellationToken);
 
 		return exists;

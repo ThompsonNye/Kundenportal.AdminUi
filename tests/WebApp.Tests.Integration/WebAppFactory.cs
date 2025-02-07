@@ -8,6 +8,7 @@ using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
 
 namespace WebApp.Tests.Integration;
+
 public sealed class WebAppFactory : WebApplicationFactory<IWebAppMarker>, IAsyncLifetime
 {
 	private const string s_dbUser = "user";
@@ -18,13 +19,6 @@ public sealed class WebAppFactory : WebApplicationFactory<IWebAppMarker>, IAsync
 
 	private const string s_rabbitMqPassword = "password";
 
-	private readonly PostgreSqlContainer _database = new PostgreSqlBuilder()
-		.WithUsername(s_dbUser)
-		.WithPassword(s_dbPassword)
-		.WithDatabase(s_dbUser)
-		.WithImage("docker.io/postgres:16-alpine")
-		.Build();
-
 	private readonly RabbitMqContainer _broker = new RabbitMqBuilder()
 		.WithImage("masstransit/rabbitmq")
 		.WithUsername(s_rabbitMqUser)
@@ -32,12 +26,35 @@ public sealed class WebAppFactory : WebApplicationFactory<IWebAppMarker>, IAsync
 		.WithPortBinding(15672, true)
 		.Build();
 
-	private readonly NextcloudServer _nextcloudServer = new();
-	public NextcloudServer NextcloudServer => _nextcloudServer;
+	private readonly PostgreSqlContainer _database = new PostgreSqlBuilder()
+		.WithUsername(s_dbUser)
+		.WithPassword(s_dbPassword)
+		.WithDatabase(s_dbUser)
+		.WithImage("docker.io/postgres:16-alpine")
+		.Build();
+
+	private DbRespawner? _dbRespawner;
+	public NextcloudServer NextcloudServer { get; } = new();
+
+	public async Task InitializeAsync()
+	{
+		Task databaseStartup = _database.StartAsync();
+		Task brokerStartup = _broker.StartAsync();
+		await Task.WhenAll(databaseStartup, brokerStartup);
+
+		// Force the application startup logic
+		_ = CreateClient();
+
+		_dbRespawner = await DbRespawner.CreateAsync(_database.GetConnectionString());
+	}
+
+	async Task IAsyncLifetime.DisposeAsync()
+	{
+		await _database.DisposeAsync();
+	}
 
 	protected override void ConfigureWebHost(IWebHostBuilder builder)
 	{
-
 		builder.UseConfiguration(new ConfigurationBuilder()
 			.AddInMemoryCollection([
 				new KeyValuePair<string, string?>("ConnectionStrings:Database", _database.GetConnectionString()),
@@ -57,18 +74,8 @@ public sealed class WebAppFactory : WebApplicationFactory<IWebAppMarker>, IAsync
 		});
 	}
 
-	public async Task InitializeAsync()
+	public async Task ResetDatabaseAsync()
 	{
-		Task databaseStartup = _database.StartAsync();
-		Task brokerStartup = _broker.StartAsync();
-		await Task.WhenAll(databaseStartup, brokerStartup);
-
-		// Force the application startup logic
-		_ = CreateClient();
-	}
-
-	async Task IAsyncLifetime.DisposeAsync()
-	{
-		await _database.DisposeAsync();
+		await _dbRespawner!.ResetDatabaseAsync();
 	}
 }
