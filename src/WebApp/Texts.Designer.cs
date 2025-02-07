@@ -69,6 +69,24 @@ namespace Kundenportal.AdminUi.WebApp {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Eine Struktur ist ein Ordner, für den Benutzer berechtigt und eine vordefinierte Ordner- und Dateistruktur angelegt werden kann..
+        /// </summary>
+        internal static string StructureExplanation {
+            get {
+                return ResourceManager.GetString("StructureExplanation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eine Strukturgruppe ist lediglich eine Gruppierung von Strukturen und wird als Ordner realisiert. So können zusammengehörende Strukturen gemeinsam angelegt werden..
+        /// </summary>
+        internal static string StructureGroupExplanation {
+            get {
+                return ResourceManager.GetString("StructureGroupExplanation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Struktur erstellen.
         /// </summary>
         internal static string TitleCreateStructure {

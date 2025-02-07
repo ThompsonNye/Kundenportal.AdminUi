@@ -27,4 +27,10 @@
     <data name="TitleCreateStructure" xml:space="preserve">
         <value>Struktur erstellen</value>
     </data>
+    <data name="StructureGroupExplanation" xml:space="preserve">
+        <value>Eine Strukturgruppe ist lediglich eine Gruppierung von Strukturen und wird als Ordner realisiert. So können zusammengehörende Strukturen gemeinsam angelegt werden.</value>
+    </data>
+    <data name="StructureExplanation" xml:space="preserve">
+        <value>Eine Struktur ist ein Ordner, für den Benutzer berechtigt und eine vordefinierte Ordner- und Dateistruktur angelegt werden kann.</value>
+    </data>
 </root>

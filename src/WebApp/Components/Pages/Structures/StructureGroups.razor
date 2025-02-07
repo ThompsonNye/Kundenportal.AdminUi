@@ -1,11 +1,29 @@
 ﻿@attribute [Route($"/{Route}")]
 @using Microsoft.AspNetCore.Authorization
-@using Npgsql.Replication.TestDecoding
 @rendermode InteractiveServer
 @attribute [Authorize]
 
 <PageTitle>@Texts.TitleStructureGroups</PageTitle>
 <h3>@Texts.TitleStructureGroups</h3>
+
+@{
+    string structureGroupExplanation = Texts.StructureGroupExplanation;
+    string structureExplanation = Texts.StructureExplanation;
+    bool showExplanationAlert = !string.IsNullOrEmpty(structureGroupExplanation) || !string.IsNullOrEmpty(structureExplanation);
+}
+
+@if (showExplanationAlert)
+{
+    <div class="my-2">
+        <DisplayMessage Type="DisplayMessageType.Info">
+            <div class="d-inline-flex flex-column gap-2">
+                <div>@structureGroupExplanation</div>
+                <div>@structureExplanation</div>
+            </div>
+        </DisplayMessage>
+    </div>
+}
+
 
 <div class="d-flex gap-3 align-items-center mb-4">
     <a href="@Route" class="link-as-button d-inline-flex justify-content-center align-items-center" title="@Texts.LinkTitleCreateStructureGroup">

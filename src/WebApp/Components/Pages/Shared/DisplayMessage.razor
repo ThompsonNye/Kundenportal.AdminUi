@@ -1,0 +1,25 @@
+﻿@{
+    bool showMessage = !string.IsNullOrEmpty(Message);
+    bool showChildContent = ChildContent is not null;
+}
+
+@if (showMessage || showChildContent)
+{
+    <div class="alert alert-@AlertType @(ShowCloseX ? "alert-dismissible fade show" : null) w-100 d-inline-flex align-items-center">
+        <i class="bi-@AlertIcon fs-5 display-message-icon"></i>
+        <div>
+            @if (showMessage)
+            {
+                <div>@Message</div>
+            }
+            @if (showChildContent)
+            {
+                <div>@ChildContent</div>
+            }
+        </div>
+        @if (ShowCloseX)
+        {
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        }
+    </div>
+}
