@@ -91,6 +91,7 @@ public partial class EditStructureGroup
     private async Task<bool> CreatePendingStructureGroupAsync()
     {
         using Activity? activity = ActivitySource?.StartActivity("CreateStructureGroup");
+        activity?.AddTag("structureGroup.name", _model.Name);
         
         try
         {
