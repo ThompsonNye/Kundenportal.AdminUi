@@ -92,7 +92,7 @@ compile:
     script:
         - dotnet build
 
-unit and integration tests:
+unit-and-integration-tests:
     stage: test
     variables:
         TEST_FILTER: --filter "FullyQualifiedName~Tests.Unit|FullyQualifiedName~Tests.Integration"
@@ -113,6 +113,7 @@ unit and integration tests:
 
 code coverage:
     stage: test
+    image: $DOTNET_SDK_IMAGE
     script:
         - pwd
         - ls -lha
@@ -127,7 +128,9 @@ code coverage:
         - chmod +x $SCRIPT_PATH
         - $SCRIPT_PATH $COVERAGE_REPORT_DIR/index.html $COVERAGE_TYPE
     dependencies:
-        - unit and integration tests
+        - unit-and-integration-tests
+    needs:
+        - unit-and-integration-tests
     rules:
         - !reference [.prepare.run-always, rules]
     artifacts:
