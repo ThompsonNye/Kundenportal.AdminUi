@@ -108,9 +108,7 @@ unit and integration tests:
         - dotnet test --no-restore $(echo $TEST_FILTER) --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory ./$TEST_RESULTS_DIRECTORY --logger:"junit;LogFileName={assembly}.test-results.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
 
         - dotnet reportgenerator -reports:"./$TEST_RESULTS_DIRECTORY/*/coverage.cobertura.xml" -targetdir:"$COVERAGE_REPORT_DIR" -reporttypes:Html
-        - export SCRIPT_PATH=./scripts/calculate-coverage.sh
-        - chmod +x $SCRIPT_PATH
-        - $SCRIPT_PATH ./$COVERAGE_REPORT_DIR/index.html $COVERAGE_TYPE
+        - "grep -A 1 -i \"<th>line coverage:<\/th>\" ./$COVERAGE_REPORT_DIR/index.html | grep -o -E '[[:digit:]]+ of [[:digit:]]+' | awk '{printf \"Coverage: %.2f%\n\", ($1 / $3)*100}'"
     coverage: '/Coverage: (\d{1,3}\.?\d{0,2})%/'
     artifacts:
         reports:
