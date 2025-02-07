@@ -1,13 +1,16 @@
 ﻿@attribute [Route($"/{Route}")]
 @using Microsoft.AspNetCore.Authorization
+@using Npgsql.Replication.TestDecoding
 @rendermode InteractiveServer
 @attribute [Authorize]
 
 <PageTitle>@Texts.TitleStructureGroups</PageTitle>
-<div class="d-flex gap-3 align-items-center">
-    <h3>@Texts.TitleStructureGroups</h3>
-    <a href="@Route" class="link-as-button" title="@Texts.LinkTitleCreateStructureGroup">
-        <img src="images/plus.svg" alt="plus" height="24" width="24" aria-hidden="true" />
+<h3>@Texts.TitleStructureGroups</h3>
+
+<div class="d-flex gap-3 align-items-center mb-4">
+    <a href="@Route" class="link-as-button d-inline-flex justify-content-center align-items-center" title="@Texts.LinkTitleCreateStructureGroup">
+        <i class="bi-plus fs-5"></i>
+        <span class="mx-1">@Texts.LinkTitleCreateStructureGroup</span>
     </a>
 </div>
 
@@ -34,17 +37,11 @@
                 <ul class="dropdown-menu" aria-labelledby="@optionsId">
                     <li>
                         <button type="button" id="@createStructureOptionId" class="dropdown-item" @onclick="OnOption1Selected">
-                            <div class="d-inline-flex align-items-center gap-2">
-                                <img src="images/plus.svg" height="20" title="@Texts.TitleCreateStructure" alt="@Texts.TitleCreateStructure" aria-hidden="true"/>
+                            <div class="d-inline-flex align-items-center gap-1">
+                                <i class="bi bi-plus fs-5" title="@Texts.TitleCreateStructure" aria-hidden="true"></i>
                                 @Texts.TitleCreateStructure
                             </div>
                         </button>
-                    </li>
-                    <li>
-                        <button type="button" id="option-2" class="dropdown-item" @onclick="OnOption2Selected">Option 2</button>
-                    </li>
-                    <li>
-                        <button type="button" id="option-3" class="dropdown-item" @onclick="OnOption3Selected">...</button>
                     </li>
                 </ul>
             </div>
@@ -55,18 +52,8 @@
 @code {
     [Inject] public ILogger<StructureGroups>? Logger { get; set; }
 
-    public void OnOption1Selected(MouseEventArgs _)
+    public void OnOption1Selected()
     {
-        Logger!.LogInformation("Option 1 ausgewählt");
-    }
-
-    public void OnOption2Selected()
-    {
-        Logger!.LogInformation("Option 2 ausgewählt");
-    }
-
-    public void OnOption3Selected()
-    {
-        Logger!.LogInformation("Option 3 ausgewählt");
+        Logger!.LogInformation("Create Structure Option ausgewählt");
     }
 }
