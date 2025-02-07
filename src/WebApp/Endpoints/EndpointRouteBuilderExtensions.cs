@@ -66,28 +66,16 @@ public static class EndpointRouteBuilderExtensions
     {
         endpointRouteBuilder
             .MapPost("structure-groups", async (
+                [FromBody] CreateStructureGroupRequest request,
                 [FromServices] IEnumerable<IValidator<CreateStructureGroupRequest>> validators,
                 [FromServices] IStructureGroupsService structureGroupsService,
                 [FromServices] ILoggerFactory loggerFactory,
-                [FromBody] CreateStructureGroupRequest request,
                 CancellationToken cancellationToken) =>
             {
                 ILogger logger = loggerFactory.CreateLogger("StructureGroupApis");
                 
                 try
                 {
-                    ValidationResult[] validationResult = validators
-                        .Select(x => x.Validate(request))
-                        .ToArray();
-
-                    if (validationResult.Any(x => !x.IsValid))
-                    {
-                        Dictionary<string, string[]> errors = validationResult.Where(x => !x.IsValid)
-                            .SelectMany(x => x.ToDictionary())
-                            .ToDictionary();
-                        return Results.ValidationProblem(errors);
-                    }
-
                     bool doesStructureGroupExist =
                         await structureGroupsService.DoesStructureGroupExistAsync(request.Name, cancellationToken);
                     if (doesStructureGroupExist)
@@ -116,6 +104,7 @@ public static class EndpointRouteBuilderExtensions
                     return Results.Problem(statusCode: 500);
                 }
             })
+            .AddEndpointFilter<ValidationFilter<CreateStructureGroupRequest>>()
             .RequireAuthorization(p =>
                 p.RequireAuthenticatedUser()
                     .AddAuthenticationSchemes(IdentityConstants.BearerScheme))
