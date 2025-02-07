@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-using WebApp.Components.Account.Pages;
-using WebApp.Components.Account.Pages.Manage;
-using WebApp.Data;
+using Kundenportal.AdminUi.WebApp.Components.Account.Pages;
+using Kundenportal.AdminUi.WebApp.Components.Account.Pages.Manage;
+using Kundenportal.AdminUi.Application;
 
 namespace Microsoft.AspNetCore.Routing;
 

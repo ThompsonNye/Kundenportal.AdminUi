@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
-using WebApp.Data;
+using Kundenportal.AdminUi.Application;
 
-namespace WebApp.Components.Account;
+namespace Kundenportal.AdminUi.WebApp.Components.Account;
 
 internal sealed class IdentityUserAccessor(
     UserManager<ApplicationUser> userManager,

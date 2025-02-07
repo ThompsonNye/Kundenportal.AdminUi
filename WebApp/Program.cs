@@ -1,13 +1,17 @@
+using Kundenportal.AdminUi.Application;
+using Kundenportal.AdminUi.Infrastructure;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using WebApp.Components;
-using WebApp.Components.Account;
-using WebApp.Data;
+using Kundenportal.AdminUi.WebApp.Components;
+using Kundenportal.AdminUi.WebApp.Components.Account;
+using Kundenportal.AdminUi.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddInfrastructureServices(builder.Configuration);
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -23,10 +27,6 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
