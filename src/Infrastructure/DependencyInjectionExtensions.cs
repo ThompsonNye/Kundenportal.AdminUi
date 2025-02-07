@@ -5,6 +5,7 @@ using Kundenportal.AdminUi.Application.Filters;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using MassTransit;
 using MassTransit.Logging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -46,7 +47,7 @@ public static class DependencyInjectionExtensions
 	/// <returns></returns>
 	private static void AddMessaging(this IHostApplicationBuilder builder)
 	{
-		string? rabbitMqConnectionString = builder.Configuration["ConnectionStrings:rabbitmq"];
+		string? rabbitMqConnectionString = builder.Configuration.GetConnectionString("rabbitmq");
 
 		if (string.IsNullOrWhiteSpace(rabbitMqConnectionString))
 		{
@@ -91,6 +92,7 @@ public static class DependencyInjectionExtensions
 						TimeSpan.FromMinutes(30));
 					r.Ignore<ValidationException>();
 				});
+
 				cfg.UseMessageRetry(r =>
 				{
 					r.Incremental(
