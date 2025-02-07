@@ -1,4 +1,6 @@
 ﻿@page "/StructureGroups"
+@rendermode InteractiveServer
+
 <h3>StructureGroups</h3>
 
 
@@ -14,13 +16,13 @@
         </button>
         <ul class="dropdown-menu" aria-labelledby="optionen1">
             <li>
-                <button type="button" class="dropdown-item">Option 1</button>
+                <button type="button" id="option-1" class="dropdown-item" @onclick="OnOption1Selected">Option 1</button>
             </li>
             <li>
-                <button type="button" class="dropdown-item">Option 2</button>
+                <button type="button" id="option-2" class="dropdown-item" @onclick="OnOption2Selected">Option 2</button>
             </li>
             <li>
-                <button type="button" class="dropdown-item">...</button>
+                <button type="button" id="option-3" class="dropdown-item" @onclick="OnOption3Selected">...</button>
             </li>
         </ul>
     </div>
@@ -28,5 +30,30 @@
 
 
 @code {
+    [Inject] public ILogger<StructureGroups>? Logger { get; set; }
 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    public void OnOption1Selected(MouseEventArgs _)
+    {
+        Logger!.LogInformation("Option 1 ausgewählt");
+    }
+
+    public void OnOption2Selected()
+    {
+        Logger!.LogInformation("Option 2 ausgewählt");
+    }
+
+    public void OnOption3Selected()
+    {
+        Logger!.LogInformation("Option 3 ausgewählt");
+    }
 }
