@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Ardalis.Result;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Application.Options;
@@ -17,9 +18,8 @@ public interface IStructureGroupsService
 
 	Task<IEnumerable<PendingStructureGroup>> GetPendingAsync(CancellationToken cancellationToken = default);
 
-	Task AddPendingAsync(PendingStructureGroup pendingStructureGroup, CancellationToken cancellationToken = default);
-
-	Task<bool> DoesStructureGroupExistAsync(string name, CancellationToken cancellationToken = default);
+	Task<Result> AddPendingAsync(PendingStructureGroup pendingStructureGroup,
+		CancellationToken cancellationToken = default);
 }
 
 public sealed class StructureGroupsService(
@@ -71,10 +71,16 @@ public sealed class StructureGroupsService(
 		}
 	}
 
-	public async Task AddPendingAsync(PendingStructureGroup pendingStructureGroup,
+	public async Task<Result> AddPendingAsync(PendingStructureGroup pendingStructureGroup,
 		CancellationToken cancellationToken = default)
 	{
 		using Activity? activity = _activitySource.StartActivity("AddPendingStructureGroup");
+
+		bool structureGroupExists = await DoesStructureGroupExistAsync(pendingStructureGroup.Name, cancellationToken);
+		if (structureGroupExists)
+		{
+			return Result.Conflict();
+		}
 
 		_logger.LogDebug("Creating pending structure group with id {Id} and name {Name}", pendingStructureGroup.Id,
 			pendingStructureGroup.Name);
@@ -88,10 +94,14 @@ public sealed class StructureGroupsService(
 		await _dbContext.SaveChangesAsync(cancellationToken);
 
 		_logger.LogInformation("Pending structure group created");
+
+		return Result.Success();
 	}
 
-	public async Task<bool> DoesStructureGroupExistAsync(string name, CancellationToken cancellationToken = default)
+	private async Task<bool> DoesStructureGroupExistAsync(string name, CancellationToken cancellationToken = default)
 	{
+		using Activity? activity = _activitySource.StartActivity();
+
 		bool pendingGroupExists =
 			await DoesAPendingStructureGroupWithThatNameAlreadyExistAsync(name, cancellationToken);
 

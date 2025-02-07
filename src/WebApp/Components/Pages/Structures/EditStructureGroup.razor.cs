@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using Ardalis.Result;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Application.StructureGroups;
 using Kundenportal.AdminUi.WebApp.Components.Pages.Shared;
@@ -67,12 +68,6 @@ public partial class EditStructureGroup
 			return;
 		}
 
-		bool customValidationResult = await RunCustomValidationAsync();
-		if (!customValidationResult)
-		{
-			return;
-		}
-
 		bool success = await CreatePendingStructureGroupAsync();
 		if (!success)
 		{
@@ -94,7 +89,13 @@ public partial class EditStructureGroup
 				Id = Guid.NewGuid(),
 				Name = _model.Name
 			};
-			await StructureGroupsService!.AddPendingAsync(pendingStructureGroup);
+			Result result = await StructureGroupsService!.AddPendingAsync(pendingStructureGroup);
+
+			if (result.Status == ResultStatus.Conflict)
+			{
+				_validationMessageStore.Add(() => _model.Name, Texts.ValidationErrorStructureGroupExists);
+				return false;
+			}
 
 			return true;
 		}
@@ -105,21 +106,6 @@ public partial class EditStructureGroup
 		}
 
 		return false;
-	}
-
-	private async Task<bool> RunCustomValidationAsync()
-	{
-		using Activity? activity = ActivitySource?.StartActivity("CheckFolderExists");
-		activity?.AddTag("structureGroup.name", _model.Name);
-
-		bool folderExists = await StructureGroupsService!.DoesStructureGroupExistAsync(_model.Name);
-
-		if (folderExists)
-		{
-			_validationMessageStore.Add(() => _model.Name, Texts.ValidationErrorStructureGroupExists);
-		}
-
-		return !folderExists;
 	}
 
 	private void ResetErrorMessage()

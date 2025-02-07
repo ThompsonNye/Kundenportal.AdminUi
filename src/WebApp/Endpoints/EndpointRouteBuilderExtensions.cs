@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Net;
+using Ardalis.Result;
 using Asp.Versioning.Builder;
 using Asp.Versioning.Conventions;
 using FluentValidation;
@@ -75,9 +76,11 @@ public static class EndpointRouteBuilderExtensions
 
 				try
 				{
-					bool doesStructureGroupExist =
-						await structureGroupsService.DoesStructureGroupExistAsync(request.Name, cancellationToken);
-					if (doesStructureGroupExist)
+					PendingStructureGroup pendingStructureGroup = request.Adapt<PendingStructureGroup>();
+					Result result =
+						await structureGroupsService.AddPendingAsync(pendingStructureGroup, cancellationToken);
+
+					if (result.Status == ResultStatus.Conflict)
 					{
 						Texts.Culture = new CultureInfo("en-US");
 						return Results.ValidationProblem(new Dictionary<string, string[]>
@@ -85,9 +88,6 @@ public static class EndpointRouteBuilderExtensions
 							[nameof(CreateStructureGroupRequest.Name)] = [Texts.ValidationErrorStructureGroupExists]
 						});
 					}
-
-					PendingStructureGroup pendingStructureGroup = request.Adapt<PendingStructureGroup>();
-					await structureGroupsService.AddPendingAsync(pendingStructureGroup, cancellationToken);
 
 					return Results.Accepted();
 				}
