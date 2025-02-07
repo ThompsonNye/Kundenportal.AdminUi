@@ -52,22 +52,16 @@
                     <Ellipsis Width="25" />
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="@optionsId">
-                    <li>
-                        <button type="button" id="@($"edit-structure-group-option-{group.Id!.Value}")" class="dropdown-item" @onclick="() => OnEditStructureGroupClicked(group.Id.Value)">
-                            <div class="d-inline-flex align-items-center gap-1">
-                                <i class="bi bi-pencil" title="@Texts.TitleEditStructureGroup" aria-hidden="true"></i>
-                                @Texts.TitleEditStructureGroup
-                            </div>
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" id="@($"create-structure-option-{group.Id!.Value}")" class="dropdown-item" @onclick="OnCreateStructureClicked">
-                            <div class="d-inline-flex align-items-center gap-1">
-                                <i class="bi bi-plus fs-5" title="@Texts.TitleCreateStructure" aria-hidden="true"></i>
-                                @Texts.TitleCreateStructure
-                            </div>
-                        </button>
-                    </li>
+                    <StructureGroupOverviewOption 
+                        Title="@Texts.TitleEditStructureGroup"
+                        OnClick="() => OnEditStructureGroupClicked(group.Id.Value)"
+                        AdditionalCss="bi-pencil"
+                    />
+                    <StructureGroupOverviewOption 
+                        Title="@Texts.TitleCreateStructure"
+                        OnClick="OnCreateStructureClicked"
+                        AdditionalCss="bi-plus fs-5"
+                    />
                 </ul>
             </div>
         </div>
