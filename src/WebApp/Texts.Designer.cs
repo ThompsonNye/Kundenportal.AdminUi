@@ -78,7 +78,7 @@ namespace Kundenportal.AdminUi.WebApp {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Eine Strukturgruppe ist lediglich eine Gruppierung von Strukturen und wird als Ordner realisiert. So können zusammengehörende Strukturen gemeinsam angelegt werden..
+        ///   Looks up a localized string similar to Eine Strukturgruppe ist eine Gruppierung von Strukturen, über die zusammengehörende Strukturen gemeinsam angelegt werden können. Ein Beispiel wäre mehrere Strukturen für ein gemeinsames Projekt..
         /// </summary>
         internal static string StructureGroupExplanation {
             get {
