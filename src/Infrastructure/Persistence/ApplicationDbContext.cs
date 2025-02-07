@@ -11,6 +11,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<StructureGroup> StructureGroups { get; set; }
 
+    public DbSet<PendingStructureGroup> PendingStructureGroups { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
