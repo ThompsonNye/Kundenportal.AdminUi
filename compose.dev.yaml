@@ -46,7 +46,9 @@ services:
       MAIL_FROM_ADDRESS: ${MAIL_FROM_USER_PART}
       MAIL_DOMAIN: ${MAIL_FROM_DOMAIN}
       REDIS_HOST: nextcloud.redis
-      NEXTCLOUD_TRUSTED_DOMAINS: localhost nextcloud 127.0.0.1 ::1
+      # The domain 'nextcloud' is needed for the companion container which references the nextcloud service 
+      # through Docker networking / service discovery
+      NEXTCLOUD_TRUSTED_DOMAINS: localhost 127.0.0.1 ::1 nextcloud
     restart: unless-stopped
     ports:
       - 50000:80

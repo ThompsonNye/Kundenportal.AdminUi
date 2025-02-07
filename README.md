@@ -7,7 +7,30 @@ Zusätzlich kann sie Benutzer in Nextcloud anlegen und ihnen Zugriff auf die ers
 
 ### Die Anwendung ausführen
 
-***TODO***
+Benötigt Docker und Docker Compose (oder äquivalente Alternativen).
+
+Die Abhängigkeiten starten:
+
+```shell
+docker compose -f compose.dev.yaml up -d --wait --build --pull always
+```
+
+Der Nextcloud Companion Container legt lediglich den Ordner für Strukturen in Nextcloud an, den die Anwendung benötigt,
+und stoppt dann.
+Die folgende Meldung ist daher zu erwarten und in Ordnung, solange hinten der Exit Code `0` steht:
+
+```text
+container kundenportal_adminui_dev-nextcloud.companion-1 exited (0)
+```
+
+Wenn der Exit Code `0` ist, wurde der Ordner erfolgreich angelegt und die Anwendung kann gestartet werden.
+Wenn der Exit Code etwas anderes ist, ist ein Fehler aufgetreten. Der Companion Container hat dann Nextclouds HTTP
+Response
+ausgegeben, sodass man den Fehler so hoffentlich finden und beheben kann.
+
+Dann die Anwendung starten.
+
+E-Mails der Anwendung werden aktuell in die Konsole geschrieben, anstatt verschickt zu werden.
 
 ### Konfiguration
 
@@ -96,7 +119,7 @@ Anwendung bestimmt sind, besser zu kennzeichnen.
 | `Nextcloud:StructureBasePath` | /Structures                                                             |                                                                                                                                                                                                                    | Nein                                                                                 | Der Pfad, unter dem Strukturen angelegt werden. Muss mit einem / beginnen und darf nicht mit einem / enden. |
 | `Nextcloud:Username`          |                                                                         | Der Benutzername des Service Benutzers, mit dem die Anwendung in Nextcloud arbeiten soll. Unter diesem Benutzer werden die Strukturen angelegt.                                                                    |
 | `Nextcloud:Password`          |                                                                         | Das Password des Service Benutzers in `Nextcloud:Username`. Es wird empfohlen, für den Service Benutzer in Nextcloud ein App Passwort zu generiern und dies hier anstelle des eigentlichen Passworts zu verwenden. |
-| `Nextcloud:RetryDelay` | 100 | Die Anzahl an Millisekunden, die Polly als Basis für den exponentiellen Backup zwischen erneuten Versuchen im Falle von Fehlern verwendet. |
+| `Nextcloud:RetryDelay`        | 100                                                                     | Die Anzahl an Millisekunden, die Polly als Basis für den exponentiellen Backup zwischen erneuten Versuchen im Falle von Fehlern verwendet.                                                                         |
 
 ## Projektaufbau
 
