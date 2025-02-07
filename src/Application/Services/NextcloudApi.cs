@@ -1,15 +1,22 @@
-﻿using WebDav;
+﻿using Kundenportal.AdminUi.Application.Options;
+using Microsoft.Extensions.Options;
+using WebDav;
 
 namespace Kundenportal.AdminUi.Application.Services;
 
 public interface INextcloudApi
 {
     Task<NextcloudFolder> GetFolderDetailsAsync(string path, CancellationToken cancellationToken = default);
+
+    Task CreateFolderAsync(string path, CancellationToken cancellationToken = default);
 }
 
-public sealed class NextcloudApi(IWebDavClient webDavClient) : INextcloudApi
+public sealed class NextcloudApi(
+    IWebDavClient webDavClient,
+    IOptions<NextcloudOptions> nextcloudOptions) : INextcloudApi
 {
     private readonly IWebDavClient _webDavClient = webDavClient;
+    private readonly IOptions<NextcloudOptions> _nextcloudOptions = nextcloudOptions;
 
     public async Task<NextcloudFolder> GetFolderDetailsAsync(string path, CancellationToken cancellationToken = default)
     {
@@ -50,6 +57,25 @@ public sealed class NextcloudApi(IWebDavClient webDavClient) : INextcloudApi
         }
 
         return nextcloudFolder;
+    }
+
+    public async Task CreateFolderAsync(string path, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+
+        MkColParameters parameters = new()
+        {
+            CancellationToken = cancellationToken
+        };
+        WebDavResponse response = await _webDavClient.Mkcol($"remote.php/dav/files/{_nextcloudOptions.Value.Username}{path}", parameters);
+
+        if (response.IsSuccessful)
+        {
+            return;
+        }
+        
+        // TODO Handle better
+        throw new Exception();
     }
 }
 

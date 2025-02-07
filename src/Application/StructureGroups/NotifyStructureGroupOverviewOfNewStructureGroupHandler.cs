@@ -6,24 +6,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Kundenportal.AdminUi.Application.StructureGroups;
 
-public class NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler(
+public class NotifyStructureGroupOverviewOfNewStructureGroupHandler(
     IHubContext<StructureGroupHub> hubContext,
-    ILogger<NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler> logger)
-    : IConsumer<PendingStructureGroupCreated>
+    ILogger<NotifyStructureGroupOverviewOfNewStructureGroupHandler> logger)
+    : IConsumer<StructureGroupCreated>
 {
     private readonly IHubContext<StructureGroupHub> _hubContext = hubContext;
-    private readonly ILogger<NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler> _logger = logger;
+    private readonly ILogger<NotifyStructureGroupOverviewOfNewStructureGroupHandler> _logger = logger;
 
-    public async Task Consume(ConsumeContext<PendingStructureGroupCreated> context)
+    public async Task Consume(ConsumeContext<StructureGroupCreated> context)
     {
         try
         {
-            PendingStructureGroup pendingStructureGroup = new PendingStructureGroup
+            StructureGroup structureGroup = new StructureGroup
             {
                 Id = context.Message.Id,
                 Name = context.Message.Name
             };
-            await _hubContext.Clients.All.SendAsync(StructureGroupHub.NewPendingStructureGroupMethod, pendingStructureGroup,
+            await _hubContext.Clients.All.SendAsync(StructureGroupHub.NewStructureGroupMethod, structureGroup,
                 cancellationToken: context.CancellationToken);
         }
         catch (Exception ex)

@@ -17,7 +17,7 @@ public partial class StructureGroups : IAsyncDisposable
     [Inject] public IStructureGroupsService? StructureGroupsService { get; set; }
 
     private readonly Model _model = new();
-    private HubConnection? _pendingStructureGroupsConnection;
+    private HubConnection? _structureGroupsConnection;
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,7 +35,7 @@ public partial class StructureGroups : IAsyncDisposable
     {
         try
         {
-            _model.StructureGroups = (await StructureGroupsService!.GetAllAsync()).ToArray();
+            _model.StructureGroups = (await StructureGroupsService!.GetAllAsync()).ToList();
         }
         catch (Exception ex)
         {
@@ -58,15 +58,18 @@ public partial class StructureGroups : IAsyncDisposable
 
     private async Task CreateHubConnectionsAsync()
     {
-        Uri uri = NavigationManager!.ToAbsoluteUri($"/hubs{PendingStructureGroupHub.Route}");
-        _pendingStructureGroupsConnection = new HubConnectionBuilder()
+        Uri uri = NavigationManager!.ToAbsoluteUri($"/hubs{StructureGroupHub.Route}");
+        _structureGroupsConnection = new HubConnectionBuilder()
             .WithUrl(uri)
             .Build();
 
-        _pendingStructureGroupsConnection.On<PendingStructureGroup>(
-            PendingStructureGroupHub.NewPendingStructureGroupMethod, OnNewPendingStructureGroupAsync);
+        _structureGroupsConnection.On<PendingStructureGroup>(
+            StructureGroupHub.NewPendingStructureGroupMethod, OnNewPendingStructureGroupAsync);
 
-        await _pendingStructureGroupsConnection.StartAsync();
+        _structureGroupsConnection.On<StructureGroup>(
+            StructureGroupHub.NewStructureGroupMethod, OnNewStructureGroupAsync);
+
+        await _structureGroupsConnection.StartAsync();
     }
 
     private void OnEditStructureGroupClicked(Guid structureGroupId)
@@ -85,15 +88,15 @@ public partial class StructureGroups : IAsyncDisposable
         
         try
         {
-            if (!_model.PendingStructureGroups.Any(x => x.Id == pendingStructureGroup.Id))
+            if (_model.PendingStructureGroups.Any(x => x.Id == pendingStructureGroup.Id))
             {
-                _model.PendingStructureGroups.Add(pendingStructureGroup);
-                Logger!.LogDebug("Added new pending structure group to page model");
-                await InvokeAsync(StateHasChanged);
+                Logger!.LogDebug("A pending structure group with id {Id} is already present in the page model", pendingStructureGroup.Id);
                 return;
             }
 
-            Logger!.LogDebug("A pending structure group with id {Id} is already present in the page model", pendingStructureGroup.Id);
+            _model.PendingStructureGroups.Add(pendingStructureGroup);
+            Logger!.LogDebug("Added new pending structure group to page model");
+            await InvokeAsync(StateHasChanged);
         }
         catch (Exception ex)
         {
@@ -101,20 +104,57 @@ public partial class StructureGroups : IAsyncDisposable
         }
     }
 
+    private async Task OnNewStructureGroupAsync(StructureGroup structureGroup)
+    {
+        Logger!.LogDebug("Got new structure group");
+
+        try
+        {
+            AddNewStructureGroup(structureGroup);
+            RemoveCorrespondingPendingStructureGroup(structureGroup);
+        }
+        catch (Exception ex)
+        {
+            Logger!.LogError(ex, "Failed to add new structure group to page model");
+        }
+        finally
+        {
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void AddNewStructureGroup(StructureGroup structureGroup)
+    {
+        if (_model.StructureGroups.Any(x => x.Id == structureGroup.Id))
+        {
+            Logger!.LogDebug("A structure group with id {Id} is already present in the page model", structureGroup.Id);
+            return;
+        }
+        
+        _model.StructureGroups.Add(structureGroup);
+        Logger!.LogDebug("Added new structure group to page model");
+    }
+
+    private void RemoveCorrespondingPendingStructureGroup(StructureGroup structureGroup)
+    {
+        _model.PendingStructureGroups.RemoveAll(x => x.Id == structureGroup.Id);
+    }
+
     public class Model
     {
-        public ICollection<StructureGroup> StructureGroups { get; set; } = Array.Empty<StructureGroup>();
-
-        // Using a list here because the values can be updates after the fact
+        // Using lists here because the values can be updates after the fact
         // when receiving a notification via SignalR
+
+        public List<StructureGroup> StructureGroups { get; set; } = [];
+
         public List<PendingStructureGroup> PendingStructureGroups { get; set; } = [];
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (_pendingStructureGroupsConnection is not null)
+        if (_structureGroupsConnection is not null)
         {
-            await _pendingStructureGroupsConnection.DisposeAsync();
+            await _structureGroupsConnection.DisposeAsync();
         }
         
         GC.SuppressFinalize(this);

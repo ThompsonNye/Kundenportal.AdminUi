@@ -30,7 +30,7 @@ public static class DependencyInjectionExtensions
     {
         RouteGroupBuilder hubsGroup = app.MapGroup("/hubs");
             
-        hubsGroup.MapHub<PendingStructureGroupHub>(PendingStructureGroupHub.Route);
+        hubsGroup.MapHub<StructureGroupHub>(StructureGroupHub.Route);
     }
 
     /// <summary>
