@@ -67,19 +67,3 @@
         </div>
     }
 </div>
-
-@code {
-    [Inject] public ILogger<StructureGroups>? Logger { get; set; }
-    
-    [Inject] public NavigationManager? NavigationManager { get; set; }
-
-    private void OnEditStructureGroupClicked(int structureGroupId)
-    {
-        NavigationManager!.NavigateTo($"{EditStructureGroup.RouteEditBase}/{structureGroupId}");
-    }
-
-    private void OnCreateStructureClicked()
-    {
-        Logger!.LogInformation("Create Structure Option ausgewählt");
-    }
-}
