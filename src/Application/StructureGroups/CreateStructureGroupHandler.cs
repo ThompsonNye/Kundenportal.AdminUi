@@ -28,9 +28,9 @@ public sealed class CreateStructureGroupHandler(
             return;
         }
         
-        await CreateFolderInNextcloudAsync(context);
+        CreateStructureGroupFolderResult result = await CreateFolderInNextcloudAsync(context);
 
-        await UpdateDbAsync(context);
+        await UpdateDbAsync(context, result);
     }
 
     private async Task<bool> StructureGroupExistsAsync(ConsumeContext<PendingStructureGroupCreated> context)
@@ -50,7 +50,7 @@ public sealed class CreateStructureGroupHandler(
         }
     }
 
-    private async Task CreateFolderInNextcloudAsync(ConsumeContext<PendingStructureGroupCreated> context)
+    private async Task<CreateStructureGroupFolderResult> CreateFolderInNextcloudAsync(ConsumeContext<PendingStructureGroupCreated> context)
     {
         try
         {
@@ -61,6 +61,11 @@ public sealed class CreateStructureGroupHandler(
             await _nextcloudApi.CreateFolderAsync(path, context.CancellationToken);
 
             _logger.LogInformation("Created folder in nextcloud at path {Path}", path);
+
+            return new CreateStructureGroupFolderResult
+            {
+                Path = path
+            };
         }
         catch (Exception ex)
         {
@@ -71,14 +76,18 @@ public sealed class CreateStructureGroupHandler(
         }
     }
 
-    private async Task UpdateDbAsync(ConsumeContext<PendingStructureGroupCreated> context)
+    private async Task UpdateDbAsync(
+        ConsumeContext<PendingStructureGroupCreated> context,
+        CreateStructureGroupFolderResult createStructureGroupFolderResult)
     {
         try
         {
             StructureGroup structureGroup = context.Message.Adapt<StructureGroup>();
+            structureGroup.Path = createStructureGroupFolderResult.Path;
             _dbContext.StructureGroups.Add(structureGroup);
 
-            PendingStructureGroup? pendingStructureGroup = await _dbContext.PendingStructureGroups.FindAsync([ context.Message.Id ], context.CancellationToken);
+            PendingStructureGroup? pendingStructureGroup = await _dbContext.PendingStructureGroups.FindAsync(
+                    [ context.Message.Id ], context.CancellationToken);
             if (pendingStructureGroup is not null)
             {
                 _dbContext.PendingStructureGroups.Remove(pendingStructureGroup);
@@ -98,4 +107,9 @@ public sealed class CreateStructureGroupHandler(
             // TODO Delete folder in Nextcloud?
         }
     }
+}
+
+public sealed class CreateStructureGroupFolderResult
+{
+    public required string Path { get; init; }
 }

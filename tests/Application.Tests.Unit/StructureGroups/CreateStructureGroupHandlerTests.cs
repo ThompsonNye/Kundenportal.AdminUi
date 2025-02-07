@@ -54,12 +54,19 @@ public sealed class CreateStructureGroupHandlerTests
         await _sut.Consume(context);
 
         // Assert
-        _dbContext.StructureGroups.Should().Contain(x => x.Id == context.Message.Id && x.Name == context.Message.Name);
+        string path = $"{_nextcloudOptions.StructureBasePath}/{context.Message.Name}"; 
+        
+        _dbContext.StructureGroups.Should().ContainEquivalentOf(new
+        {
+            context.Message.Id,
+            context.Message.Name,
+            Path = path
+        });
         await context.Received().Publish(Arg.Is<StructureGroupCreated>(x => x.Name == context.Message.Name));
         _logger.ReceivedLog(
             LogLevel.Information,
             "Created folder in nextcloud at path {Path}",
-            $"{_nextcloudOptions.StructureBasePath}/{context.Message.Name}");
+            path);
         _logger.ReceivedLog(
             LogLevel.Debug,
             "Saved structure group with {Id} and removed pending structure group with same id in database",
