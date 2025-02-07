@@ -7,18 +7,20 @@ public static class CreateStructureGroup
 {
     public class Command
     {
-        public NewId Id { get; } = NewId.Next();
+        public Guid Id { get; set; } = Guid.NewGuid();
+
+        public required string Name { get; set; }
     }
     
     public class Handler(ILogger<Handler> logger) : IConsumer<Command>
     {
         private readonly ILogger<Handler> _logger = logger;
 
-        public Task Consume(ConsumeContext<Command> context)
+        public async Task Consume(ConsumeContext<Command> context)
         {
-            _logger.LogInformation("Received command to create structure group {Id}", context.Message.Id);
-            throw new Exception();
-            return Task.CompletedTask;
+            _logger.LogInformation("Fake creating a structure group with id {Id} and name {Name}", context.Message.Id, context.Message.Name);
+            await Task.Delay(5000, context.CancellationToken);
+            _logger.LogInformation("Done, fake created structure group {Id} and name {Name}", context.Message.Id, context.Message.Name);
         }
     }
 }

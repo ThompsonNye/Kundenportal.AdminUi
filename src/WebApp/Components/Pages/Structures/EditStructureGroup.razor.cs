@@ -28,7 +28,10 @@ public partial class EditStructureGroup
     private async Task OnValidSubmitAsync()
     {
         Logger!.LogInformation("Name: {Name}", _model.Name);
-        await PublishEndpoint!.Publish<CreateStructureGroup.Command>(new { });
+        await PublishEndpoint!.Publish<CreateStructureGroup.Command>(new
+        {
+           _model.Name
+        });
         NavigationManager!.NavigateTo(StructureGroups.Route);
     }
 
