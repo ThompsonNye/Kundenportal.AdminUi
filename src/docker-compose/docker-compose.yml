@@ -5,7 +5,7 @@ services:
   kundenportal.adminui.webapp:
     image: ${DOCKER_REGISTRY-}webapp
     build:
-      context: .
+      context: ../..
       dockerfile: src/WebApp/Dockerfile
 
   kundenportal.adminui.db:

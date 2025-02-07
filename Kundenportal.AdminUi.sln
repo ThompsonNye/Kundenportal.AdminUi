@@ -17,11 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{857496B6-1799-4770-9484-BD879037797D}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "src\docker-compose\docker-compose.dcproj", "{857496B6-1799-4770-9484-BD879037797D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4C12CD2A-9295-4D6E-866C-184B1355636B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.Tests.Unit", "tests\WebApp.Tests.Unit\WebApp.Tests.Unit.csproj", "{AF0E7EFF-EFB0-4442-9B76-B938EFFC3AC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp.Tests.Unit", "tests\WebApp.Tests.Unit\WebApp.Tests.Unit.csproj", "{AF0E7EFF-EFB0-4442-9B76-B938EFFC3AC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,5 +58,8 @@ Global
 		{F38EAB37-3600-433B-B9F1-5BFC7A11BB43} = {5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}
 		{95235B8F-1644-4BA4-BE44-3348F93EE261} = {5D2A50D0-AFBC-4777-BDB4-B2E7FECA965C}
 		{AF0E7EFF-EFB0-4442-9B76-B938EFFC3AC7} = {4C12CD2A-9295-4D6E-866C-184B1355636B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {226C9A62-6755-4BE5-B1F0-63629B730E16}
 	EndGlobalSection
 EndGlobal
