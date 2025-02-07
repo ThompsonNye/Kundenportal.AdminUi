@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Kundenportal.AdminUi.WebApp.Resources;
+﻿using Kundenportal.AdminUi.WebApp.Resources;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
+using System.ComponentModel.DataAnnotations;
 
 namespace Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
 
@@ -12,7 +11,7 @@ public partial class EditStructureGroup
     public const string RouteCreate = $"{StructureGroups.Route}/create";
 
     [Parameter] public int? Id { get; set; }
-    
+
     [Inject]
     public ILogger<EditStructureGroup>? Logger { get; set; }
 
@@ -22,10 +21,11 @@ public partial class EditStructureGroup
     {
         Logger!.LogInformation("Name: {Name}", _model.Name);
     }
-    
+
     public class Model
     {
-        [Required(ErrorMessageResourceType = typeof(Texts), ErrorMessageResourceName = nameof(Texts.ValidationErrorStructureGroupNameRequired))]
+        [Required(ErrorMessageResourceType = typeof(Texts), ErrorMessageResourceName = nameof(Texts.ValidationErrorFieldRequired))]
+        [Display(Name = nameof(Texts.LabelEditStructureGroupName), ResourceType = typeof(Texts))]
         public string Name { get; set; } = "";
     }
 }

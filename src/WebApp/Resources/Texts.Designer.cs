@@ -18,10 +18,10 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Texts {
+    public class Texts {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -35,7 +35,7 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kundenportal.AdminUi.WebApp.Resources.Texts", typeof(Texts).Assembly);
@@ -50,7 +50,7 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -60,9 +60,9 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name.
+        ///   Looks up a localized string similar to Name Test 2.
         /// </summary>
-        internal static string LabelEditStructureGroupName {
+        public static string LabelEditStructureGroupName {
             get {
                 return ResourceManager.GetString("LabelEditStructureGroupName", resourceCulture);
             }
@@ -71,7 +71,7 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bitte geben Sie den Namen ein.
         /// </summary>
-        internal static string PlaceholderEditStructureGroupName {
+        public static string PlaceholderEditStructureGroupName {
             get {
                 return ResourceManager.GetString("PlaceholderEditStructureGroupName", resourceCulture);
             }
@@ -80,7 +80,7 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Eine Struktur ist ein Ordner, für den Benutzer berechtigt und eine vordefinierte Ordner- und Dateistruktur angelegt werden können..
         /// </summary>
-        internal static string StructureExplanation {
+        public static string StructureExplanation {
             get {
                 return ResourceManager.GetString("StructureExplanation", resourceCulture);
             }
@@ -89,7 +89,7 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Eine Strukturgruppe ist eine Gruppierung von Strukturen, über die zusammengehörende Strukturen gemeinsam angelegt werden können. Ein Beispiel wäre mehrere Strukturen für ein gemeinsames Projekt..
         /// </summary>
-        internal static string StructureGroupExplanation {
+        public static string StructureGroupExplanation {
             get {
                 return ResourceManager.GetString("StructureGroupExplanation", resourceCulture);
             }
@@ -98,7 +98,7 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Struktur erstellen.
         /// </summary>
-        internal static string TitleCreateStructure {
+        public static string TitleCreateStructure {
             get {
                 return ResourceManager.GetString("TitleCreateStructure", resourceCulture);
             }
@@ -107,7 +107,7 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Strukturgruppe erstellen.
         /// </summary>
-        internal static string TitleCreateStructureGroup {
+        public static string TitleCreateStructureGroup {
             get {
                 return ResourceManager.GetString("TitleCreateStructureGroup", resourceCulture);
             }
@@ -116,7 +116,7 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Strukturgruppe bearbeiten.
         /// </summary>
-        internal static string TitleEditStructureGroup {
+        public static string TitleEditStructureGroup {
             get {
                 return ResourceManager.GetString("TitleEditStructureGroup", resourceCulture);
             }
@@ -125,18 +125,18 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Strukturgruppen.
         /// </summary>
-        internal static string TitleStructureGroups {
+        public static string TitleStructureGroups {
             get {
                 return ResourceManager.GetString("TitleStructureGroups", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Der Name muss ausgefüllt werden..
+        ///   Looks up a localized string similar to {0} muss ausgefüllt werden..
         /// </summary>
-        internal static string ValidationErrorStructureGroupNameRequired {
+        public static string ValidationErrorFieldRequired {
             get {
-                return ResourceManager.GetString("ValidationErrorStructureGroupNameRequired", resourceCulture);
+                return ResourceManager.GetString("ValidationErrorFieldRequired", resourceCulture);
             }
         }
     }
