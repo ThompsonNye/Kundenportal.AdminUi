@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240128161607_AddStructureGroups")]
+    [Migration("20240128180823_AddStructureGroups")]
     partial class AddStructureGroups
     {
         /// <inheritdoc />
@@ -110,7 +110,7 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
                     b.HasIndex("Name", "Path")
                         .IsUnique();
 
-                    b.ToTable("StructureGroups");
+                    b.ToTable("StructureGroups", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

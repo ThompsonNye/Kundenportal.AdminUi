@@ -107,7 +107,7 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
                     b.HasIndex("Name", "Path")
                         .IsUnique();
 
-                    b.ToTable("StructureGroups");
+                    b.ToTable("StructureGroups", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
