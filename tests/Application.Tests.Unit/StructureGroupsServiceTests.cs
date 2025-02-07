@@ -3,10 +3,13 @@ using FluentAssertions;
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
+using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
 using Kundenportal.AdminUi.Application.StructureGroups;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
+using MassTransit.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
@@ -17,12 +20,13 @@ public class StructureGroupsServiceTests
     private readonly StructureGroupsService _sut;
     private readonly IApplicationDbContext _dbContext = InMemoryDbContextProvider.GetDbContext();
     private readonly INextcloudApi _nextcloudApi = Substitute.For<INextcloudApi>();
+    private readonly IOptions<NextcloudOptions> _nextcloudOptions = Substitute.For<IOptions<NextcloudOptions>>();
 
     private readonly Fixture _fixture = new();
     
     public StructureGroupsServiceTests()
     {
-        _sut = new StructureGroupsService(_dbContext, _nextcloudApi);
+        _sut = new StructureGroupsService(_dbContext, _nextcloudApi, _nextcloudOptions);
     }
     
     #region GetAllAsync
@@ -110,12 +114,38 @@ public class StructureGroupsServiceTests
     }
 
     [Fact]
-    public async Task DoesStructureGroupExistAsync_ShouldReturnTrue_WhenNextcloudReturnsFolderDetails()
+    public async Task DoesStructureGroupExistAsync_ShouldReturnTrue_WhenNextcloudReturnsFolderDetailsForStructureInRootFolder()
     {
         // Arrange
         const string path = "path";
+
+        NextcloudOptions nextcloudOptions = new NextcloudOptions();
+        _nextcloudOptions.Value.Returns(nextcloudOptions);
+        
         NextcloudFolder nextcloudFolder = _fixture.Create<NextcloudFolder>();
-        _nextcloudApi.GetFolderDetailsAsync(path).Returns(nextcloudFolder);
+        _nextcloudApi.GetFolderDetailsAsync($"{nextcloudOptions.StructureBasePath}/{path}").Returns(nextcloudFolder);
+
+        // Act
+        bool result = await _sut.DoesStructureGroupExistAsync(path);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task DoesStructureGroupExistAsync_ShouldReturnTrue_WhenNextcloudReturnsFolderDetailsForStructureInSubFolder()
+    {
+        // Arrange
+        const string path = "path";
+
+        NextcloudOptions nextcloudOptions = new NextcloudOptions
+        {
+            StructureBasePath = "/Structures"
+        };
+        _nextcloudOptions.Value.Returns(nextcloudOptions);
+        
+        NextcloudFolder nextcloudFolder = _fixture.Create<NextcloudFolder>();
+        _nextcloudApi.GetFolderDetailsAsync($"{nextcloudOptions.StructureBasePath}/{path}").Returns(nextcloudFolder);
 
         // Act
         bool result = await _sut.DoesStructureGroupExistAsync(path);
