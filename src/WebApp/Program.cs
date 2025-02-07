@@ -1,6 +1,15 @@
+using Kundenportal.AdminUi.Infrastructure.Persistence;
 using Kundenportal.AdminUi.WebApp.Extensions;
+using Microsoft.EntityFrameworkCore;
 
-WebApplication.CreateBuilder(args)
+var app = WebApplication.CreateBuilder(args)
 	.ConfigureServices()
-	.ConfigurePipeline()
-	.Run();
+	.ConfigurePipeline();
+
+using (var scope = app.Services.CreateScope())
+{
+	await using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+	await dbContext.Database.MigrateAsync();
+}
+
+app.Run();
