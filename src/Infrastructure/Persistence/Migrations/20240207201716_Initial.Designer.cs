@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240205182824_UserPreferences_Initial")]
-    partial class UserPreferences_Initial
+    [Migration("20240207201716_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,11 +92,9 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Kundenportal.AdminUi.Application.Models.StructureGroup", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -112,21 +110,6 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("StructureGroups", (string)null);
-                });
-
-            modelBuilder.Entity("Kundenportal.AdminUi.Application.Models.UserPreferences", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("HideStructureGroupExplanation")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("UserPreferences", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -257,17 +240,6 @@ namespace Kundenportal.AdminUi.Infrastructure.Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Kundenportal.AdminUi.Application.Models.UserPreferences", b =>
-                {
-                    b.HasOne("Kundenportal.AdminUi.Application.Models.ApplicationUser", "User")
-                        .WithOne()
-                        .HasForeignKey("Kundenportal.AdminUi.Application.Models.UserPreferences", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

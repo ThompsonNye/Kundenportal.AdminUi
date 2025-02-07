@@ -26,7 +26,7 @@ public partial class StructureGroups
         _model.StructureGroups = (await StructureGroupsService!.GetAllAsync()).ToArray();
     }
 
-    private void OnEditStructureGroupClicked(int structureGroupId)
+    private void OnEditStructureGroupClicked(Guid structureGroupId)
     {
         NavigationManager!.NavigateTo($"{EditStructureGroup.RouteEditBase}/{structureGroupId}");
     }

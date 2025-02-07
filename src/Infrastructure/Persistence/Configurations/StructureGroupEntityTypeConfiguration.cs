@@ -9,7 +9,7 @@ public sealed class StructureGroupEntityTypeConfiguration : IEntityTypeConfigura
     public void Configure(EntityTypeBuilder<StructureGroup> builder)
     {
         builder.ToTable("StructureGroups");
-        
+
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Name)

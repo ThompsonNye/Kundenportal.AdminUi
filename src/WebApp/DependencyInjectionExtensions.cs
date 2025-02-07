@@ -42,7 +42,6 @@ public static class DependencyInjectionExtensions
 
     private static void AddDefaultWebAppServices(this IServiceCollection services)
     {
-
         services.AddRazorComponents()
             .AddInteractiveServerComponents();
 
