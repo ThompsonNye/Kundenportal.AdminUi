@@ -7,29 +7,16 @@
 @{
     string structureGroupExplanation = Texts.StructureGroupExplanation;
     string structureExplanation = Texts.StructureExplanation;
-    bool showExplanationFromPreferences = StructureGroupExplanationService!.ShowExplanation;
-    bool showExplanationAlert = showExplanationFromPreferences && !string.IsNullOrWhiteSpace(structureGroupExplanation);
+    bool showExplanationAlert = !string.IsNullOrWhiteSpace(structureGroupExplanation);
 }
 
 <PageTitle>@Texts.TitleStructureGroups</PageTitle>
-<div class="d-inline-flex gap-2 align-items-center">
-    <h3 class="d-inline">@Texts.TitleStructureGroups</h3>
-    @if (!showExplanationAlert)
-    {
-        <button 
-            type="button"
-            class="all-unset cursor-pointer"
-            title="@Texts.ButtonTitleStructureGroupExplanationInfoButton"
-            @onclick="OnShowExplanationAsync">
-            <i class="bi bi-info-circle fs-6"></i>
-        </button>
-    }
-</div>
+<h3>@Texts.TitleStructureGroups</h3>
 
 @if (showExplanationAlert)
 {
     <div class="my-2">
-        <DisplayMessage Type="DisplayMessageType.Info" OnClose="OnStructureGroupExplanationClosed">
+        <DisplayMessage Type="DisplayMessageType.Info">
             <div class="d-inline-flex flex-column gap-2">
                 <div>@structureGroupExplanation</div>
                 @if (!string.IsNullOrWhiteSpace(structureExplanation))

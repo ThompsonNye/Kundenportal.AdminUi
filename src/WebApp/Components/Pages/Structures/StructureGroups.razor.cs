@@ -7,21 +7,18 @@ namespace Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
 public partial class StructureGroups
 {
     public const string Route = "structure-groups";
-    
+
     [Inject] public ILogger<StructureGroups>? Logger { get; set; }
-    
+
     [Inject] public NavigationManager? NavigationManager { get; set; }
-    
+
     [Inject] public IStructureGroupsService? StructureGroupsService { get; set; }
-    
-    [Inject] public StructureGroupExplanationService? StructureGroupExplanationService { get; set; }
 
     private readonly Model _model = new();
 
     protected override async Task OnInitializedAsync()
     {
         await LoadStructureGroupsAsync();
-        await StructureGroupExplanationService!.InitializeAsync();
     }
 
     private async Task LoadStructureGroupsAsync()
@@ -37,18 +34,6 @@ public partial class StructureGroups
     private void OnCreateStructureClicked()
     {
         Logger!.LogInformation("Create Structure Option ausgewählt");
-    }
-
-    private async Task OnStructureGroupExplanationClosed()
-    {
-        await StructureGroupExplanationService!.PersistShowStatusForStructureGroupExplanationAsync(false);
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task OnShowExplanationAsync()
-    {
-        await StructureGroupExplanationService!.PersistShowStatusForStructureGroupExplanationAsync(true);
-        await InvokeAsync(StateHasChanged);
     }
 
     public class Model

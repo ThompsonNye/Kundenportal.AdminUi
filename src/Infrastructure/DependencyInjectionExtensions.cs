@@ -2,7 +2,6 @@
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Filters;
-using Kundenportal.AdminUi.Application.Preferences;
 using Kundenportal.AdminUi.Infrastructure.Options;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using MassTransit;
@@ -72,7 +71,6 @@ public static class DependencyInjectionExtensions
             x.SetKebabCaseEndpointNameFormatter();
 
             x.AddConsumers(typeof(IApplicationMarker).Assembly);
-            x.AddRequestClient<GetUserPreferences>();
 
             x.UsingRabbitMq((context, cfg) =>
             {

@@ -31,8 +31,6 @@ public static class DependencyInjectionExtensions
     /// <param name="services"></param>
     public static void AddWebAppServices(this IServiceCollection services)
     {
-        services.AddScoped<StructureGroupExplanationService>();
-
         services.AddValidatorsFromAssemblies([
             typeof(IApplicationMarker).Assembly,
             typeof(IInfrastructureMarker).Assembly,
