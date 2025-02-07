@@ -1,31 +1,9 @@
 volumes:
-  db-data:
-  broker-data:
   nextcloud-data:
   nextcloud-db-data:
   mail-data:
 
 services:
-  app.db:
-    image: docker.io/postgres:16-alpine
-    restart: unless-stopped
-    ports:
-      - 50003:5432
-    environment:
-      POSTGRES_USER: ${APP_DB_USER}
-      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
-    volumes:
-      - db-data:/var/lib/postgresql/data
-
-  broker:
-    image: masstransit/rabbitmq
-    restart: unless-stopped
-    ports:
-      - 50004:15672
-      - 50005:5672
-    volumes:
-      - broker-data:/var/lib/rabbitmq
-
   nextcloud:
     build:
       context: ./scripts/nextcloud/

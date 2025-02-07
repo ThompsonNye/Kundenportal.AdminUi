@@ -17,8 +17,10 @@ public static class StartupExtensions
 		builder.Configuration.AddEnvironmentVariables("Kundenportal_AdminUi_");
 
 		builder.Services.AddApplicationServices();
-		builder.Services.AddInfrastructureServices(builder.Configuration);
+		builder.AddInfrastructureServices();
 		builder.Services.AddWebAppServices();
+
+		builder.AddServiceDefaults();
 
 		WebApplication app = builder.Build();
 		return app;

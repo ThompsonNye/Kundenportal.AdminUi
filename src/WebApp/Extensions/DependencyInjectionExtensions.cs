@@ -7,11 +7,9 @@ using Kundenportal.AdminUi.Infrastructure.Persistence;
 using Kundenportal.AdminUi.WebApp.Components.Account;
 using Kundenportal.AdminUi.WebApp.Endpoints;
 using Kundenportal.AdminUi.WebApp.Endpoints.OpenApi;
-using MassTransit.Logging;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
-using OpenTelemetry.Trace;
 using System.Diagnostics;
 
 namespace Kundenportal.AdminUi.WebApp.Extensions;
@@ -53,16 +51,16 @@ public static class DependencyInjectionExtensions
 		ActivitySource activitySource = new(Constants.AppOtelName);
 		services.AddSingleton(activitySource);
 
-		services.AddOpenTelemetry()
-			.WithTracing(t =>
-			{
-				t.AddAspNetCoreInstrumentation()
-					.AddHttpClientInstrumentation()
-					.AddOtlpExporter()
-					.AddSource(DiagnosticHeaders.DefaultListenerName)
-					.AddSource(activitySource.Name);
-			})
-			.WithMetrics();
+		//services.AddOpenTelemetry()
+		//	.WithTracing(t =>
+		//	{
+		//		t.AddAspNetCoreInstrumentation()
+		//			.AddHttpClientInstrumentation()
+		//			.AddOtlpExporter()
+		//			.AddSource(DiagnosticHeaders.DefaultListenerName)
+		//			.AddSource(activitySource.Name);
+		//	})
+		//	.WithMetrics();
 
 		services.AddRazorComponents()
 			.AddInteractiveServerComponents();
