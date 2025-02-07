@@ -13,10 +13,12 @@ public sealed class StructureGroupEntityTypeConfiguration : IEntityTypeConfigura
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Name)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(StructureGroup.MaxLengthName);
 
         builder.Property(x => x.Path)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(StructureGroup.MaxLengthPath);
 
         builder.HasIndex(x => new
         {

@@ -5,6 +5,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations;
+using Kundenportal.AdminUi.Application.Models;
 
 namespace Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
 
@@ -100,6 +101,7 @@ public partial class EditStructureGroup
         [Required(ErrorMessageResourceType = typeof(Texts), ErrorMessageResourceName = nameof(Texts.ValidationErrorFieldRequired))]
         [Display(Name = nameof(Texts.LabelEditStructureGroupName), ResourceType = typeof(Texts))]
         [NegativeRegularExpression(@"[<>?""\/|\\:\*’#%\.]", ErrorMessageResourceType = typeof(Texts), ErrorMessageResourceName = nameof(Texts.ValidationErrorEditStructureGroupNameContainsInvalidCharacters))]
+        [MaxLength(StructureGroup.MaxLengthName, ErrorMessageResourceType = typeof(Texts), ErrorMessageResourceName = nameof(Texts.ValidationErrorFieldTooLong))]
         public string Name { get; set; } = "";
     }
 }

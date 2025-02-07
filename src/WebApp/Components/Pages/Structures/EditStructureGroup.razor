@@ -1,4 +1,5 @@
 ﻿@using Kundenportal.AdminUi.WebApp.Resources
+@using Kundenportal.AdminUi.Application.Models
 @attribute [Route($"/{RouteEdit}")]
 @attribute [Route($"/{RouteCreate}")]
 
@@ -26,7 +27,8 @@
                        @bind-Value="_model.Name"
                        readonly="@validatingReadonlyChoice"
                        disabled="@validatingDisabledChoice"
-                       ></InputText>
+                       maxlength="@StructureGroup.MaxLengthName"
+                        ></InputText>
             <label for="name">@Texts.LabelEditStructureGroupName</label>
             <ValidationMessage For="() => _model.Name"></ValidationMessage>
         </div>
