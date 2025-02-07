@@ -141,9 +141,6 @@
   <data name="LabelEditStructureGroupName" xml:space="preserve">
     <value>Name</value>
   </data>
-  <data name="PlaceholderEditStructureGroupName" xml:space="preserve">
-    <value>Bitte geben Sie den Namen ein</value>
-  </data>
   <data name="ValidationErrorEditStructureGroupNameContainsInvalidCharacters" xml:space="preserve">
     <value>Der Pfadteil enthält ungültige Zeichen, ungültige Zeichen sind: &lt; &gt; ? " : | / \ * . ’ # %</value>
   </data>
@@ -158,9 +155,6 @@
   </data>
   <data name="TitlePendingStructureGroups" xml:space="preserve">
     <value>Ausstehende Strukturgruppen</value>
-  </data>
-  <data name="NoPendingStructureGroups" xml:space="preserve">
-    <value>Keine ausstehenden Strukturgruppen gefunden.</value>
   </data>
   <data name="NoStructureGroups" xml:space="preserve">
     <value>Keine Strukturgruppen gefunden.</value>

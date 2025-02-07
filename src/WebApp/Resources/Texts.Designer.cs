@@ -87,29 +87,11 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keine ausstehenden Strukturgruppen gefunden..
-        /// </summary>
-        public static string NoPendingStructureGroups {
-            get {
-                return ResourceManager.GetString("NoPendingStructureGroups", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Keine Strukturgruppen gefunden..
         /// </summary>
         public static string NoStructureGroups {
             get {
                 return ResourceManager.GetString("NoStructureGroups", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Bitte geben Sie den Namen ein.
-        /// </summary>
-        public static string PlaceholderEditStructureGroupName {
-            get {
-                return ResourceManager.GetString("PlaceholderEditStructureGroupName", resourceCulture);
             }
         }
         

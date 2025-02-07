@@ -36,23 +36,19 @@
     </a>
 </div>
 
-<h4>@Texts.TitlePendingStructureGroups</h4>
-<div id="pending-structure-groups">
-    @if (_model.PendingStructureGroups.Count > 0)
-    {
+@if (_model.PendingStructureGroups.Count > 0)
+{
+    <h4>@Texts.TitlePendingStructureGroups</h4>
+    <div id="pending-structure-groups">
         <ul>
             @foreach (var pendingGroup in _model.PendingStructureGroups)
             {
                 <li>@pendingGroup.Name</li>
             }
         </ul>
-    }
-    else
-    {
-        <p>@Texts.NoPendingStructureGroups</p>
-    }
-</div>
+    </div>
     <hr/>
+}
 
 <h4>@Texts.TitleStructureGroups</h4>
     <div id="structure-groups">
