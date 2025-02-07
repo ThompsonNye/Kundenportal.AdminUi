@@ -18,7 +18,7 @@ public class ConfigureSwaggerGenOptions(
 
 	public void Configure(SwaggerGenOptions options)
 	{
-		foreach (var description in _versionDescriptionProvider.ApiVersionDescriptions)
+		foreach (ApiVersionDescription description in _versionDescriptionProvider.ApiVersionDescriptions)
 		{
 			OpenApiSecurityScheme securityScheme = new()
 			{

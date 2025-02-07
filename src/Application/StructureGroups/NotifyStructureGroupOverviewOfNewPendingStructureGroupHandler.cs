@@ -18,7 +18,7 @@ public class NotifyStructureGroupOverviewOfNewPendingStructureGroupHandler(
 	{
 		try
 		{
-			var pendingStructureGroup = new PendingStructureGroup
+			PendingStructureGroup pendingStructureGroup = new PendingStructureGroup
 			{
 				Id = context.Message.Id,
 				Name = context.Message.Name

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Asp.Versioning.ApiExplorer;
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Infrastructure;
@@ -19,7 +20,7 @@ public static class StartupExtensions
 		builder.Services.AddInfrastructureServices(builder.Configuration);
 		builder.Services.AddWebAppServices();
 
-		var app = builder.Build();
+		WebApplication app = builder.Build();
 		return app;
 	}
 
@@ -47,7 +48,7 @@ public static class StartupExtensions
 
 			o.SupportedUICultures = o.SupportedCultures;
 
-			var defaultCulture = o.SupportedCultures![0];
+			CultureInfo defaultCulture = o.SupportedCultures![0];
 			o.DefaultRequestCulture = new RequestCulture(defaultCulture);
 		});
 
@@ -84,11 +85,11 @@ public static class StartupExtensions
 			app.UseSwagger();
 			app.UseSwaggerUI(o =>
 			{
-				var apiVersions = app.DescribeApiVersions();
-				foreach (var apiVersionDescription in apiVersions)
+				IReadOnlyList<ApiVersionDescription> apiVersions = app.DescribeApiVersions();
+				foreach (ApiVersionDescription apiVersionDescription in apiVersions)
 				{
-					var url = $"/swagger/{apiVersionDescription.GroupName}/swagger.json";
-					var name = apiVersionDescription.GroupName.ToUpperInvariant();
+					string url = $"/swagger/{apiVersionDescription.GroupName}/swagger.json";
+					string name = apiVersionDescription.GroupName.ToUpperInvariant();
 					o.SwaggerEndpoint(url, name);
 				}
 			});

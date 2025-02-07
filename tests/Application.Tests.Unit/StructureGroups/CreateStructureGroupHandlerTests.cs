@@ -7,6 +7,7 @@ using Kundenportal.AdminUi.Application.Options;
 using Kundenportal.AdminUi.Application.Services;
 using Kundenportal.AdminUi.Application.StructureGroups;
 using Mapster;
+using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;
@@ -50,13 +51,13 @@ public sealed class CreateStructureGroupHandlerTests
 	public async Task Consume_ShouldCreateStructureGroup_WhenEventIsReceived()
 	{
 		// Arrange
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
 		// Act
 		await _sut.Consume(context);
 
 		// Assert
-		var path = $"{_nextcloudOptions.StructureBasePath}/{context.Message.Name}";
+		string path = $"{_nextcloudOptions.StructureBasePath}/{context.Message.Name}";
 
 		_dbContext.StructureGroups.Should().ContainEquivalentOf(new
 		{
@@ -79,7 +80,7 @@ public sealed class CreateStructureGroupHandlerTests
 	public async Task Consume_ShouldRemovePendingStructureGroupFromDb_WhenStructureGroupIsCreated()
 	{
 		// Arrange
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 		_dbContext.PendingStructureGroups.Add(context.Message.Adapt<PendingStructureGroup>());
 		await _dbContext.SaveChangesAsync();
 
@@ -96,14 +97,14 @@ public sealed class CreateStructureGroupHandlerTests
 	public async Task Consume_ShouldRethrowException_WhenNextcloudApiThrowsException()
 	{
 		// Arrange
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
-		var path = $"{_nextcloudOptions.StructureBasePath}/{context.Message.Name}";
+		string path = $"{_nextcloudOptions.StructureBasePath}/{context.Message.Name}";
 		_nextcloudApi.CreateFolderAsync(path, Arg.Any<CancellationToken>())
 			.ThrowsAsync(new Exception());
 
 		// Act
-		var action = () => _sut.Consume(context);
+		Func<Task> action = () => _sut.Consume(context);
 
 		// Assert
 		await action.Should().ThrowExactlyAsync<Exception>();
@@ -117,7 +118,7 @@ public sealed class CreateStructureGroupHandlerTests
 	public async Task Consume_ShouldExitEarly_WhenStructureGroupAlreadyExists()
 	{
 		// Arrange
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
 		_dbContext.StructureGroups.Add(context.Message.Adapt<StructureGroup>());
 		await _dbContext.SaveChangesAsync();
@@ -132,7 +133,7 @@ public sealed class CreateStructureGroupHandlerTests
 
 	private (CreateStructureGroupHandler, IApplicationDbContext) GetSutWithMockedDbContext()
 	{
-		var dbContext = Substitute.For<IApplicationDbContext>();
+		IApplicationDbContext? dbContext = Substitute.For<IApplicationDbContext>();
 		CreateStructureGroupHandler sut = new(_options, _nextcloudApi, dbContext, _logger);
 		return (sut, dbContext);
 	}
@@ -141,13 +142,13 @@ public sealed class CreateStructureGroupHandlerTests
 	public async Task Consume_ShouldRethrowException_WhenExceptionIsThrownWhenCheckingIfStructureGroupExists()
 	{
 		// Arrange
-		(var sut, var dbContext) = GetSutWithMockedDbContext();
+		(CreateStructureGroupHandler sut, IApplicationDbContext dbContext) = GetSutWithMockedDbContext();
 		dbContext.StructureGroups.Throws<Exception>();
 
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
 		// Act
-		var action = () => sut.Consume(context);
+		Func<Task> action = () => sut.Consume(context);
 
 		// Assert
 		await action.Should().ThrowExactlyAsync<Exception>();
@@ -157,14 +158,14 @@ public sealed class CreateStructureGroupHandlerTests
 	public async Task Consume_ShouldRethrow_WhenNextcloudRequestFails()
 	{
 		// Arrange
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
-		var path = _nextcloudOptions.CombineWithStructureBasePath(context.Message.Name);
+		string path = _nextcloudOptions.CombineWithStructureBasePath(context.Message.Name);
 		NextcloudRequestException exception = new(-1);
 		_nextcloudApi.CreateFolderAsync(path, context.CancellationToken).ThrowsAsync(exception);
 
 		// Act
-		var action = () => _sut.Consume(context);
+		Func<Task> action = () => _sut.Consume(context);
 
 		// Assert
 		(await action.Should().ThrowExactlyAsync<NextcloudRequestException>())
@@ -178,14 +179,14 @@ public sealed class CreateStructureGroupHandlerTests
 	public async Task Consume_ShouldRethrow_WhenFolderInNextcloudAlreadyExists()
 	{
 		// Arrange
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
-		var path = _nextcloudOptions.CombineWithStructureBasePath(context.Message.Name);
+		string path = _nextcloudOptions.CombineWithStructureBasePath(context.Message.Name);
 		NextcloudFolderExistsException exception = new(path);
 		_nextcloudApi.CreateFolderAsync(path, context.CancellationToken).ThrowsAsync(exception);
 
 		// Act
-		var action = () => _sut.Consume(context);
+		Func<Task> action = () => _sut.Consume(context);
 
 		// Assert
 		(await action.Should().ThrowExactlyAsync<NextcloudFolderExistsException>())
@@ -199,20 +200,20 @@ public sealed class CreateStructureGroupHandlerTests
 	public async Task Consume_ShouldDeleteFolderAndRethrow_WhenSaveInDbFails()
 	{
 		// Arrange
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
-		var path = _nextcloudOptions.CombineWithStructureBasePath(context.Message.Name);
+		string path = _nextcloudOptions.CombineWithStructureBasePath(context.Message.Name);
 		_nextcloudApi.CreateFolderAsync(path, context.CancellationToken)
 			.Returns(Task.CompletedTask)
 			.AndDoes(_ =>
 			{
-				var structureGroup = context.Message.Adapt<StructureGroup>();
+				StructureGroup structureGroup = context.Message.Adapt<StructureGroup>();
 				_dbContext.StructureGroups.Add(structureGroup);
 				_dbContext.SaveChangesAsync().GetAwaiter().GetResult();
 			});
 
 		// Act
-		var action = () => _sut.Consume(context);
+		Func<Task> action = () => _sut.Consume(context);
 
 		// Assert
 		await action.Should().ThrowAsync<Exception>();
@@ -224,18 +225,18 @@ public sealed class CreateStructureGroupHandlerTests
 	public async Task Consume_ShouldLogWarning_WhenDeletingFolderRequestFails()
 	{
 		// Arrange
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
-		var path = _nextcloudOptions.CombineWithStructureBasePath(context.Message.Name);
+		string path = _nextcloudOptions.CombineWithStructureBasePath(context.Message.Name);
 		_nextcloudApi.CreateFolderAsync(path, context.CancellationToken)
 			.Returns(Task.CompletedTask)
 			.AndDoes(_ =>
 			{
-				var structureGroup = context.Message.Adapt<StructureGroup>();
+				StructureGroup structureGroup = context.Message.Adapt<StructureGroup>();
 				_dbContext.StructureGroups.Add(structureGroup);
 				_dbContext.SaveChangesAsync().GetAwaiter().GetResult();
 			});
-		var exception = _fixture.Create<NextcloudRequestException>();
+		NextcloudRequestException? exception = _fixture.Create<NextcloudRequestException>();
 		_nextcloudApi.DeleteFolderAsync(path, context.CancellationToken).ThrowsAsync(exception);
 
 		// Act
@@ -257,14 +258,14 @@ public sealed class CreateStructureGroupHandlerTests
 	public async Task Consume_ShouldLogWarning_WhenDeletingFolderThrowsException()
 	{
 		// Arrange
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
-		var path = _nextcloudOptions.CombineWithStructureBasePath(context.Message.Name);
+		string path = _nextcloudOptions.CombineWithStructureBasePath(context.Message.Name);
 		_nextcloudApi.CreateFolderAsync(path, context.CancellationToken)
 			.Returns(Task.CompletedTask)
 			.AndDoes(_ =>
 			{
-				var structureGroup = context.Message.Adapt<StructureGroup>();
+				StructureGroup structureGroup = context.Message.Adapt<StructureGroup>();
 				_dbContext.StructureGroups.Add(structureGroup);
 				_dbContext.SaveChangesAsync().GetAwaiter().GetResult();
 			});

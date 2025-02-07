@@ -65,7 +65,7 @@ public partial class StructureGroups : IAsyncDisposable
 
 	private async Task CreateHubConnectionsAsync()
 	{
-		var uri = NavigationManager!.ToAbsoluteUri($"/hubs{StructureGroupHub.Route}");
+		Uri uri = NavigationManager!.ToAbsoluteUri($"/hubs{StructureGroupHub.Route}");
 		_structureGroupsConnection = new HubConnectionBuilder()
 			.WithUrl(uri)
 			.Build();

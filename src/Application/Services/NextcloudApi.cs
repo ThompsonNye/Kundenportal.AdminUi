@@ -65,7 +65,8 @@ public sealed class NextcloudApi(
 		{
 			CancellationToken = cancellationToken
 		};
-		var response = await _webDavClient.Mkcol($"remote.php/dav/files/{_nextcloudOptions.Value.Username}{path}",
+		WebDavResponse? response = await _webDavClient.Mkcol(
+			$"remote.php/dav/files/{_nextcloudOptions.Value.Username}{path}",
 			parameters);
 
 		if (response.IsSuccessful) return;
@@ -83,7 +84,8 @@ public sealed class NextcloudApi(
 		{
 			CancellationToken = cancellationToken
 		};
-		var response = await _webDavClient.Delete($"remote.php/dav/files/{_nextcloudOptions.Value.Username}{path}",
+		WebDavResponse? response = await _webDavClient.Delete(
+			$"remote.php/dav/files/{_nextcloudOptions.Value.Username}{path}",
 			parameters);
 
 		if (response.IsSuccessful || response.StatusCode == 404) return;

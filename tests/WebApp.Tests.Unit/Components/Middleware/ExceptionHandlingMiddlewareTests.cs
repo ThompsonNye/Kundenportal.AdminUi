@@ -25,8 +25,8 @@ public class ExceptionHandlingMiddlewareTests
 	public async Task InvokeAsync_ShouldSetStatusCode500_WhenRequestHasNotStarted()
 	{
 		// Arrange
-		var context = Substitute.For<HttpContext>();
-		var response = Substitute.For<HttpResponse>();
+		HttpContext? context = Substitute.For<HttpContext>();
+		HttpResponse? response = Substitute.For<HttpResponse>();
 		response.Body.Returns(Substitute.For<Stream>());
 		context.Response.Returns(response);
 		_next.Invoke(context).ThrowsAsync(new Exception());
@@ -43,8 +43,8 @@ public class ExceptionHandlingMiddlewareTests
 	public async Task InvokeAsync_ShouldReturnEarly_WhenRequestHasStarted()
 	{
 		// Arrange
-		var context = Substitute.For<HttpContext>();
-		var response = Substitute.For<HttpResponse>();
+		HttpContext? context = Substitute.For<HttpContext>();
+		HttpResponse? response = Substitute.For<HttpResponse>();
 		response.HasStarted.Returns(true);
 		context.Response.Returns(response);
 		_next.Invoke(context).ThrowsAsync(new Exception());
@@ -60,7 +60,7 @@ public class ExceptionHandlingMiddlewareTests
 	public async Task InvokeAsync_ShouldNotHandleException_WhenNoExceptionIsThrown()
 	{
 		// Arrange
-		var context = Substitute.For<HttpContext>();
+		HttpContext? context = Substitute.For<HttpContext>();
 
 		// Act
 		await _sut.InvokeAsync(context);

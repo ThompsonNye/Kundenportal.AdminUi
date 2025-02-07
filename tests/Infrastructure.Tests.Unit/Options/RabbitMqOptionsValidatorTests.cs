@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentValidation.Results;
 using Kundenportal.AdminUi.Infrastructure.Options;
 using SharedUnitTestLogic;
 
@@ -16,7 +17,7 @@ public class RabbitMqOptionsValidatorTests
 		// Arrange
 
 		// Act
-		var result = _sut.Validate(_rabbitMqOptions);
+		ValidationResult? result = _sut.Validate(_rabbitMqOptions);
 
 		// Assert
 		result.IsValid.Should().BeTrue();
@@ -31,7 +32,7 @@ public class RabbitMqOptionsValidatorTests
 		_rabbitMqOptions.Host = "";
 
 		// Act
-		var result = _sut.Validate(_rabbitMqOptions);
+		ValidationResult? result = _sut.Validate(_rabbitMqOptions);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -52,7 +53,7 @@ public class RabbitMqOptionsValidatorTests
 		_rabbitMqOptions.Username = "";
 
 		// Act
-		var result = _sut.Validate(_rabbitMqOptions);
+		ValidationResult? result = _sut.Validate(_rabbitMqOptions);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -73,7 +74,7 @@ public class RabbitMqOptionsValidatorTests
 		_rabbitMqOptions.Password = "";
 
 		// Act
-		var result = _sut.Validate(_rabbitMqOptions);
+		ValidationResult? result = _sut.Validate(_rabbitMqOptions);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -94,7 +95,7 @@ public class RabbitMqOptionsValidatorTests
 		_rabbitMqOptions.Host = "";
 
 		// Act
-		var result = _sut.Validate(_rabbitMqOptions);
+		ValidationResult? result = _sut.Validate(_rabbitMqOptions);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -116,7 +117,7 @@ public class RabbitMqOptionsValidatorTests
 		_rabbitMqOptions.Port = port;
 
 		// Act
-		var result = _sut.Validate(_rabbitMqOptions);
+		ValidationResult? result = _sut.Validate(_rabbitMqOptions);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -133,7 +134,7 @@ public class RabbitMqOptionsValidatorTests
 		_rabbitMqOptions.Port = 65536;
 
 		// Act
-		var result = _sut.Validate(_rabbitMqOptions);
+		ValidationResult? result = _sut.Validate(_rabbitMqOptions);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -154,7 +155,7 @@ public class RabbitMqOptionsValidatorTests
 		_rabbitMqOptions.VirtualHost = "";
 
 		// Act
-		var result = _sut.Validate(_rabbitMqOptions);
+		ValidationResult? result = _sut.Validate(_rabbitMqOptions);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -171,7 +172,7 @@ public class RabbitMqOptionsValidatorTests
 		_rabbitMqOptions.VirtualHost = "foobar";
 
 		// Act
-		var result = _sut.Validate(_rabbitMqOptions);
+		ValidationResult? result = _sut.Validate(_rabbitMqOptions);
 
 		// Assert
 		result.IsValid.Should().BeFalse();

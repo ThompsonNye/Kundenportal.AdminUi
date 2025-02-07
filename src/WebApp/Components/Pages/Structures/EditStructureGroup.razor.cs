@@ -61,13 +61,13 @@ public partial class EditStructureGroup
 
 	private async Task OnSubmitLogicAsync()
 	{
-		var dataAnnotationsResult = _editContext.Validate();
+		bool dataAnnotationsResult = _editContext.Validate();
 		if (!dataAnnotationsResult) return;
 
-		var customValidationResult = await RunCustomValidationAsync();
+		bool customValidationResult = await RunCustomValidationAsync();
 		if (!customValidationResult) return;
 
-		var success = await CreatePendingStructureGroupAsync();
+		bool success = await CreatePendingStructureGroupAsync();
 		if (!success) return;
 
 		NavigationManager!.NavigateTo(StructureGroups.Route);
@@ -75,7 +75,7 @@ public partial class EditStructureGroup
 
 	private async Task<bool> CreatePendingStructureGroupAsync()
 	{
-		using var activity = ActivitySource?.StartActivity("CreateStructureGroup");
+		using Activity? activity = ActivitySource?.StartActivity("CreateStructureGroup");
 		activity?.AddTag("structureGroup.name", _model.Name);
 
 		try
@@ -100,10 +100,10 @@ public partial class EditStructureGroup
 
 	private async Task<bool> RunCustomValidationAsync()
 	{
-		using var activity = ActivitySource?.StartActivity("CheckFolderExists");
+		using Activity? activity = ActivitySource?.StartActivity("CheckFolderExists");
 		activity?.AddTag("structureGroup.name", _model.Name);
 
-		var folderExists = await StructureGroupsService!.DoesStructureGroupExistAsync(_model.Name);
+		bool folderExists = await StructureGroupsService!.DoesStructureGroupExistAsync(_model.Name);
 
 		if (folderExists) _validationMessageStore.Add(() => _model.Name, Texts.ValidationErrorStructureGroupExists);
 

@@ -1,6 +1,6 @@
 ﻿@{
-	var showMessage = !string.IsNullOrEmpty(Message);
-	var showChildContent = ChildContent is not null;
+	bool showMessage = !string.IsNullOrEmpty(Message);
+	bool showChildContent = ChildContent is not null;
 }
 
 @if (showMessage || showChildContent)

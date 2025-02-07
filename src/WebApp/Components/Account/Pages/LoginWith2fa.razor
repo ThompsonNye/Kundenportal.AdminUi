@@ -62,9 +62,9 @@
 
 	private async Task OnValidSubmitAsync()
 	{
-		var authenticatorCode = Input.TwoFactorCode!.Replace(" ", string.Empty).Replace("-", string.Empty);
-		var result = await SignInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, RememberMe, Input.RememberMachine);
-		var userId = await UserManager.GetUserIdAsync(user);
+		string authenticatorCode = Input.TwoFactorCode!.Replace(" ", string.Empty).Replace("-", string.Empty);
+		SignInResult result = await SignInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, RememberMe, Input.RememberMachine);
+		string userId = await UserManager.GetUserIdAsync(user);
 
 		if (result.Succeeded)
 		{

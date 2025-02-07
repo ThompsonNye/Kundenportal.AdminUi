@@ -2,6 +2,7 @@
 using Kundenportal.AdminUi.Application.Hubs;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Application.StructureGroups;
+using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -33,13 +34,13 @@ public sealed class NotifyStructureGroupOverviewOfNewPendingStructureGroupHandle
 	public async Task Consume_ShouldSendMessage_WhenCalled()
 	{
 		// Arrange
-		var hubClients = Substitute.For<IHubClients>();
-		var clientProxy = Substitute.For<IClientProxy>();
+		IHubClients? hubClients = Substitute.For<IHubClients>();
+		IClientProxy? clientProxy = Substitute.For<IClientProxy>();
 
 		hubClients.All.Returns(clientProxy);
 		_hubContext.Clients.Returns(hubClients);
 
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
 		// Act
 		await _sut.Consume(context);
@@ -58,7 +59,7 @@ public sealed class NotifyStructureGroupOverviewOfNewPendingStructureGroupHandle
 		// Arrange
 		_hubContext.Clients.Throws<Exception>();
 
-		var context = ConsumeContextProvider.GetMockedContext(_event);
+		ConsumeContext<PendingStructureGroupCreated> context = ConsumeContextProvider.GetMockedContext(_event);
 
 		// Act
 		await _sut.Consume(context);

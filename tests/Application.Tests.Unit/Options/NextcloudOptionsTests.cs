@@ -19,7 +19,7 @@ public class NextcloudOptionsTests
 		_sut.StructureBasePath = basePath;
 
 		// Act
-		var result = _sut.CombineWithStructureBasePath(name);
+		string result = _sut.CombineWithStructureBasePath(name);
 
 		// Assert
 		result.Should().Be($"{basePath}/{name}");

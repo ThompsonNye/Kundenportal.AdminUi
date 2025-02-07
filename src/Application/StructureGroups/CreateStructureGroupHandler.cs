@@ -24,20 +24,20 @@ public sealed class CreateStructureGroupHandler(
 
 	public async Task Consume(ConsumeContext<PendingStructureGroupCreated> context)
 	{
-		var existsInDb = await StructureGroupExistsInDbAsync(context);
+		bool existsInDb = await StructureGroupExistsInDbAsync(context);
 		if (existsInDb)
 		{
 			_logger.LogDebug("Structure group {Name} exists in db, skipping", context.Message.Name);
 			return;
 		}
 
-		var result = await CreateFolderInNextcloudAsync(context);
+		CreateStructureGroupFolderResult result = await CreateFolderInNextcloudAsync(context);
 		await UpdateDbAsync(context, result);
 	}
 
 	private async Task<bool> StructureGroupExistsInDbAsync(ConsumeContext<PendingStructureGroupCreated> context)
 	{
-		var existingStructureGroup = await _dbContext.StructureGroups.FindAsync(
+		StructureGroup? existingStructureGroup = await _dbContext.StructureGroups.FindAsync(
 			[context.Message.Id], context.CancellationToken);
 		return existingStructureGroup is not null;
 	}
@@ -47,7 +47,7 @@ public sealed class CreateStructureGroupHandler(
 	{
 		try
 		{
-			var path = _nextcloudOptions.Value.CombineWithStructureBasePath(context.Message.Name);
+			string path = _nextcloudOptions.Value.CombineWithStructureBasePath(context.Message.Name);
 
 			await _nextcloudApi.CreateFolderAsync(path, context.CancellationToken);
 
@@ -84,15 +84,15 @@ public sealed class CreateStructureGroupHandler(
 	{
 		try
 		{
-			var structureGroup = context.Message.Adapt<StructureGroup>();
+			StructureGroup structureGroup = context.Message.Adapt<StructureGroup>();
 			structureGroup.Path = createStructureGroupFolderResult.Path;
 			_dbContext.StructureGroups.Add(structureGroup);
 
-			var pendingStructureGroup = await _dbContext.PendingStructureGroups.FindAsync(
+			PendingStructureGroup? pendingStructureGroup = await _dbContext.PendingStructureGroups.FindAsync(
 				[context.Message.Id], context.CancellationToken);
 			if (pendingStructureGroup is not null) _dbContext.PendingStructureGroups.Remove(pendingStructureGroup);
 
-			var structureGroupCreated = context.Message.Adapt<StructureGroupCreated>();
+			StructureGroupCreated structureGroupCreated = context.Message.Adapt<StructureGroupCreated>();
 			await context.Publish(structureGroupCreated);
 
 			await _dbContext.SaveChangesAsync(context.CancellationToken);
@@ -113,7 +113,7 @@ public sealed class CreateStructureGroupHandler(
 
 	private async Task DeleteFolderAsync(ConsumeContext<PendingStructureGroupCreated> context)
 	{
-		var path = _nextcloudOptions.Value.CombineWithStructureBasePath(context.Message.Name);
+		string path = _nextcloudOptions.Value.CombineWithStructureBasePath(context.Message.Name);
 		try
 		{
 			await _nextcloudApi.DeleteFolderAsync(path, context.CancellationToken);

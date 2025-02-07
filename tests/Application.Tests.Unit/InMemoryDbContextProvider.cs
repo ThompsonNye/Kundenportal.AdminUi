@@ -8,7 +8,7 @@ public static class InMemoryDbContextProvider
 {
 	public static IApplicationDbContext GetDbContext()
 	{
-		var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+		DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>()
 			.UseInMemoryDatabase(Guid.NewGuid().ToString())
 			.Options;
 

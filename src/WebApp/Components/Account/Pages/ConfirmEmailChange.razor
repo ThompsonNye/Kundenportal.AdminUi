@@ -33,15 +33,15 @@
 				"Account/Login", "Error: Invalid email change confirmation link.", HttpContext);
 		}
 
-		var user = await UserManager.FindByIdAsync(UserId);
+		ApplicationUser? user = await UserManager.FindByIdAsync(UserId);
 		if (user is null)
 		{
 			message = "Unable to find user with Id '{userId}'";
 			return;
 		}
 
-		var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
-		var result = await UserManager.ChangeEmailAsync(user, Email, code);
+		string code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
+		IdentityResult result = await UserManager.ChangeEmailAsync(user, Email, code);
 		if (!result.Succeeded)
 		{
 			message = "Error changing email.";
@@ -50,7 +50,7 @@
 
 		// In our UI email and user name are one and the same, so when we update the email
 		// we need to update the user name.
-		var setUserNameResult = await UserManager.SetUserNameAsync(user, Email);
+		IdentityResult setUserNameResult = await UserManager.SetUserNameAsync(user, Email);
 		if (!setUserNameResult.Succeeded)
 		{
 			message = "Error changing user name.";

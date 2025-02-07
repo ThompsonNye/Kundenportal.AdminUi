@@ -15,7 +15,7 @@ public class ApplicationDbContextTests
 			.Options);
 
 		// Act
-		var hasPendingChanges = dbContext.Database.HasPendingModelChanges();
+		bool hasPendingChanges = dbContext.Database.HasPendingModelChanges();
 
 		// Assert
 		hasPendingChanges.Should().BeFalse(

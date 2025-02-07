@@ -45,8 +45,8 @@ public static class DependencyInjectionExtensions
 	private static IServiceCollection AddApplicationDbContext(this IServiceCollection services,
 		IConfiguration configuration)
 	{
-		var connectionString = configuration.GetConnectionString("Database") ??
-		                       throw new InvalidOperationException("Database connection string not found.");
+		string connectionString = configuration.GetConnectionString("Database") ??
+		                          throw new InvalidOperationException("Database connection string not found.");
 		services.AddDbContext<ApplicationDbContext>((services, options) =>
 		{
 			options.UseNpgsql(connectionString, o =>
@@ -125,7 +125,7 @@ public static class DependencyInjectionExtensions
 	/// <param name="cfg"></param>
 	private static void ConfigureHost(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg)
 	{
-		var rabbitMqOptions = context.GetRequiredService<IOptions<RabbitMqOptions>>();
+		IOptions<RabbitMqOptions> rabbitMqOptions = context.GetRequiredService<IOptions<RabbitMqOptions>>();
 
 		cfg.Host(
 			rabbitMqOptions.Value.GetUri(),

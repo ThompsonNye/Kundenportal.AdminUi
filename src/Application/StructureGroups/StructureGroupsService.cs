@@ -45,7 +45,7 @@ public sealed class StructureGroupsService(
 		try
 		{
 			await _semaphore.WaitAsync(2000, cancellationToken);
-			var structureGroups = await _dbContext.StructureGroups
+			StructureGroup[] structureGroups = await _dbContext.StructureGroups
 				.OrderBy(x => x.Name)
 				.ToArrayAsync(cancellationToken);
 			return structureGroups;
@@ -61,7 +61,8 @@ public sealed class StructureGroupsService(
 		try
 		{
 			await _semaphore.WaitAsync(2000, cancellationToken);
-			var pendingStructureGroups = await _dbContext.PendingStructureGroups.ToArrayAsync(cancellationToken);
+			PendingStructureGroup[] pendingStructureGroups =
+				await _dbContext.PendingStructureGroups.ToArrayAsync(cancellationToken);
 			return pendingStructureGroups;
 		}
 		finally
@@ -73,14 +74,14 @@ public sealed class StructureGroupsService(
 	public async Task AddPendingAsync(PendingStructureGroup pendingStructureGroup,
 		CancellationToken cancellationToken = default)
 	{
-		using var activity = _activitySource.StartActivity("AddPendingStructureGroup");
+		using Activity? activity = _activitySource.StartActivity("AddPendingStructureGroup");
 
 		_logger.LogDebug("Creating pending structure group with id {Id} and name {Name}", pendingStructureGroup.Id,
 			pendingStructureGroup.Name);
 
 		_dbContext.PendingStructureGroups.Add(pendingStructureGroup);
 
-		var pendingStructureGroupCreated =
+		PendingStructureGroupCreated pendingStructureGroupCreated =
 			pendingStructureGroup.Adapt<PendingStructureGroupCreated>();
 		await _publishEndpoint.Publish(pendingStructureGroupCreated, cancellationToken);
 
@@ -91,26 +92,26 @@ public sealed class StructureGroupsService(
 
 	public async Task<bool> DoesStructureGroupExistAsync(string name, CancellationToken cancellationToken = default)
 	{
-		var pendingGroupExists =
+		bool pendingGroupExists =
 			await DoesAPendingStructureGroupWithThatNameAlreadyExistAsync(name, cancellationToken);
 
 		if (pendingGroupExists) return true;
 
-		var existsInNextcloud = await DoesStructureGroupFolderExistInNextcloudAsync(name, cancellationToken);
+		bool existsInNextcloud = await DoesStructureGroupFolderExistInNextcloudAsync(name, cancellationToken);
 		return existsInNextcloud;
 	}
 
 	private async Task<bool> DoesStructureGroupFolderExistInNextcloudAsync(string name,
 		CancellationToken cancellationToken)
 	{
-		var path = _nextcloudOptions.Value.CombineWithStructureBasePath(name);
+		string path = _nextcloudOptions.Value.CombineWithStructureBasePath(name);
 		return await _nextcloud.DoesFolderExistAsync(path, cancellationToken);
 	}
 
 	private async Task<bool> DoesAPendingStructureGroupWithThatNameAlreadyExistAsync(string name,
 		CancellationToken cancellationToken = default)
 	{
-		var exists = await _dbContext
+		bool exists = await _dbContext
 			.PendingStructureGroups
 			.AnyAsync(x => x.Name == name, cancellationToken);
 

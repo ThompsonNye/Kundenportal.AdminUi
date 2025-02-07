@@ -12,15 +12,15 @@ public static partial class LoggerTestExtensions
 	public static void ReceivedLog(this ILogger logger, LogLevel logLevel, [ConstantExpected] string message,
 		params object?[] parameters)
 	{
-		var matches = LoggingParametersRegex().Matches(message);
+		MatchCollection matches = LoggingParametersRegex().Matches(message);
 
 		if (matches.Count != parameters.Length)
 			throw new InvalidOperationException(
 				"Found different number of log message parameters than object parameters");
 
-		for (var i = 0; i < matches.Count; i++)
+		for (int i = 0; i < matches.Count; i++)
 		{
-			var match = matches[i];
+			Match match = matches[i];
 			message = message.Replace(match.Value, parameters[i]?.ToString());
 		}
 
@@ -38,15 +38,15 @@ public static partial class LoggerTestExtensions
 		params object?[] parameters)
 		where TException : Exception
 	{
-		var matches = LoggingParametersRegex().Matches(message);
+		MatchCollection matches = LoggingParametersRegex().Matches(message);
 
 		if (matches.Count != parameters.Length)
 			throw new InvalidOperationException(
 				"Found different number of log message parameters than object parameters");
 
-		for (var i = 0; i < matches.Count; i++)
+		for (int i = 0; i < matches.Count; i++)
 		{
-			var match = matches[i];
+			Match match = matches[i];
 			message = message.Replace(match.Value, parameters[i]?.ToString());
 		}
 

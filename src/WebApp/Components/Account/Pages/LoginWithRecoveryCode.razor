@@ -49,11 +49,11 @@
 
 	private async Task OnValidSubmitAsync()
 	{
-		var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
+		string recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
 
-		var result = await SignInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
+		SignInResult result = await SignInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
 
-		var userId = await UserManager.GetUserIdAsync(user);
+		string userId = await UserManager.GetUserIdAsync(user);
 
 		if (result.Succeeded)
 		{

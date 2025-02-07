@@ -19,7 +19,7 @@ public class NotifyStructureGroupOverviewOfNewStructureGroupHandler(
 	{
 		try
 		{
-			var structureGroup = context.Message.Adapt<StructureGroup>();
+			StructureGroup structureGroup = context.Message.Adapt<StructureGroup>();
 			await _hubContext.Clients.All.SendAsync(
 				StructureGroupHub.NewStructureGroupMethod,
 				structureGroup,

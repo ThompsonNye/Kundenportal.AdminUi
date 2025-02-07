@@ -46,13 +46,13 @@
 
 	private async Task OnSubmitAsync()
 	{
-		var disable2faResult = await UserManager.SetTwoFactorEnabledAsync(user, false);
+		IdentityResult disable2faResult = await UserManager.SetTwoFactorEnabledAsync(user, false);
 		if (!disable2faResult.Succeeded)
 		{
 			throw new InvalidOperationException("Unexpected error occurred disabling 2FA.");
 		}
 
-		var userId = await UserManager.GetUserIdAsync(user);
+		string userId = await UserManager.GetUserIdAsync(user);
 		Logger.LogInformation("User with ID '{UserId}' has disabled 2fa.", userId);
 		RedirectManager.RedirectToWithStatus(
 			"Account/Manage/TwoFactorAuthentication",

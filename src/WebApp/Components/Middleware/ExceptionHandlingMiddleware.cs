@@ -1,4 +1,6 @@
-﻿namespace Kundenportal.AdminUi.WebApp.Components.Middleware;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace Kundenportal.AdminUi.WebApp.Components.Middleware;
 
 public class ExceptionHandlingMiddleware(
 	RequestDelegate next,
@@ -25,7 +27,7 @@ public class ExceptionHandlingMiddleware(
 
 		if (context.Response.HasStarted) return;
 
-		var result = TypedResults.Problem(statusCode: 500);
+		ProblemHttpResult result = TypedResults.Problem(statusCode: 500);
 
 		context.Response.StatusCode = result.StatusCode;
 		await context.Response.WriteAsJsonAsync(result.ProblemDetails);

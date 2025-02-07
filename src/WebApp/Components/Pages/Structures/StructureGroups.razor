@@ -1,13 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using Kundenportal.AdminUi.WebApp.Resources
+@using Kundenportal.AdminUi.Application.Models
 @attribute [Route($"/{Route}")]
 @rendermode InteractiveServer
 @attribute [Authorize]
 
 @{
-	var structureGroupExplanation = Texts.StructureGroupExplanation;
-	var structureExplanation = Texts.StructureExplanation;
-	var showExplanationAlert = !string.IsNullOrWhiteSpace(structureGroupExplanation);
+	string? structureGroupExplanation = Texts.StructureGroupExplanation;
+	string? structureExplanation = Texts.StructureExplanation;
+	bool showExplanationAlert = !string.IsNullOrWhiteSpace(structureGroupExplanation);
 }
 
 <PageTitle>@Texts.TitleStructureGroups</PageTitle>
@@ -41,7 +42,7 @@
 	<h4>@Texts.TitlePendingStructureGroups</h4>
 	<div id="pending-structure-groups">
 		<ul>
-			@foreach (var pendingGroup in _model.PendingStructureGroups)
+			@foreach (PendingStructureGroup pendingGroup in _model.PendingStructureGroups)
 			{
 				<li>@pendingGroup.Name</li>
 			}
@@ -54,9 +55,9 @@
 <div id="structure-groups">
 	@if (_model.StructureGroups.Count > 0)
 	{
-		@foreach (var group in _model.StructureGroups)
+		@foreach (StructureGroup group in _model.StructureGroups)
 		{
-			var optionsId = $"options-{group.Id}";
+			string optionsId = $"options-{group.Id}";
 
 			<div class="d-flex justify-content-between">
 				<div id="group-@(group.Id)-details" class="d-flex w-100 justify-content-between">

@@ -6,7 +6,7 @@
 @rendermode InteractiveServer
 
 @{
-	var title = Id.HasValue ? Texts.TitleEditStructureGroup : Texts.TitleCreateStructureGroup;
+	string? title = Id.HasValue ? Texts.TitleEditStructureGroup : Texts.TitleCreateStructureGroup;
 }
 
 <PageTitle>@title</PageTitle>
@@ -18,8 +18,8 @@
 	<DataAnnotationsValidator/>
 
 	@{
-		var validatingDisabledChoice = _submitted ? "disabled" : null;
-		var validatingReadonlyChoice = _submitted ? "readonly" : null;
+		string? validatingDisabledChoice = _submitted ? "disabled" : null;
+		string? validatingReadonlyChoice = _submitted ? "readonly" : null;
 	}
 
 	<div class="mb-2">

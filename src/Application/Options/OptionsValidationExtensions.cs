@@ -17,7 +17,8 @@ public static class OptionsValidationExtensions
 	{
 		optionsBuilder.Services.AddSingleton<IValidateOptions<TOptions>>(services =>
 		{
-			var validators = services.GetRequiredService<IEnumerable<IValidator<TOptions>>>();
+			IEnumerable<IValidator<TOptions>> validators =
+				services.GetRequiredService<IEnumerable<IValidator<TOptions>>>();
 			return new FluentOptionsValidation<TOptions>(optionsBuilder.Name, validators);
 		});
 		return optionsBuilder;

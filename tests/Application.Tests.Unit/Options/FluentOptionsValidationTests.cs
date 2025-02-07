@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using FluentValidation;
 using Kundenportal.AdminUi.Application.Options;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using SharedUnitTestLogic;
 
@@ -29,7 +30,7 @@ public class FluentOptionsValidationTests : FluentValidationInvariantCultureTest
 		// Arrange
 
 		// Act
-		var result = _sut.Validate(name, _validOptions);
+		ValidateOptionsResult result = _sut.Validate(name, _validOptions);
 
 		// Assert
 		result.Skipped.Should().BeTrue();
@@ -41,7 +42,7 @@ public class FluentOptionsValidationTests : FluentValidationInvariantCultureTest
 		// Arrange
 
 		// Act
-		var action = () => _sut.Validate(Name, null!);
+		Func<ValidateOptionsResult> action = () => _sut.Validate(Name, null!);
 
 		// Assert
 		action.Should().ThrowExactly<ArgumentNullException>()
@@ -52,11 +53,11 @@ public class FluentOptionsValidationTests : FluentValidationInvariantCultureTest
 	public void Validate_ShouldSkip_WhenNoValidatorsExist()
 	{
 		// Arrange
-		var validators = Enumerable.Empty<IValidator<NextcloudOptions>>();
+		IEnumerable<IValidator<NextcloudOptions>> validators = Enumerable.Empty<IValidator<NextcloudOptions>>();
 		_validators.GetEnumerator().Returns(validators.GetEnumerator());
 
 		// Act
-		var result = _sut.Validate(Name, _validOptions);
+		ValidateOptionsResult result = _sut.Validate(Name, _validOptions);
 
 		// Assert
 		result.Skipped.Should().BeTrue();
@@ -70,7 +71,7 @@ public class FluentOptionsValidationTests : FluentValidationInvariantCultureTest
 		_validators.GetEnumerator().Returns(validators.GetEnumerator());
 
 		// Act
-		var result = _sut.Validate(Name, _validOptions);
+		ValidateOptionsResult result = _sut.Validate(Name, _validOptions);
 
 		// Assert
 		result.Succeeded.Should().BeTrue();
@@ -86,7 +87,7 @@ public class FluentOptionsValidationTests : FluentValidationInvariantCultureTest
 		_validOptions.StructureBasePath = "foo";
 
 		// Act
-		var result = _sut.Validate(Name, _validOptions);
+		ValidateOptionsResult result = _sut.Validate(Name, _validOptions);
 
 		// Assert
 		result.Failed.Should().BeTrue();

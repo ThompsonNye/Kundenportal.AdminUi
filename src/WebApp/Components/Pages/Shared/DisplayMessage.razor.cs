@@ -38,9 +38,9 @@ public partial class DisplayMessage
 	[Parameter]
 	public bool ShowCloseX { get; set; } = true;
 
-	private string AlertType => AlertTypesMapping.TryGetValue(Type, out var alertType) ? alertType : "";
+	private string AlertType => AlertTypesMapping.TryGetValue(Type, out string? alertType) ? alertType : "";
 
-	private string AlertIcon => AlertIconsMapping.TryGetValue(Type, out var alertIcon) ? alertIcon : "";
+	private string AlertIcon => AlertIconsMapping.TryGetValue(Type, out string? alertIcon) ? alertIcon : "";
 
 	private Task OnCloseClickedAsync()
 	{

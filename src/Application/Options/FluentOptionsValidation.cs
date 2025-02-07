@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.Extensions.Options;
 
 namespace Kundenportal.AdminUi.Application.Options;
@@ -23,7 +24,7 @@ public class FluentOptionsValidation<TOptions>(
 		// Ensure options are provided to validate against
 		ArgumentNullException.ThrowIfNull(options);
 
-		var validationResults = validators
+		ValidationResult[] validationResults = validators
 			.Select(x => x.Validate(options))
 			.ToArray();
 
@@ -31,9 +32,9 @@ public class FluentOptionsValidation<TOptions>(
 
 		if (validationResults.All(x => x.IsValid)) return ValidateOptionsResult.Success;
 
-		var typeName = options.GetType().Name;
-		var errors = new List<string>();
-		foreach (var error in validationResults.SelectMany(x => x.Errors))
+		string typeName = options.GetType().Name;
+		List<string> errors = new List<string>();
+		foreach (ValidationFailure? error in validationResults.SelectMany(x => x.Errors))
 			errors.Add($"Fluent validation failed for options '{typeName}': {error.ErrorMessage}.");
 
 		return ValidateOptionsResult.Fail(errors);

@@ -45,7 +45,7 @@ public class StructureGroupsServiceTests
 		// Arrange
 
 		// Act
-		var result = await _sut.GetAllAsync();
+		IEnumerable<StructureGroup> result = await _sut.GetAllAsync();
 
 		// Assert
 		result.Should().BeEmpty();
@@ -55,13 +55,13 @@ public class StructureGroupsServiceTests
 	public async Task GetAllAsync_ShouldReturnItems_WhenItemsExist()
 	{
 		// Arrange
-		var structureGroups = _fixture.CreateMany<StructureGroup>()
+		StructureGroup[] structureGroups = _fixture.CreateMany<StructureGroup>()
 			.ToArray();
 		_dbContext.StructureGroups.AddRange(structureGroups);
 		await _dbContext.SaveChangesAsync();
 
 		// Act
-		var result = await _sut.GetAllAsync();
+		IEnumerable<StructureGroup> result = await _sut.GetAllAsync();
 
 		// Assert
 		result.Should().BeEquivalentTo(structureGroups);
@@ -77,7 +77,7 @@ public class StructureGroupsServiceTests
 		// Arrange
 
 		// Act
-		var result = await _sut.GetPendingAsync();
+		IEnumerable<PendingStructureGroup> result = await _sut.GetPendingAsync();
 
 		// Assert
 		result.Should().BeEmpty();
@@ -87,13 +87,13 @@ public class StructureGroupsServiceTests
 	public async Task GetPendingAsync_ShouldReturnItems_WhenItemsExist()
 	{
 		// Arrange
-		var structureGroups = _fixture.CreateMany<PendingStructureGroup>()
+		PendingStructureGroup[] structureGroups = _fixture.CreateMany<PendingStructureGroup>()
 			.ToArray();
 		_dbContext.PendingStructureGroups.AddRange(structureGroups);
 		await _dbContext.SaveChangesAsync();
 
 		// Act
-		var result = await _sut.GetPendingAsync();
+		IEnumerable<PendingStructureGroup> result = await _sut.GetPendingAsync();
 
 		// Assert
 		result.Should().BeEquivalentTo(structureGroups);
@@ -107,7 +107,7 @@ public class StructureGroupsServiceTests
 	public async Task AddPendingAsync_ShouldAddPendingStructureGroup_WhenCalled()
 	{
 		// Arrange
-		var pendingStructureGroup = _fixture.Create<PendingStructureGroup>();
+		PendingStructureGroup? pendingStructureGroup = _fixture.Create<PendingStructureGroup>();
 
 		// Act
 		await _sut.AddPendingAsync(pendingStructureGroup);
@@ -122,7 +122,7 @@ public class StructureGroupsServiceTests
 	public async Task AddPendingAsync_ShouldLogMessages_WhenCalled()
 	{
 		// Arrange
-		var pendingStructureGroup = _fixture.Create<PendingStructureGroup>();
+		PendingStructureGroup? pendingStructureGroup = _fixture.Create<PendingStructureGroup>();
 
 		// Act
 		await _sut.AddPendingAsync(pendingStructureGroup);
@@ -152,7 +152,7 @@ public class StructureGroupsServiceTests
 		await _dbContext.SaveChangesAsync();
 
 		// Act
-		var result = await _sut.DoesStructureGroupExistAsync(path);
+		bool result = await _sut.DoesStructureGroupExistAsync(path);
 
 		// Assert
 		result.Should().BeTrue();
@@ -165,17 +165,17 @@ public class StructureGroupsServiceTests
 		// Arrange
 		const string structureGroupName = "path";
 
-		var nextcloudOptions = new NextcloudOptions
+		NextcloudOptions nextcloudOptions = new NextcloudOptions
 		{
 			StructureBasePath = "/"
 		};
 		_nextcloudOptions.Value.Returns(nextcloudOptions);
 
-		var path = nextcloudOptions.CombineWithStructureBasePath(structureGroupName);
+		string path = nextcloudOptions.CombineWithStructureBasePath(structureGroupName);
 		_nextcloudApi.DoesFolderExistAsync(path).Returns(true);
 
 		// Act
-		var result = await _sut.DoesStructureGroupExistAsync(structureGroupName);
+		bool result = await _sut.DoesStructureGroupExistAsync(structureGroupName);
 
 		// Assert
 		result.Should().BeTrue();
@@ -188,17 +188,17 @@ public class StructureGroupsServiceTests
 		// Arrange
 		const string structureGroupName = "path";
 
-		var nextcloudOptions = new NextcloudOptions
+		NextcloudOptions nextcloudOptions = new NextcloudOptions
 		{
 			StructureBasePath = "/Structures"
 		};
 		_nextcloudOptions.Value.Returns(nextcloudOptions);
 
-		var path = nextcloudOptions.CombineWithStructureBasePath(structureGroupName);
+		string path = nextcloudOptions.CombineWithStructureBasePath(structureGroupName);
 		_nextcloudApi.DoesFolderExistAsync(path).Returns(true);
 
 		// Act
-		var result = await _sut.DoesStructureGroupExistAsync(structureGroupName);
+		bool result = await _sut.DoesStructureGroupExistAsync(structureGroupName);
 
 		// Assert
 		result.Should().BeTrue();
@@ -214,11 +214,11 @@ public class StructureGroupsServiceTests
 		NextcloudOptions nextcloudOptions = new();
 		_nextcloudOptions.Value.Returns(nextcloudOptions);
 
-		var path = nextcloudOptions.CombineWithStructureBasePath(structureGroupName);
+		string path = nextcloudOptions.CombineWithStructureBasePath(structureGroupName);
 		_nextcloudApi.DoesFolderExistAsync(path).Returns(false);
 
 		// Act
-		var result = await _sut.DoesStructureGroupExistAsync(path);
+		bool result = await _sut.DoesStructureGroupExistAsync(path);
 
 		// Assert
 		result.Should().BeFalse();

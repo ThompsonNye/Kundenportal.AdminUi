@@ -30,11 +30,11 @@ public static class DependencyInjectionExtensions
 
 		services.AddHttpClient(Constants.NextcloudHttpClientName, (sp, httpClient) =>
 			{
-				var nextcloudOptions = sp.GetRequiredService<IOptions<NextcloudOptions>>();
+				IOptions<NextcloudOptions> nextcloudOptions = sp.GetRequiredService<IOptions<NextcloudOptions>>();
 
 				httpClient.BaseAddress = new Uri(nextcloudOptions.Value.Host);
 
-				var authenticationHeaderValue =
+				string authenticationHeaderValue =
 					$"{nextcloudOptions.Value.Username}:{nextcloudOptions.Value.Password}";
 				authenticationHeaderValue = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationHeaderValue));
 				httpClient.DefaultRequestHeaders.Authorization =
@@ -42,12 +42,12 @@ public static class DependencyInjectionExtensions
 			})
 			.AddResilienceHandler("Retry", (builder, context) =>
 			{
-				var retryableExceptions = new[]
+				ImmutableArray<Type> retryableExceptions = new[]
 				{
 					typeof(NextcloudRequestException)
 				}.ToImmutableArray();
 
-				var nextcloudOptions =
+				IOptions<NextcloudOptions> nextcloudOptions =
 					context.ServiceProvider.GetRequiredService<IOptions<NextcloudOptions>>();
 				builder
 					.AddRetry(new HttpRetryStrategyOptions
@@ -57,7 +57,7 @@ public static class DependencyInjectionExtensions
 						UseJitter = true,
 						ShouldHandle = async response =>
 						{
-							var handledByDefault = await new HttpRetryStrategyOptions().ShouldHandle(response);
+							bool handledByDefault = await new HttpRetryStrategyOptions().ShouldHandle(response);
 							if (handledByDefault) return true;
 
 							return retryableExceptions.Contains(response.GetType());
@@ -67,8 +67,8 @@ public static class DependencyInjectionExtensions
 
 		services.AddScoped<IWebDavClient>(sp =>
 		{
-			var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
-			var nextcloudHttpClient = httpClientFactory.CreateClient(Constants.NextcloudHttpClientName);
+			IHttpClientFactory httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+			HttpClient nextcloudHttpClient = httpClientFactory.CreateClient(Constants.NextcloudHttpClientName);
 
 			WebDavClient webDavClient = new(nextcloudHttpClient);
 			return webDavClient;

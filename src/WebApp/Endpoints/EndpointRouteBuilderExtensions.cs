@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Net;
+using Asp.Versioning.Builder;
 using Asp.Versioning.Conventions;
 using FluentValidation;
 using Kundenportal.AdminUi.Application.Hubs;
@@ -38,7 +39,7 @@ public static class EndpointRouteBuilderExtensions
 	/// <param name="endpointRouteBuilder"></param>
 	public static void MapHubs(this IEndpointRouteBuilder endpointRouteBuilder)
 	{
-		var hubsGroup = endpointRouteBuilder.MapGroup("/hubs");
+		RouteGroupBuilder hubsGroup = endpointRouteBuilder.MapGroup("/hubs");
 
 		hubsGroup.MapHub<StructureGroupHub>(StructureGroupHub.Route);
 	}
@@ -50,11 +51,11 @@ public static class EndpointRouteBuilderExtensions
 	/// <param name="endpointRouteBuilder"></param>
 	public static void MapAppEndpoints(this IEndpointRouteBuilder endpointRouteBuilder)
 	{
-		var apiVersionSet = endpointRouteBuilder.NewApiVersionSet()
+		ApiVersionSet apiVersionSet = endpointRouteBuilder.NewApiVersionSet()
 			.HasApiVersion(1.0)
 			.Build();
 
-		var versionedApis = endpointRouteBuilder.MapGroup("/api/v{apiVersion:apiVersion}")
+		RouteGroupBuilder versionedApis = endpointRouteBuilder.MapGroup("/api/v{apiVersion:apiVersion}")
 			.WithApiVersionSet(apiVersionSet);
 
 		versionedApis.MapCreateStructureGroupApi();
@@ -70,11 +71,11 @@ public static class EndpointRouteBuilderExtensions
 				[FromServices] ILoggerFactory loggerFactory,
 				CancellationToken cancellationToken) =>
 			{
-				var logger = loggerFactory.CreateLogger("StructureGroupApis");
+				ILogger logger = loggerFactory.CreateLogger("StructureGroupApis");
 
 				try
 				{
-					var doesStructureGroupExist =
+					bool doesStructureGroupExist =
 						await structureGroupsService.DoesStructureGroupExistAsync(request.Name, cancellationToken);
 					if (doesStructureGroupExist)
 					{
@@ -85,7 +86,7 @@ public static class EndpointRouteBuilderExtensions
 						});
 					}
 
-					var pendingStructureGroup = request.Adapt<PendingStructureGroup>();
+					PendingStructureGroup pendingStructureGroup = request.Adapt<PendingStructureGroup>();
 					await structureGroupsService.AddPendingAsync(pendingStructureGroup, cancellationToken);
 
 					return Results.Accepted();

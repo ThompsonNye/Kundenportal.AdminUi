@@ -68,7 +68,7 @@
 			RedirectManager.RedirectToWithStatus("Account/Login", $"Error from external provider: {RemoteError}", HttpContext);
 		}
 
-		var info = await SignInManager.GetExternalLoginInfoAsync();
+		ExternalLoginInfo? info = await SignInManager.GetExternalLoginInfoAsync();
 		if (info is null)
 		{
 			RedirectManager.RedirectToWithStatus("Account/Login", "Error loading external login information.", HttpContext);
@@ -93,7 +93,7 @@
 	private async Task OnLoginCallbackAsync()
 	{
 		// Sign in the user with this external login provider if the user already has a login.
-		var result = await SignInManager.ExternalLoginSignInAsync(
+		SignInResult result = await SignInManager.ExternalLoginSignInAsync(
 			externalLoginInfo.LoginProvider,
 			externalLoginInfo.ProviderKey,
 			false,
@@ -121,13 +121,13 @@
 
 	private async Task OnValidSubmitAsync()
 	{
-		var emailStore = GetEmailStore();
-		var user = CreateUser();
+		IUserEmailStore<ApplicationUser> emailStore = GetEmailStore();
+		ApplicationUser user = CreateUser();
 
 		await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
 		await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-		var result = await UserManager.CreateAsync(user);
+		IdentityResult result = await UserManager.CreateAsync(user);
 		if (result.Succeeded)
 		{
 			result = await UserManager.AddLoginAsync(user, externalLoginInfo);
@@ -135,11 +135,11 @@
 			{
 				Logger.LogInformation("User created an account using {Name} provider.", externalLoginInfo.LoginProvider);
 
-				var userId = await UserManager.GetUserIdAsync(user);
-				var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+				string userId = await UserManager.GetUserIdAsync(user);
+				string code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
 				code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-				var callbackUrl = NavigationManager.GetUriWithQueryParameters(
+				string callbackUrl = NavigationManager.GetUriWithQueryParameters(
 					NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
 					new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
 				await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));

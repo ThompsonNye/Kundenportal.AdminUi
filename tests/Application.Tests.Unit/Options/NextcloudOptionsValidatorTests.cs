@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentValidation.Results;
 using Kundenportal.AdminUi.Application.Options;
 using SharedUnitTestLogic;
 
@@ -23,7 +24,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 		// Arrange
 
 		// Act
-		var result = _sut.Validate(Options);
+		ValidationResult? result = _sut.Validate(Options);
 
 		// Assert
 		result.IsValid.Should().BeTrue();
@@ -38,7 +39,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 		Options.Username = "";
 
 		// Act
-		var result = _sut.Validate(Options);
+		ValidationResult? result = _sut.Validate(Options);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -59,7 +60,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 		Options.Password = "";
 
 		// Act
-		var result = _sut.Validate(Options);
+		ValidationResult? result = _sut.Validate(Options);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -82,7 +83,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 		Options.RetryDelay = value;
 
 		// Act
-		var result = _sut.Validate(Options);
+		ValidationResult? result = _sut.Validate(Options);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -107,7 +108,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 		Options.StructureBasePath = value;
 
 		// Act
-		var result = _sut.Validate(Options);
+		ValidationResult? result = _sut.Validate(Options);
 
 		// Assert
 		result.IsValid.Should().BeTrue();
@@ -120,7 +121,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 		Options.StructureBasePath = "";
 
 		// Act
-		var result = _sut.Validate(Options);
+		ValidationResult? result = _sut.Validate(Options);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -140,7 +141,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 		Options.StructureBasePath = value;
 
 		// Act
-		var result = _sut.Validate(Options);
+		ValidationResult? result = _sut.Validate(Options);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -160,7 +161,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 		Options.StructureBasePath = value;
 
 		// Act
-		var result = _sut.Validate(Options);
+		ValidationResult? result = _sut.Validate(Options);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -181,7 +182,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 		Options.Host = "";
 
 		// Act
-		var result = _sut.Validate(Options);
+		ValidationResult? result = _sut.Validate(Options);
 
 		// Assert
 		result.IsValid.Should().BeFalse();
@@ -198,7 +199,7 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
 		Options.Host = "foobar";
 
 		// Act
-		var result = _sut.Validate(Options);
+		ValidationResult? result = _sut.Validate(Options);
 
 		// Assert
 		result.IsValid.Should().BeFalse();

@@ -17,7 +17,7 @@
 	<h3>Registered Logins</h3>
 	<table class="table">
 		<tbody>
-		@foreach (var login in currentLogins)
+		@foreach (UserLoginInfo login in currentLogins)
 		{
 			<tr>
 				<td>@login.ProviderDisplayName</td>
@@ -51,7 +51,7 @@
 		<AntiforgeryToken/>
 		<div>
 			<p>
-				@foreach (var provider in otherLogins)
+				@foreach (AuthenticationScheme provider in otherLogins)
 				{
 					<button type="submit" class="btn btn-primary" name="Provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
 						@provider.DisplayName
@@ -102,7 +102,7 @@
 
 	private async Task OnSubmitAsync()
 	{
-		var result = await UserManager.RemoveLoginAsync(user, LoginProvider!, ProviderKey!);
+		IdentityResult result = await UserManager.RemoveLoginAsync(user, LoginProvider!, ProviderKey!);
 		if (!result.Succeeded)
 		{
 			RedirectManager.RedirectToCurrentPageWithStatus("Error: The external login was not removed.", HttpContext);
@@ -114,14 +114,14 @@
 
 	private async Task OnGetLinkLoginCallbackAsync()
 	{
-		var userId = await UserManager.GetUserIdAsync(user);
-		var info = await SignInManager.GetExternalLoginInfoAsync(userId);
+		string userId = await UserManager.GetUserIdAsync(user);
+		ExternalLoginInfo? info = await SignInManager.GetExternalLoginInfoAsync(userId);
 		if (info is null)
 		{
 			RedirectManager.RedirectToCurrentPageWithStatus("Error: Could not load external login info.", HttpContext);
 		}
 
-		var result = await UserManager.AddLoginAsync(user, info);
+		IdentityResult result = await UserManager.AddLoginAsync(user, info);
 		if (!result.Succeeded)
 		{
 			RedirectManager.RedirectToCurrentPageWithStatus("Error: The external login was not added. External logins can only be associated with one account.", HttpContext);

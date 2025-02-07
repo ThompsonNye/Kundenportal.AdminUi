@@ -54,7 +54,7 @@
 	{
 		if (Input.PhoneNumber != phoneNumber)
 		{
-			var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+			IdentityResult setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
 			if (!setPhoneResult.Succeeded)
 			{
 				RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
