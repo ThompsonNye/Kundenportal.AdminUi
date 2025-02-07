@@ -13,6 +13,4 @@ public sealed class StructureGroup
     public string Name { get; set; } = "";
 
     public string Path { get; set; } = "";
-
-    public Guid? ParentId { get; set; }
 }
