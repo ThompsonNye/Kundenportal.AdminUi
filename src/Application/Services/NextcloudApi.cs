@@ -33,14 +33,17 @@ public sealed class NextcloudApi : INextcloudApi
 
         if (!response.IsSuccessful)
         {
+            // TODO Handle gracefully
             throw new Exception();
         }
 
         var nextcloudFolder = response
             .Resources
+            // TODO Improve
             .Where(x => x.Uri.TrimEnd().TrimEnd('/').EndsWith($"/{path.TrimEnd().TrimEnd('/')}"))
             .Select(resource => new NextcloudFolder(
                 resource.Uri,
+                // TODO Improve
                 resource.Uri.TrimStart().TrimStart('/').Replace("remote.php/dav/files/admin", ""),
                 resource.CreationDate,
                 resource.LastModifiedDate,
@@ -49,6 +52,7 @@ public sealed class NextcloudApi : INextcloudApi
 
         if (nextcloudFolder is null)
         {
+            // TODO Handle gracefully
             throw new Exception();
         }
 

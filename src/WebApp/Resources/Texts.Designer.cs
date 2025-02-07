@@ -78,6 +78,24 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Keine ausstehenden Strukturgruppen gefunden..
+        /// </summary>
+        public static string NoPendingStructureGroups {
+            get {
+                return ResourceManager.GetString("NoPendingStructureGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keine Strukturgruppen gefunden..
+        /// </summary>
+        public static string NoStructureGroups {
+            get {
+                return ResourceManager.GetString("NoStructureGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bitte geben Sie den Namen ein.
         /// </summary>
         public static string PlaceholderEditStructureGroupName {
@@ -132,6 +150,15 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ausstehende Strukturgruppen.
+        /// </summary>
+        public static string TitlePendingStructureGroups {
+            get {
+                return ResourceManager.GetString("TitlePendingStructureGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Strukturgruppen.
         /// </summary>
         public static string TitleStructureGroups {
@@ -170,9 +197,9 @@ namespace Kundenportal.AdminUi.WebApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Eine Strukturgruppe mit diesem Namen existiert bereits..
         /// </summary>
-        public static string ValidationErrorStructureGroupFolderExists {
+        public static string ValidationErrorStructureGroupExists {
             get {
-                return ResourceManager.GetString("ValidationErrorStructureGroupFolderExists", resourceCulture);
+                return ResourceManager.GetString("ValidationErrorStructureGroupExists", resourceCulture);
             }
         }
     }

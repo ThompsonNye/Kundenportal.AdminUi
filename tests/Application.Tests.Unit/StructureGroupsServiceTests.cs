@@ -57,10 +57,60 @@ public class StructureGroupsServiceTests
     
     #endregion
 
-    #region DoesStructureGroupFolderAlreadyExistAsync
+    #region GetPendingAsync
+    
+    [Fact]
+    public async Task GetPendingAsync_ShouldReturnEmptyArray_WhenNoStructureGroupsExist()
+    {
+        // Arrange
+
+        // Act
+        IEnumerable<PendingStructureGroup> result = await _sut.GetPendingAsync();
+
+        // Assert
+        result.Should().BeEmpty();
+    }
+    
+    [Fact]
+    public async Task GetPendingAsync_ShouldReturnItems_WhenItemsExist()
+    {
+        // Arrange
+        PendingStructureGroup[] structureGroups = _fixture.CreateMany<PendingStructureGroup>()
+            .ToArray();
+        _dbContext.PendingStructureGroups.AddRange(structureGroups);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        IEnumerable<PendingStructureGroup> result = await _sut.GetPendingAsync();
+
+        // Assert
+        result.Should().BeEquivalentTo(structureGroups);
+    }
+    
+    #endregion
+
+    #region DoesStructureGroupExistAsync
 
     [Fact]
-    public async Task DoesStructureGroupFolderAlreadyExistAsync_ShouldReturnTrue_WhenNextcloudReturnsFolderDetails()
+    public async Task DoesStructureGroupExistAsync_ShouldReturnTrue_WhenAPendingStructureGroupsExistsInDb()
+    {
+        // Arrange
+        const string path = "path";
+        _dbContext.PendingStructureGroups.Add(new PendingStructureGroup
+        {
+            Name = path
+        });
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        bool result = await _sut.DoesStructureGroupExistAsync(path);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task DoesStructureGroupExistAsync_ShouldReturnTrue_WhenNextcloudReturnsFolderDetails()
     {
         // Arrange
         const string path = "path";
@@ -68,21 +118,21 @@ public class StructureGroupsServiceTests
         _nextcloudApi.GetFolderDetailsAsync(path).Returns(nextcloudFolder);
 
         // Act
-        bool result = await _sut.DoesStructureGroupFolderAlreadyExistAsync(path);
+        bool result = await _sut.DoesStructureGroupExistAsync(path);
 
         // Assert
         result.Should().BeTrue();
     }
 
     [Fact]
-    public async Task DoesStructureGroupFolderAlreadyExistAsync_ShouldReturnFalse_WhenNextcloudThrowsException()
+    public async Task DoesStructureGroupExistAsync_ShouldReturnFalse_WhenNextcloudThrowsException()
     {
         // Arrange
         const string path = "path";
         _nextcloudApi.GetFolderDetailsAsync(path).ThrowsAsync<Exception>();
 
         // Act
-        bool result = await _sut.DoesStructureGroupFolderAlreadyExistAsync(path);
+        bool result = await _sut.DoesStructureGroupExistAsync(path);
 
         // Assert
         result.Should().BeFalse();

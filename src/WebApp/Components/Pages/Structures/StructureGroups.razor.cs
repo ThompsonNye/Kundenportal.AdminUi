@@ -24,6 +24,7 @@ public partial class StructureGroups
     private async Task LoadStructureGroupsAsync()
     {
         _model.StructureGroups = (await StructureGroupsService!.GetAllAsync()).ToArray();
+        _model.PendingStructureGroups = (await StructureGroupsService!.GetPendingAsync()).ToArray();
     }
 
     private void OnEditStructureGroupClicked(Guid structureGroupId)
@@ -39,5 +40,7 @@ public partial class StructureGroups
     public class Model
     {
         public ICollection<StructureGroup> StructureGroups { get; set; } = Array.Empty<StructureGroup>();
+        
+        public ICollection<PendingStructureGroup> PendingStructureGroups { get; set; } = Array.Empty<PendingStructureGroup>();
     }
 }

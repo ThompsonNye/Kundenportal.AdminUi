@@ -150,10 +150,19 @@
   <data name="ButtonTextCreate" xml:space="preserve">
     <value>Erstellen</value>
   </data>
-  <data name="ValidationErrorStructureGroupFolderExists" xml:space="preserve">
+  <data name="ValidationErrorStructureGroupExists" xml:space="preserve">
     <value>Eine Strukturgruppe mit diesem Namen existiert bereits.</value>
   </data>
   <data name="ValidationErrorFieldTooLong" xml:space="preserve">
     <value>Das Feld {0} darf maximal {1} Zeichen lang sein.</value>
+  </data>
+  <data name="TitlePendingStructureGroups" xml:space="preserve">
+    <value>Ausstehende Strukturgruppen</value>
+  </data>
+  <data name="NoPendingStructureGroups" xml:space="preserve">
+    <value>Keine ausstehenden Strukturgruppen gefunden.</value>
+  </data>
+  <data name="NoStructureGroups" xml:space="preserve">
+    <value>Keine Strukturgruppen gefunden.</value>
   </data>
 </root>

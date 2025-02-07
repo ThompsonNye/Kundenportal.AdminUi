@@ -86,11 +86,11 @@ public partial class EditStructureGroup
 
     private async Task<bool> RunCustomValidationAsync()
     {
-        bool folderExists = await StructureGroupsService!.DoesStructureGroupFolderAlreadyExistAsync(_model.Name);
+        bool folderExists = await StructureGroupsService!.DoesStructureGroupExistAsync(_model.Name);
 
         if (folderExists)
         {
-            _validationMessageStore.Add(() => _model.Name, Texts.ValidationErrorStructureGroupFolderExists);
+            _validationMessageStore.Add(() => _model.Name, Texts.ValidationErrorStructureGroupExists);
         }
 
         return !folderExists;
