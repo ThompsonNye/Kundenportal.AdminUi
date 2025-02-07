@@ -44,7 +44,9 @@ public sealed class StructureGroupsService(
         try
         {
             await _semaphore.WaitAsync(2000, cancellationToken);
-            StructureGroup[] structureGroups = await _dbContext.StructureGroups.ToArrayAsync(cancellationToken);
+            StructureGroup[] structureGroups = await _dbContext.StructureGroups
+                .OrderBy(x => x.Name)
+                .ToArrayAsync(cancellationToken);
             return structureGroups;
         }
         finally
