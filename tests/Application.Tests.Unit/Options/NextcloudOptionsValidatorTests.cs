@@ -87,4 +87,6 @@ public class NextcloudOptionsValidatorTests : FluentValidationInvariantCultureTe
             x.ErrorCode == NextcloudOptionsValidator.ErrorCodeMissingTrailingSlash &&
             x.ErrorMessage == "'Structure Base Path' cannot end with a slash");
     }
+    
+    // TODO Update for expanded NextcloudOptions
 }

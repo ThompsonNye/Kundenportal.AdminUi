@@ -7,19 +7,12 @@ public interface INextcloudApi
     Task<NextcloudFolder> GetFolderDetailsAsync(string path, CancellationToken cancellationToken = default);
 }
 
-public sealed class NextcloudApi : INextcloudApi
+public sealed class NextcloudApi(IWebDavClient webDavClient) : INextcloudApi
 {
+    private readonly IWebDavClient _webDavClient = webDavClient;
+
     public async Task<NextcloudFolder> GetFolderDetailsAsync(string path, CancellationToken cancellationToken = default)
     {
-        using var client = new WebDavClient(new WebDavClientParams()
-        {
-            BaseAddress = new Uri("http://localhost:50000"),
-            DefaultRequestHeaders = new Dictionary<string, string>()
-            {
-                ["Authorization"] = "Basic YWRtaW46YWRtaW4xKy4="
-            }
-        });
-
         var parameters = new PropfindParameters
         {
             CancellationToken = cancellationToken,
@@ -29,7 +22,7 @@ public sealed class NextcloudApi : INextcloudApi
             }
         };
 
-        PropfindResponse response = await client.Propfind($"remote.php/dav/files/admin{path}", parameters);
+        PropfindResponse response = await _webDavClient.Propfind($"remote.php/dav/files/admin{path}", parameters);
 
         if (!response.IsSuccessful)
         {
