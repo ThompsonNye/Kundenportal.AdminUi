@@ -1,12 +1,12 @@
 ﻿using System.Diagnostics;
+using Asp.Versioning;
 using FluentValidation;
 using Kundenportal.AdminUi.Application;
-using Kundenportal.AdminUi.Application.Hubs;
 using Kundenportal.AdminUi.Application.Models;
 using Kundenportal.AdminUi.Infrastructure;
 using Kundenportal.AdminUi.Infrastructure.Persistence;
 using Kundenportal.AdminUi.WebApp.Components.Account;
-using Kundenportal.AdminUi.WebApp.Components.Pages.Structures;
+using Kundenportal.AdminUi.WebApp.Endpoints.OpenApi;
 using MassTransit.Logging;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,23 +20,6 @@ namespace Kundenportal.AdminUi.WebApp;
 public static class DependencyInjectionExtensions
 {
     /// <summary>
-    /// Add a redirect for the path / to the page which should basically serve as the starting point for the UI
-    /// unless a specific path is requested.
-    /// </summary>
-    /// <param name="app"></param>
-    public static void MapRedirectOnDefaultPath(this IEndpointRouteBuilder app)
-    {
-        app.MapGet("/", () => TypedResults.LocalRedirect($"/{StructureGroups.Route}"));
-    }
-
-    public static void MapHubs(this WebApplication app)
-    {
-        RouteGroupBuilder hubsGroup = app.MapGroup("/hubs");
-
-        hubsGroup.MapHub<StructureGroupHub>(StructureGroupHub.Route);
-    }
-
-    /// <summary>
     /// Adds all the WebApp related services to the Dependency Injection container.
     /// </summary>
     /// <param name="services"></param>
@@ -49,6 +32,13 @@ public static class DependencyInjectionExtensions
         ], ServiceLifetime.Singleton);
 
         services.AddSignalR();
+
+        services.AddApiVersioning();
+
+        services.ConfigureOptions<ConfigureSwaggerGenOptions>();
+
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
 
         services.AddDefaultWebAppServices();
     }
@@ -97,5 +87,20 @@ public static class DependencyInjectionExtensions
             .AddDefaultTokenProviders();
 
         services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+    }
+
+    private static void AddApiVersioning(this IServiceCollection services)
+    {
+        services.AddApiVersioning(o =>
+            {
+                o.DefaultApiVersion = new ApiVersion(1);
+                o.ApiVersionReader = new UrlSegmentApiVersionReader();
+                o.ReportApiVersions = true;
+            })
+            .AddApiExplorer(o =>
+            {
+                o.GroupNameFormat = "'v'V";
+                o.SubstituteApiVersionInUrl = true;
+            });
     }
 }

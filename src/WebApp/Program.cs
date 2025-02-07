@@ -1,7 +1,9 @@
+using Asp.Versioning.ApiExplorer;
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Infrastructure;
 using Kundenportal.AdminUi.WebApp;
 using Kundenportal.AdminUi.WebApp.Components;
+using Kundenportal.AdminUi.WebApp.Endpoints;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +52,23 @@ app.MapAdditionalIdentityEndpoints();
 
 app.MapHubs();
 
+app.MapAppEndpoints();
+
 app.MapRedirectOnDefaultPath();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(o =>
+    {
+        IReadOnlyList<ApiVersionDescription> apiVersions = app.DescribeApiVersions();
+        foreach (ApiVersionDescription apiVersionDescription in apiVersions)
+        {
+            string url = $"/swagger/{apiVersionDescription.GroupName}/swagger.json";
+            string name = apiVersionDescription.GroupName.ToUpperInvariant();
+            o.SwaggerEndpoint(url, name);
+        }
+    });
+}
 
 app.Run();
