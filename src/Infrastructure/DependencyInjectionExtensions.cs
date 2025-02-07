@@ -1,4 +1,5 @@
-﻿using Kundenportal.AdminUi.Infrastructure.Persistence;
+﻿using Kundenportal.AdminUi.Application.Abstractions;
+using Kundenportal.AdminUi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,8 @@ public static class DependencyInjectionExtensions
                 o.MigrationsAssembly(typeof(IInfrastructureMarker).Assembly.GetName().FullName);
             });
         });
+
+        services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
         return services;
     }

@@ -1,15 +1,16 @@
 using Kundenportal.AdminUi.Application;
 using Kundenportal.AdminUi.Infrastructure;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
+using Kundenportal.AdminUi.Infrastructure.Persistence;
 using Kundenportal.AdminUi.WebApp.Components;
 using Kundenportal.AdminUi.WebApp.Components.Account;
-using Kundenportal.AdminUi.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddRazorComponents()

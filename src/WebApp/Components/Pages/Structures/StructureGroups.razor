@@ -3,31 +3,38 @@
 
 <h3>StructureGroups</h3>
 
-
-<div class="mb-3 d-flex justify-content-end ">
-    <div class="dropdown">
-        <button type="button"
-                title="Optionen"
-                class="all-unset cursor-pointer"
-                id="optionen1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false">
-            <Ellipsis Width="25"/>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="optionen1">
-            <li>
-                <button type="button" id="option-1" class="dropdown-item" @onclick="OnOption1Selected">Option 1</button>
-            </li>
-            <li>
-                <button type="button" id="option-2" class="dropdown-item" @onclick="OnOption2Selected">Option 2</button>
-            </li>
-            <li>
-                <button type="button" id="option-3" class="dropdown-item" @onclick="OnOption3Selected">...</button>
-            </li>
-        </ul>
-    </div>
+<div id="structure-groups">
+    @foreach(var group in _model.StructureGroups)
+    {
+        <div class="d-flex justify-content-between">
+            <div id="group-@(group.Id!.Value)-details" class="d-flex justify-content-evenly">
+                <span>@group.Name</span>
+                <span>@group.Path</span>
+            </div>
+            <div class="dropdown">
+                <button type="button"
+                        title="Optionen"
+                        class="all-unset cursor-pointer"
+                        id="optionen1"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <Ellipsis Width="25" />
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="optionen1">
+                    <li>
+                        <button type="button" id="option-1" class="dropdown-item" @onclick="OnOption1Selected">Option 1</button>
+                    </li>
+                    <li>
+                        <button type="button" id="option-2" class="dropdown-item" @onclick="OnOption2Selected">Option 2</button>
+                    </li>
+                    <li>
+                        <button type="button" id="option-3" class="dropdown-item" @onclick="OnOption3Selected">...</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
 </div>
-
 
 @code {
     [Inject] public ILogger<StructureGroups>? Logger { get; set; }

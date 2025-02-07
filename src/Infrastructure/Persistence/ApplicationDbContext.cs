@@ -1,4 +1,5 @@
 using Kundenportal.AdminUi.Application;
+using Kundenportal.AdminUi.Application.Abstractions;
 using Kundenportal.AdminUi.Application.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Kundenportal.AdminUi.Infrastructure.Persistence;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : IdentityDbContext<ApplicationUser>(options)
+    : IdentityDbContext<ApplicationUser>(options), IApplicationDbContext
 {
-    public DbSet<StructureGroup> StructureGroups { get; set; }
+    public IQueryable<StructureGroup> StructureGroups => Set<StructureGroup>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
